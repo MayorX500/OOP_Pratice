@@ -7,9 +7,14 @@ public class SmartSpeaker extends SmartDevice {
     private String radio_info;
 
     public SmartSpeaker() {
-        this(0,false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, "NULL", 0,"NULL");
+        this(false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, "NULL", 0,"NULL");
     }
 
+    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location, int volume, String radio_info) {
+        super(is_on, installed_on, device_name, brand, power_usage, location);
+        this.volume = volume;
+        this.radio_info = radio_info;
+    }
     public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location, int volume, String radio_info) {
         super(device_id, is_on, installed_on, device_name, brand, power_usage, location);
         this.volume = volume;
