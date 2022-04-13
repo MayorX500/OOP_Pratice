@@ -1,24 +1,23 @@
 package SmartDevice;
 
+import java.time.LocalDate;
+
 public class SmartCamera extends SmartDevice{
     private double resolution;
     private double file_size;
-    private double energy_cons;
 
     public SmartCamera() {
-        this.resolution = 0;
-        this.file_size = 0;
-        this.energy_cons = 0;
+        this(0,false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0, "NULL", 0.0,0.0);
     }
 
-    public SmartCamera(double resolution, double file_size) {
+    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location,double resolution, double file_size) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage, location);
         this.resolution = resolution;
         this.file_size = file_size;
-        this.energy_cons = resolution * file_size;
 
     }
-    public double getEnergy_cons() {
-        return this.energy_cons;
+    public double getPower_usage(){
+        return this.resolution * this.file_size;
     }
 
     public double getResolution() {
@@ -47,6 +46,10 @@ public class SmartCamera extends SmartDevice{
         return this;
     }
 
+    public SmartCamera(SmartCamera o){
+		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getLocation(),o.getResolution(), o.getFile_size());
+	}
+
     public boolean equals(Object o) {
         if (o == this)
             return true;
@@ -54,14 +57,18 @@ public class SmartCamera extends SmartDevice{
             return false;
         }
         SmartCamera smartCamera = (SmartCamera) o;
-        return resolution == smartCamera.resolution && file_size == smartCamera.file_size && energy_cons == smartCamera.energy_cons;
+        return resolution == smartCamera.resolution && file_size == smartCamera.file_size;
+    }
+
+    public SmartCamera clone () {
+        return new SmartCamera(this);
     }
 
     public String toString() {
         return "{" +
             " resolution= " + getResolution() + " " +
             ", file_size= " + getFile_size() + " " +
-            ", energy_cons= " + getEnergy_cons() + " " +
+            ", power_usage= " + getPower_usage() + " " +
             "}";
     }
 
