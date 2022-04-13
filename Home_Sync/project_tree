@@ -1,0 +1,21 @@
+.
+└── src
+   ├── Auxiliar
+   │  └── Random.java
+   ├── Casa
+   │  └── Casa.java
+   ├── Fornecedor
+   │  └── Fornecedor.java
+   ├── Main.java
+   ├── make
+   ├── MVC_House_Sync
+   │  ├── Controler.java
+   │  ├── Model.java
+   │  └── View.java
+   ├── Parser
+   │  └── Parser.java
+   └── SmartDevice
+      ├── SmartBulb.java
+      ├── SmartCamera.java
+      ├── SmartDevice.java
+      └── SmartSpeaker.java
