@@ -12,24 +12,22 @@ public class SmartDevice {
 	private String device_name;
 	private String brand;
 	private double power_usage;
-	private String location;
 
-	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location){
+	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage){
 		this.device_id = device_id;
 		this.is_on=is_on;
 		this.installed_on = installed_on;
 		this.device_name=device_name;
 		this.brand=brand;
 		this.power_usage=power_usage;
-		this.location=location;
 	}
 
-	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location){
-		this(count.incrementAndGet(),is_on,installed_on,device_name,brand,power_usage,location);
+	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage){
+		this(count.incrementAndGet(),is_on,installed_on,device_name,brand,power_usage);
 	}
   
 	public SmartDevice(){
-		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0, "NULL");
+		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0);
 	}
   
 	public SmartDevice(SmartDevice o){
@@ -38,8 +36,7 @@ public class SmartDevice {
 				o.getInstalled_on(),
 				o.getDevice_name(),
 				o.getBrand(),
-				o.getPower_usage(),
-				o.getLocation());
+				o.getPower_usage());
 	}
 
 	public int getDevice_id() {
@@ -94,14 +91,6 @@ public class SmartDevice {
 		this.power_usage = power_usage;
 	}
 
-	public String getLocation() {
-		return this.location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -110,13 +99,12 @@ public class SmartDevice {
 			return false;
 		}
 		SmartDevice smartDevice = (SmartDevice) o;
-		return this.device_id == smartDevice.device_id &&
+		return (this.device_id == smartDevice.device_id &&
 			this.is_on == smartDevice.is_on &&
 			this.installed_on.equals(smartDevice.getInstalled_on()) &&
 			this.device_name.equals(smartDevice.device_name) &&
 			this.brand.equals(smartDevice.brand) &&
-			this.power_usage == smartDevice.power_usage &&
-			this.location.equals(smartDevice.location);
+			this.power_usage == smartDevice.power_usage);
 	}
 
 	@Override
@@ -133,7 +121,6 @@ public class SmartDevice {
 			", device_name='" + getDevice_name() + "'" +
 			", brand='" + getBrand() + "'" +
 			", power_usage='" + getPower_usage() + "'" +
-			", location='" + getLocation() + "'" +
 			"}";
 	}
 

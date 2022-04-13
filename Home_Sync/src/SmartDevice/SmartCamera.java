@@ -7,24 +7,24 @@ public class SmartCamera extends SmartDevice{
     private double file_size;
 
     public SmartCamera() {
-        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0, "NULL", 0.0,0.0);
+        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0, 0.0, 0.0);
     }
 
-    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location,double resolution, double file_size) {
-        super(is_on, installed_on, device_name, brand, power_usage, location);
+    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double resolution, double file_size) {
+        super(is_on, installed_on, device_name, brand, power_usage);
         this.resolution = resolution;
         this.file_size = file_size;
 
     }
     
-    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, String location,double resolution, double file_size) {
-        super(device_id, is_on, installed_on, device_name, brand, power_usage, location);
+    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double resolution, double file_size) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage);
         this.resolution = resolution;
         this.file_size = file_size;
     }
 
     public SmartCamera(SmartCamera o){
-		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getLocation(),o.getResolution(), o.getFile_size());
+		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getResolution(), o.getFile_size());
     }
 
     public double getPower_usage(){
