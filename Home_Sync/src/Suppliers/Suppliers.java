@@ -74,4 +74,7 @@ public class Suppliers {
 		this.out_of_range_tax = out_of_range_tax;
 	}
 
+	public Suppliers clone(){
+		return new Suppliers(this);
+	}
 }
