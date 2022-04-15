@@ -6,20 +6,17 @@ import java.util.HashMap;
 public class SmartBulb extends SmartDevice{
 	private Tonality color;
 	private  float dimension;
-	private HashMap<LocalDate,String> log;
 	
 	public SmartBulb(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, Tonality color, float dimension, HashMap<LocalDate,String> log) {
-		super(device_id, is_on, installed_on, device_name, brand, power_usage);
+		super(device_id, is_on, installed_on, device_name, brand, power_usage, log);
 		this.color = color;
 		this.dimension = dimension;
-		this.log = log;
 	}
 
 	public SmartBulb(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, Tonality color, float dimension, HashMap<LocalDate,String> log) {
-		super(is_on, installed_on, device_name, brand, power_usage);
+		super(is_on, installed_on, device_name, brand, power_usage,log);
 		this.color = color;
 		this.dimension = dimension;
-		this.log = log;
 	}
 
 	public SmartBulb(){
@@ -88,14 +85,6 @@ public class SmartBulb extends SmartDevice{
 		this.dimension = dimension;
 	}
 
-	public HashMap<LocalDate,String> getlog() {
-		return this.log;
-	}
-
-	public void setlog(HashMap<LocalDate,String> log) {
-		this.log = log;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -104,7 +93,7 @@ public class SmartBulb extends SmartDevice{
 			return false;
 		}
 		SmartBulb smartBulb = (SmartBulb) o;
-		return this.color._equals(smartBulb.color) && dimension == smartBulb.dimension && this.log.equals(smartBulb.log);
+		return this.color._equals(smartBulb.color) && dimension == smartBulb.dimension;
 	}
 
 	@Override
@@ -117,7 +106,6 @@ public class SmartBulb extends SmartDevice{
 		return "{" +
 			" color='" + getColor().toString() + "'" +
 			", dimension='" + getDimension() + "'" +
-			", log='" + getlog() + "'" +
 			"}";
 	}
 

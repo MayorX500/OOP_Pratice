@@ -1,12 +1,17 @@
 .
 └── src
    ├── Auxiliar
+   │  ├── MenuSpecific.java
+   │  ├── Pair.java
    │  └── Random.java
-   ├── Fornecedor
-   │  └── Fornecedor.java
+   ├── Client
+   │  └── Client.java
    ├── House
+   │  ├── Address.java
+   │  ├── Divisions.java
    │  └── House.java
    ├── House_Sync
+   ├── JavaFX
    ├── Main.java
    ├── MVC_House_Sync
    │  ├── Controler.java
@@ -14,8 +19,13 @@
    │  └── View.java
    ├── Parser
    │  └── Parser.java
-   └── SmartDevice
-      ├── SmartBulb.java
-      ├── SmartCamera.java
-      ├── SmartDevice.java
-      └── SmartSpeaker.java
+   ├── Simulator
+   │  └── Simulator.java
+   ├── SmartDevice
+   │  ├── SmartBulb.java
+   │  ├── SmartCamera.java
+   │  ├── SmartDevice.java
+   │  └── SmartSpeaker.java
+   └── Suppliers
+      ├── Promotion_Supplier.java
+      └── Suppliers.java

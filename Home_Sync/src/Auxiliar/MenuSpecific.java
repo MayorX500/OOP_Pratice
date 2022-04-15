@@ -12,12 +12,12 @@ public class MenuSpecific {
 
     public void turnDivision(House home,String divis,boolean state){
 
-        home.divisionOnOff(divis,state);
+        //home.divisionOnOff(divis,state);
 
     }//turn on/off entire division
 
     public void turnDevice(House home, String divis, SmartDevice device,boolean state){
-        home.turnOneOnOFF(divis,device,state);
+        //home.turnOneOnOFF(divis,device,state);
     }//turn on/off specific device
 
     public void swapProvider(House home, Suppliers f){

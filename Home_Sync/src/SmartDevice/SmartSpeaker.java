@@ -1,28 +1,29 @@
 package SmartDevice;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class SmartSpeaker extends SmartDevice {
     private int volume;
     private String radio_info;
 
     public SmartSpeaker() {
-        this(false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, 0,"NULL");
+        this(false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, 0,"NULL",new HashMap<>());
     }
 
-    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info) {
-        super(is_on, installed_on, device_name, brand, power_usage);
+    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info,HashMap<LocalDate,String> log) {
+        super(is_on, installed_on, device_name, brand, power_usage,log);
         this.volume = volume;
         this.radio_info = radio_info;
     }
-    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info) {
-        super(device_id, is_on, installed_on, device_name, brand, power_usage);
+    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info,HashMap<LocalDate,String> log) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage,log);
         this.volume = volume;
         this.radio_info = radio_info;
     }  
 
     public SmartSpeaker(SmartSpeaker o){
-        this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getVolume(),o.getRadio_info());
+        this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getVolume(),o.getRadio_info(),o.getlog());
     }
 
     public int getVolume() {

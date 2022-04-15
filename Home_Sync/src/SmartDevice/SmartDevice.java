@@ -1,6 +1,7 @@
 package SmartDevice;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.concurrent.atomic.*;
 
 public class SmartDevice {
@@ -12,22 +13,24 @@ public class SmartDevice {
 	private String device_name;
 	private String brand;
 	private double power_usage;
+	private HashMap<LocalDate,String> log;
 
-	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage){
+	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log){
 		this.device_id = device_id;
 		this.is_on=is_on;
 		this.installed_on = installed_on;
 		this.device_name=device_name;
 		this.brand=brand;
 		this.power_usage=power_usage;
+		this.log=log;
 	}
 
-	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage){
-		this(count.incrementAndGet(),is_on,installed_on,device_name,brand,power_usage);
+	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log){
+		this(count.incrementAndGet(),is_on,installed_on,device_name,brand,power_usage,log);
 	}
   
 	public SmartDevice(){
-		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0);
+		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0,new HashMap<>());
 	}
   
 	public SmartDevice(SmartDevice o){
@@ -36,7 +39,8 @@ public class SmartDevice {
 				o.getInstalled_on(),
 				o.getDevice_name(),
 				o.getBrand(),
-				o.getPower_usage());
+				o.getPower_usage(),
+				o.getlog());
 	}
 
 	public int getDevice_id() {
@@ -89,6 +93,14 @@ public class SmartDevice {
 
 	public void setPower_usage(double power_usage) {
 		this.power_usage = power_usage;
+	}
+
+	public HashMap<LocalDate,String> getlog() {
+		return this.log;
+	}
+
+	public void setlog(HashMap<LocalDate,String> log) {
+		this.log = log;
 	}
 
 	@Override

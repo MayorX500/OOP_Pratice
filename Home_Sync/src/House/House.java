@@ -1,50 +1,57 @@
 package House;
-import SmartDevice.*;
 import Suppliers.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.HashSet;
+import java.util.concurrent.atomic.*;
 
 public class House{
-    private String address;
-    private HashMap<String,ArrayList<SmartDevice>> divisions;
+    private static final AtomicInteger count = new AtomicInteger(0); 
+    private int house_id;
+    private Address address;
+    private HashSet<Divisions> divisions;
     private Suppliers supplier;
     private long max_consume;
-
-    public House(String address, HashMap<String,ArrayList<SmartDevice>> divisions, Suppliers supplier, long MaxConsume) {
-        this.address = address;
+    
+    public House(int id,Address address, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
+	this.house_id = id;
+        this.address = address.clone();
+        this.setDivisions(divisions);
+        this.supplier = supplier.clone();
+        this.max_consume = MaxConsume;
+    }
+    public House(Address address, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
+	this.house_id = count.incrementAndGet();
+        this.address = address.clone();
         this.setDivisions(divisions);
         this.supplier = supplier.clone();
         this.max_consume = MaxConsume;
     }
 
     public House() {
-        this("NULL",new HashMap<>(),new Suppliers(),0);
+        this(new Address(),new HashSet<>(),new Suppliers(),0);
     }
 
     public House(House o) {
-        this(o.getAddress(), o.getDivisions(), o.getSupplier(), o.getMaxConsume());
+        this(o.getHouse_id(),o.getAddress(), o.getDivisions(), o.getSupplier(), o.getMaxConsume());
     }
 
-    public String getAddress() {
-        return this.address;
+    public int getHouse_id(){
+	    return this.house_id;
+    }
+
+    public Address getAddress() {
+        return this.address.clone();
     }
 
     public Suppliers getSupplier() {
         return this.supplier.clone();
     }
 
-    public HashMap<String, ArrayList<SmartDevice>> getDivisions(){
-        HashMap<String, ArrayList<SmartDevice>> out = new HashMap<>();
-        for(Map.Entry<String, ArrayList<SmartDevice>> entry : this.divisions.entrySet()) {
-            ArrayList<SmartDevice> arr = new ArrayList<>();
-            String key = entry.getKey();
-            for (SmartDevice dev : entry.getValue()) {
-                arr.add(dev.clone());
-            }
-            out.put(key, arr);
-        }
+    public HashSet<Divisions> getDivisions(){
+        HashSet<Divisions> out = new HashSet<>();
+        for(Divisions a : this.divisions)
+        out.add(a.clone());
         return out;
     }
 
@@ -52,20 +59,18 @@ public class House{
         return this.max_consume;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setHouse_id(int id){
+	    this.house_id=id;
     }
 
-    public void setDivisions(HashMap<String,ArrayList<SmartDevice>> divisions) {
-        HashMap<String, ArrayList<SmartDevice>> out = new HashMap<>();
-        for(Map.Entry<String, ArrayList<SmartDevice>> entry : divisions.entrySet()) {
-            ArrayList<SmartDevice> arr = new ArrayList<>();
-            String key = entry.getKey();
-            for (SmartDevice dev : entry.getValue()) {
-                arr.add(dev.clone());
-            }
-            out.put(key, arr);
-            }
+    public void setAddress(Address address) {
+        this.address = address.clone();
+    }
+
+    public void setDivisions(HashSet<Divisions> divisions) {
+        HashSet<Divisions> out = new HashSet<>();
+        for(Divisions a : this.divisions)
+        out.add(a.clone());
         this.divisions = out;
     }
 
@@ -85,18 +90,59 @@ public class House{
             return false;
         }
         House house = (House) o;
-        return (this.max_consume == house.max_consume && this.supplier == house.supplier && this.divisions.keySet().equals( house.getDivisions().keySet()) && (new ArrayList<>( this.divisions.values() ).equals(new ArrayList<>( house.getDivisions().values() ))));
+        return (this.house_id==house.getHouse_id() && this.address.equals(house.getAddress()) && this.max_consume == house.max_consume && this.supplier.equals(house.getSupplier()) && this.divisions.equals( house.getDivisions()));
     }
 
     @Override
+    public House clone(){
+        return new House(this);
+    }
+    
+    @Override
     public String toString() {
         return "{" +
-            " address='" + getAddress() + "'" +
+            " house_id='" + getHouse_id() + "'" +
+            " address='" + getAddress().toString() + "'" +
             ", divisions='" + getDivisions() + "'" +
             ", supplier='" + getSupplier().toString() + "'" +
             ", MaxConsume='" + getMaxConsume() + "'" +
             "}";
     }
+}
+
+    //public void getDevices
+
+   /* public void addDevice(String s,SmartDevice m) {
+        if (divisions.get(s) == null) {
+            ArrayList<SmartDevice> Arr = new ArrayList<SmartDevice>();
+            Arr.add(m);
+            divisions.put(s, Arr);
+        } else {
+            ArrayList<SmartDevice> Arr = divisions.get(s);
+            Arr.add(m);
+            divisions.put(s, Arr);
+        }
+    }
+
+    public void turnAllOnOFF(boolean state){
+        for(Map.Entry<String, ArrayList<SmartDevice>> entry : this.divisions.entrySet()) {
+            for (SmartDevice dev : entry.getValue()) {
+                dev.setIs_on(state);
+            }
+        }
+    }
+
+    public void turnOneOnOFF(String div,SmartDevice smart,boolean state){
+        ArrayList<SmartDevice> Arr = divisions.get(div);
+        int i =Arr.indexOf(smart);
+        Arr.get(i).setIs_on(state);
+        divisions.put(div, Arr);
+    }
+
+
+
+}
+
 
     //public void getDevices
 
@@ -146,3 +192,4 @@ public class House{
 
 
 }
+*/
