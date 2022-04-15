@@ -3,6 +3,7 @@ package House;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import Exceptions.Empty_Division;
 import SmartDevice.SmartDevice;
 
 public class Divisions {
@@ -61,6 +62,32 @@ public class Divisions {
             " division_name='" + getDivision_name() + "'" +
             ", devices='" + getDevices() + "'" +
             "}";
+    }
+
+    public void manageDivision(boolean state) throws Empty_Division{
+        HashSet<SmartDevice> list = new HashSet<>();
+
+        if(this.devices.size()>1){
+            for(SmartDevice e : this.devices){
+                if(e.getIs_on() != state){
+                    e.setIs_on(state);
+                }
+                list.add(e.clone());
+            }
+            this.devices=list;
+        }
+        else throw new Empty_Division("Empty Division");
+    }
+
+    public double getDaily_Division_Power_Usage() throws Empty_Division{
+        double out = 0;
+        if(this.devices.size()>1){
+            for(SmartDevice e : this.devices){
+                out += e.getPower_usage();
+            }
+        }
+        else throw new Empty_Division("Empty Division");
+        return out;
     }
 
 }

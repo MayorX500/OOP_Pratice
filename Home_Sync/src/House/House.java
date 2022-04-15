@@ -1,5 +1,6 @@
 package House;
 import Suppliers.*;
+import Client.*;
 
 
 import java.util.HashSet;
@@ -9,31 +10,33 @@ public class House{
     private static final AtomicInteger count = new AtomicInteger(0); 
     private int house_id;
     private Address address;
+    private Client owner;
     private HashSet<Divisions> divisions;
     private Suppliers supplier;
     private long max_consume;
     
-    public House(int id,Address address, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
+    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
 	this.house_id = id;
         this.address = address.clone();
         this.setDivisions(divisions);
         this.supplier = supplier.clone();
         this.max_consume = MaxConsume;
     }
-    public House(Address address, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
+    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
 	this.house_id = count.incrementAndGet();
         this.address = address.clone();
+        this.owner = owner.clone();
         this.setDivisions(divisions);
         this.supplier = supplier.clone();
         this.max_consume = MaxConsume;
     }
 
     public House() {
-        this(new Address(),new HashSet<>(),new Suppliers(),0);
+        this(new Address(), new Client(), new HashSet<>(),new Suppliers(),0);
     }
 
     public House(House o) {
-        this(o.getHouse_id(),o.getAddress(), o.getDivisions(), o.getSupplier(), o.getMaxConsume());
+        this(o.getHouse_id(), o.getAddress(), o.getOwner(), o.getDivisions(), o.getSupplier(), o.getMaxConsume());
     }
 
     public int getHouse_id(){
@@ -42,6 +45,10 @@ public class House{
 
     public Address getAddress() {
         return this.address.clone();
+    }
+
+    public Client getOwner() {
+        return owner.clone();
     }
 
     public Suppliers getSupplier() {
@@ -65,6 +72,10 @@ public class House{
 
     public void setAddress(Address address) {
         this.address = address.clone();
+    }
+
+    public void setOwner(Client owner) {
+        this.owner = owner.clone();
     }
 
     public void setDivisions(HashSet<Divisions> divisions) {
@@ -103,6 +114,7 @@ public class House{
         return "{" +
             " house_id='" + getHouse_id() + "'" +
             " address='" + getAddress().toString() + "'" +
+            " address='" + getOwner().toString() + "'" +
             ", divisions='" + getDivisions() + "'" +
             ", supplier='" + getSupplier().toString() + "'" +
             ", MaxConsume='" + getMaxConsume() + "'" +
@@ -192,4 +204,27 @@ public class House{
 
 
 }
+
+
+
+
+    public HashSet<House> getHouses() {
+        HashSet<House> out = new HashSet<>();
+        for(House house: this.houses){
+            out.add(house.clone());
+        }
+        return out;
+    }
+
+    public void setHouses(HashSet<House> houses) {
+        HashSet<House> out = new HashSet<>();
+        for(House house: houses){
+            out.add(house.clone());
+        }
+        this.houses = out;
+    }
+
+
+
+
 */

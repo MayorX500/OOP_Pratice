@@ -1,46 +1,67 @@
 package SmartDevice;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.atomic.*;
+
+import Auxiliar.State;
 
 public class SmartDevice {
 
-	private static final AtomicInteger count = new AtomicInteger(0); 
+	private static final AtomicInteger count = new AtomicInteger(0);
+	private UUID _uuid_ ;
 	private int device_id;
 	private boolean is_on;
 	private LocalDate installed_on;
 	private String device_name;
 	private String brand;
 	private double power_usage;
-	private HashMap<LocalDate,String> log;
+	private double base_cost;
+	private HashSet<State> log;
 
-	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log){
+	public SmartDevice(UUID uuid, int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand, double power_usage, double base_cost, HashSet<State> log){
+		this._uuid_= uuid;
 		this.device_id = device_id;
 		this.is_on=is_on;
 		this.installed_on = installed_on;
 		this.device_name=device_name;
 		this.brand=brand;
 		this.power_usage=power_usage;
+		this.base_cost=base_cost;
 		this.log=log;
 	}
 
-	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log){
-		this(count.incrementAndGet(),is_on,installed_on,device_name,brand,power_usage,log);
+	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,HashSet<State> log){
+		this(UUID.randomUUID(), device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
+	}
+
+	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, HashSet<State> log){
+		this(count.incrementAndGet(), is_on, installed_on, device_name, brand, power_usage, base_cost, log); 
 	}
   
 	public SmartDevice(){
-		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0,new HashMap<>());
+		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0, 0.0, new HashSet<>());
 	}
   
 	public SmartDevice(SmartDevice o){
-		this(o.getDevice_id(),
-				o.getIs_on(),
-				o.getInstalled_on(),
-				o.getDevice_name(),
-				o.getBrand(),
-				o.getPower_usage(),
-				o.getlog());
+		this(o.getUUID(),
+			o.getDevice_id(),
+			o.getIs_on(),
+			o.getInstalled_on(),
+			o.getDevice_name(),
+			o.getBrand(),
+			o.getPower_usage(),
+			o.getBase_cost(),
+			o.getLog());
+	}
+
+	public UUID getUUID() {
+		return _uuid_;
+	}
+
+	public void setUUID(UUID _uuid_) {
+		this._uuid_ = _uuid_;
 	}
 
 	public int getDevice_id() {
@@ -95,11 +116,19 @@ public class SmartDevice {
 		this.power_usage = power_usage;
 	}
 
-	public HashMap<LocalDate,String> getlog() {
+	public double getBase_cost() {
+		return base_cost;
+	}
+
+	public void setBase_cost(double base_cost) {
+		this.base_cost = base_cost;
+	}
+
+	public HashSet<State> getLog() {
 		return this.log;
 	}
 
-	public void setlog(HashMap<LocalDate,String> log) {
+	public void setLog(HashSet<State> log) {
 		this.log = log;
 	}
 
@@ -111,12 +140,15 @@ public class SmartDevice {
 			return false;
 		}
 		SmartDevice smartDevice = (SmartDevice) o;
-		return (this.device_id == smartDevice.device_id &&
+		return (this._uuid_.equals(smartDevice.getUUID()) &&
+			this.device_id == smartDevice.device_id &&
 			this.is_on == smartDevice.is_on &&
 			this.installed_on.equals(smartDevice.getInstalled_on()) &&
 			this.device_name.equals(smartDevice.device_name) &&
 			this.brand.equals(smartDevice.brand) &&
-			this.power_usage == smartDevice.power_usage);
+			this.power_usage == smartDevice.power_usage &&
+			this.base_cost == smartDevice.getBase_cost() &&
+			this.log.equals(smartDevice.getLog()));
 	}
 
 	@Override
@@ -127,12 +159,14 @@ public class SmartDevice {
 	@Override
 	public String toString() {
 		return "{" +
+			" UUID='" + getUUID().toString() + "'" +
 			" device_id='" + getDevice_id() + "'" +
 			", is_on='" + is_on() + "'" +
 			", installed_on='" + getInstalled_on().toString() + "'" +
 			", device_name='" + getDevice_name() + "'" +
 			", brand='" + getBrand() + "'" +
 			", power_usage='" + getPower_usage() + "'" +
+			", device_log='" + getLog().toString() + "'" +
 			"}";
 	}
 

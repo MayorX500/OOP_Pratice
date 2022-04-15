@@ -1,35 +1,33 @@
 package SmartDevice;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.HashSet;
+
+import Auxiliar.State;
 
 public class SmartCamera extends SmartDevice{
     private double resolution;
     private double file_size;
 
     public SmartCamera() {
-        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0,new HashMap<>(), 0.0, 0.0);
+        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0,0.0,new HashSet<>(), 0.0, 0.0);
     }
 
-    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log,double resolution, double file_size) {
-        super(is_on, installed_on, device_name, brand, power_usage,log);
+    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, HashSet<State> log,double resolution, double file_size) {
+        super(is_on, installed_on, device_name, brand, power_usage,base_cost,log);
         this.resolution = resolution;
         this.file_size = file_size;
 
     }
     
-    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,HashMap<LocalDate,String> log,double resolution, double file_size) {
-        super(device_id, is_on, installed_on, device_name, brand, power_usage,log);
+    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,HashSet<State> log,double resolution, double file_size) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage,base_cost,log);
         this.resolution = resolution;
         this.file_size = file_size;
     }
 
     public SmartCamera(SmartCamera o){
-		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getlog(),o.getResolution(), o.getFile_size());
-    }
-
-    public double getPower_usage(){
-        return this.resolution * this.file_size;
+		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getBase_cost(),o.getLog(),o.getResolution(), o.getFile_size());
     }
 
     public double getResolution() {
@@ -79,6 +77,10 @@ public class SmartCamera extends SmartDevice{
             ", power_usage= " + getPower_usage() + " " +
             "}";
     }
+
+    public double getPower_usage() {
+		return super.getPower_usage()*(this.getFile_size()*0.1)*(this.getResolution()*0.05);
+	}
 
 }
 

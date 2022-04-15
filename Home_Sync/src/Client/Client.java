@@ -1,32 +1,29 @@
 package Client;
 
-import House.House;
-
-import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Client {
     private static final AtomicInteger count = new AtomicInteger(0);
     private int client_id;
     private String client_name;
-    private HashSet<House> houses;
+    private int nif;
 
-    public Client(int id,String name, HashSet<House> houses){
+    public Client(int id,String name, int nif){
         this.client_id=id;
         this.client_name=name;
-        this.setHouses(houses);
+        this.nif=nif;
     }
 
-    public Client(String name,HashSet<House> houses){
-        this(count.incrementAndGet(), name, houses);
+    public Client(String name,int nif){
+        this(count.incrementAndGet(), name, nif);
     }
 
     public Client(){
-        this("name", new HashSet<>());
+        this("name", 0);
     }
 
     public Client(Client o){
-        this(o.getClient_id(),o.getClient_name(),o.getHouses());
+        this(o.getClient_id(),o.getClient_name(),o.getClient_NIF());
     }
 
     public int getClient_id() {
@@ -45,20 +42,12 @@ public class Client {
         this.client_name = client_name;
     }
 
-    public HashSet<House> getHouses() {
-        HashSet<House> out = new HashSet<>();
-        for(House house: this.houses){
-            out.add(house.clone());
-        }
-        return out;
+    public int getClient_NIF() {
+        return this.nif;
     }
 
-    public void setHouses(HashSet<House> houses) {
-        HashSet<House> out = new HashSet<>();
-        for(House house: houses){
-            out.add(house.clone());
-        }
-        this.houses = out;
+    public void setClient_NIF(int nif) {
+        this.nif = nif;
     }
 
     @Override
@@ -69,7 +58,11 @@ public class Client {
             return false;
         }
         Client client = (Client) o;
-        return client_id == client.client_id && this.client_name.equals(client.getClient_name()) && this.houses.equals(client.getHouses());
+        return client_id == client.client_id && this.client_name.equals(client.getClient_name()) && this.nif == client.getClient_NIF();
+    }
+
+    public Client clone(){
+        return new Client(this);
     }
 
 
@@ -78,7 +71,7 @@ public class Client {
         return "{" +
             " client_id='" + getClient_id() + "'" +
             ", client_name='" + getClient_name() + "'" +
-            ", houses='" + getHouses().toString() + "'" +
+            ", houses='" + getClient_NIF() + "'" +
             "}";
     }
 

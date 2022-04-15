@@ -1,30 +1,32 @@
 package SmartDevice;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.HashSet;
+
+import Auxiliar.State;
 
 public class SmartBulb extends SmartDevice{
 	private Tonality color;
 	private  float dimension;
 	
-	public SmartBulb(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, Tonality color, float dimension, HashMap<LocalDate,String> log) {
-		super(device_id, is_on, installed_on, device_name, brand, power_usage, log);
+	public SmartBulb(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, HashSet<State> log) {
+		super(device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
 		this.color = color;
 		this.dimension = dimension;
 	}
 
-	public SmartBulb(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, Tonality color, float dimension, HashMap<LocalDate,String> log) {
-		super(is_on, installed_on, device_name, brand, power_usage,log);
+	public SmartBulb(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, HashSet<State> log) {
+		super(is_on, installed_on, device_name, brand, power_usage, base_cost, log);
 		this.color = color;
 		this.dimension = dimension;
 	}
 
 	public SmartBulb(){
-		this(false,LocalDate.now(),"SmartBulb","OOP_Bulbs",9.0,Tonality.OFF,6.0f,new HashMap<>());
+		this(false,LocalDate.now(),"SmartBulb","OOP_Bulbs",216.0,15.0,Tonality.OFF,6.0f,new HashSet<>());
 	}
 	
 	public SmartBulb(SmartBulb o){
-		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getColor(),o.getDimension(),o.getlog());
+		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getBase_cost(),o.getColor(),o.getDimension(),o.getLog());
 	}
 
 	private enum Tonality{
@@ -107,6 +109,10 @@ public class SmartBulb extends SmartDevice{
 			" color='" + getColor().toString() + "'" +
 			", dimension='" + getDimension() + "'" +
 			"}";
+	}
+
+	public double getPower_usage() {
+		return super.getPower_usage()*this.getColor().getConsumption();
 	}
 
 }

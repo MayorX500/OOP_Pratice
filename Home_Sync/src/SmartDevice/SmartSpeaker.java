@@ -1,29 +1,33 @@
 package SmartDevice;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.HashSet;
+
+import Auxiliar.State;
 
 public class SmartSpeaker extends SmartDevice {
     private int volume;
     private String radio_info;
 
     public SmartSpeaker() {
-        this(false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, 0,"NULL",new HashMap<>());
+        this(false, LocalDate.now(), "SmartSpeaker", "OOP_Speaker", 0.0, 0.0, 0,"NULL",new HashSet<>());
     }
 
-    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info,HashMap<LocalDate,String> log) {
-        super(is_on, installed_on, device_name, brand, power_usage,log);
+    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info,HashSet<State> log) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
         this.volume = volume;
         this.radio_info = radio_info;
     }
-    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, int volume, String radio_info,HashMap<LocalDate,String> log) {
-        super(device_id, is_on, installed_on, device_name, brand, power_usage,log);
+
+    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info,HashSet<State> log) {
+        super(is_on, installed_on, device_name, brand, power_usage, base_cost, log);
         this.volume = volume;
         this.radio_info = radio_info;
-    }  
+    }
+  
 
     public SmartSpeaker(SmartSpeaker o){
-        this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getVolume(),o.getRadio_info(),o.getlog());
+        this(o.getDevice_id(), o.getIs_on(), o.getInstalled_on(), o.getDevice_name(), o.getBrand(), o.getPower_usage(), o.getBase_cost(), o.getVolume(), o.getRadio_info(), o.getLog());
     }
 
     public int getVolume() {
@@ -74,6 +78,10 @@ public class SmartSpeaker extends SmartDevice {
             ", radio_info='" + getRadio_info() + "'" +
             "}";
     }
+
+    public double getPower_usage() {
+		return super.getPower_usage()*(this.getVolume()*0.1);
+	}
 
 
 }
