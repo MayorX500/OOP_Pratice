@@ -81,6 +81,7 @@ public class SmartDevice {
 	}
 
 	public void setIs_on(boolean is_on) {
+		this.log.add(new State(this.getIs_on(),is_on));
 		this.is_on = is_on;
 	}
 
