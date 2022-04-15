@@ -122,15 +122,26 @@ public class House{
         }
     }
 
+    public void divisionOnOff(String div,boolean state){
+
+        ArrayList<SmartDevice> alldevices = this.divisions.get(div);
+
+        for(SmartDevice device : alldevices){
+            device.setIs_on(state);
+        }
+        this.divisions.put(div,alldevices);
+
+    }
+
     public void turnOneOnOFF(String div,SmartDevice smart,boolean state){
 
-        ArrayList<SmartDevice> Arr = divisions.get(div);
+        ArrayList<SmartDevice> Arr = this.divisions.get(div);
 
         int i =Arr.indexOf(smart);
 
         Arr.get(i).setIs_on(state);
 
-        divisions.put(div, Arr);
+        this.divisions.put(div, Arr);
     }
 
 

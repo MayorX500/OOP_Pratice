@@ -10,9 +10,9 @@ public class MenuSpecific {
 
     public void newDate(){}//avançar tempo
 
-    public void turnDivision(House home,String divis,boolean state){//think is wrong in using this function
+    public void turnDivision(House home,String divis,boolean state){
 
-        home.turnAllOnOFF(state);
+        home.divisionOnOff(divis,state);
 
     }//turn on/off entire division
 
