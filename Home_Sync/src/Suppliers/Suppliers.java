@@ -77,4 +77,8 @@ public class Suppliers {
 	public Suppliers clone(){
 		return new Suppliers(this);
 	}
+
+	public float getSupplier_rate(){
+		return(this.base_price*(this.tax+this.out_of_range_tax));
+	}
 }

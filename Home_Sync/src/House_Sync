@@ -2,4 +2,22 @@
 
 PATH_TO_FX=./JavaFX/lib
 
-java --module-path $PATH_TO_FX --add-modules javafx.controls -cp . Main.java
+app=$1
+
+
+function compile {
+
+	javac --module-path $PATH_TO_FX --add-modules javafx.controls $app.java
+}
+
+function run {
+	java --module-path $PATH_TO_FX --add-modules javafx.controls $app
+}
+
+function main {
+	compile
+	run
+	rm -f */*.class *.class
+}
+
+main

@@ -1,7 +1,8 @@
 package House;
 import Suppliers.*;
 import Client.*;
-
+import Exceptions.*;
+import SmartDevice.*;
 
 import java.util.HashSet;
 import java.util.concurrent.atomic.*;
@@ -13,22 +14,18 @@ public class House{
     private Client owner;
     private HashSet<Divisions> divisions;
     private Suppliers supplier;
-    private long max_consume;
+    private double max_consume;
     
-    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
+    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double MaxConsume) {
 	this.house_id = id;
-        this.address = address.clone();
-        this.setDivisions(divisions);
-        this.supplier = supplier.clone();
-        this.max_consume = MaxConsume;
-    }
-    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, long MaxConsume) {
-	this.house_id = count.incrementAndGet();
         this.address = address.clone();
         this.owner = owner.clone();
         this.setDivisions(divisions);
         this.supplier = supplier.clone();
         this.max_consume = MaxConsume;
+    }
+    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double MaxConsume) {
+	    this(count.incrementAndGet(), address, owner, divisions, supplier, MaxConsume);
     }
 
     public House() {
@@ -58,11 +55,11 @@ public class House{
     public HashSet<Divisions> getDivisions(){
         HashSet<Divisions> out = new HashSet<>();
         for(Divisions a : this.divisions)
-        out.add(a.clone());
+		out.add(a.clone());
         return out;
     }
 
-    public long getMaxConsume() {
+    public double getMaxConsume() {
         return this.max_consume;
     }
 
@@ -80,8 +77,14 @@ public class House{
 
     public void setDivisions(HashSet<Divisions> divisions) {
         HashSet<Divisions> out = new HashSet<>();
-        for(Divisions a : this.divisions)
-        out.add(a.clone());
+        for(Divisions a : divisions){
+		out.add(a.clone());
+		try{
+			this.max_consume += a.getDaily_Division_Power_Usage();
+		}catch(Empty_Division e){
+			this.max_consume += 0 ;
+		}
+	}
         this.divisions = out;
     }
 
@@ -89,9 +92,9 @@ public class House{
         this.supplier = supplier.clone();
     }
 
-    public void setMax_Consume(long max_consume) {
+    public void setMax_Consume(double max_consume) {
         this.max_consume = max_consume;
-        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -120,111 +123,145 @@ public class House{
             ", MaxConsume='" + getMaxConsume() + "'" +
             "}";
     }
+
+    //Non_Basic_Methods<
+
+    public double getHouse_daily_Price() throws Empty_House{
+	    double pu = 0.0;
+	    if (this.divisions.size()>0) {
+		    for(Divisions e: getDivisions()){
+			    try{
+				    pu += e.getDaily_Division_Power_Usage();
+			    }
+			    catch(Empty_Division e1){
+				    pu += 0;
+			    }
+		    }
+		    return (pu * supplier.getSupplier_rate());
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    }
+
+    public void addDevice(String division,SmartDevice device) throws Division_Non_Existent {
+	    for(Divisions div : this.getDivisions()){
+		    if(div.getDivision_name().equals(division))
+			    div.addDevice(device);
+		    else throw new Division_Non_Existent(division);
+	    }
+    }
+
+    public void change_house_state(boolean state) throws Empty_House,Empty_Division{
+	    if(this.divisions.size()>0){
+		    for(Divisions div : this.divisions){
+			    try{
+				    div.manageDivision(state);
+			    }
+			    catch(Empty_Division e1){
+				    throw e1;
+			    }
+		    }
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    } 
+
+
+    public void change_division_state(String division,boolean state) throws Empty_Division,Division_Non_Existent,Empty_House{
+	    if(this.divisions.size()>0){
+		    for(Divisions div : this.divisions){
+			    try{
+				    if(div.getDivision_name().equals(division))
+					    div.manageDivision(state);
+				    else throw new Division_Non_Existent(division);
+			    }catch(Empty_Division e1){
+				    throw e1;
+			    }
+		    }
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    }
+
+    public void change_device_state(SmartDevice dev, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
+	    if(this.divisions.size()>0){
+		    for(Divisions div : this.divisions){
+			    try{
+				    if((div.getDevices().size()>0)&&div.getDevices().contains(dev)){
+					    try{
+						    div.manageDevice(dev,state);
+					    }
+					    catch(State_Not_Changed s1){
+						    throw s1;
+					    }
+					    catch(Device_Non_Existent s2){
+						    throw s2;
+					    }
+					    catch(Empty_Division s3){
+						    throw s3;
+					    }
+				    }
+				    else throw new Device_Non_Existent(dev.getDevice_name());
+			    }catch(Empty_Division e){
+				    throw e;
+			    }
+		    }
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    }
+
+    public void change_device_state(String dev_name, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
+	    if(this.divisions.size()>0){
+		    for(Divisions div : this.divisions){
+			    HashSet<SmartDevice> devices_from_division =  div.getDevices();
+			    if(devices_from_division.size()>0){
+				    for(SmartDevice dev :devices_from_division){
+					    if(dev.getDevice_name().equals(dev_name)){
+						    try{
+							    div.manageDevice(dev,state);
+						    }
+						    catch(State_Not_Changed s1){
+							    throw s1;
+						    }
+						    catch(Device_Non_Existent s2){
+							    throw s2;
+						    }
+						    catch(Empty_Division s3){
+							    throw s3;
+						    }
+					    }
+					    else throw new Device_Non_Existent(dev_name);
+				    }
+			    }
+			    throw new Empty_Division(div.getDivision_name());
+		    }
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    }
+
+    public void change_device_state(int dev_id, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
+	    if(this.divisions.size()>0){
+		    for(Divisions div : this.divisions){
+			    HashSet<SmartDevice> devices_from_division =  div.getDevices();
+			    if(devices_from_division.size()>0){
+				    for(SmartDevice dev :devices_from_division){
+					    if(dev.getDevice_id() == dev_id){
+						    try{
+							    div.manageDevice(dev,state);
+						    }
+						    catch(State_Not_Changed s1){
+							    throw s1;
+						    }
+						    catch(Device_Non_Existent s2){
+							    throw s2;
+						    }
+						    catch(Empty_Division s3){
+							    throw s3;
+						    }
+					    }
+					    else throw new Device_Non_Existent(dev_id);
+				    }
+			    }
+			    throw new Empty_Division(div.getDivision_name());
+		    }
+	    }
+	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+    }
 }
-
-    //public void getDevices
-
-   /* public void addDevice(String s,SmartDevice m) {
-        if (divisions.get(s) == null) {
-            ArrayList<SmartDevice> Arr = new ArrayList<SmartDevice>();
-            Arr.add(m);
-            divisions.put(s, Arr);
-        } else {
-            ArrayList<SmartDevice> Arr = divisions.get(s);
-            Arr.add(m);
-            divisions.put(s, Arr);
-        }
-    }
-
-    public void turnAllOnOFF(boolean state){
-        for(Map.Entry<String, ArrayList<SmartDevice>> entry : this.divisions.entrySet()) {
-            for (SmartDevice dev : entry.getValue()) {
-                dev.setIs_on(state);
-            }
-        }
-    }
-
-    public void turnOneOnOFF(String div,SmartDevice smart,boolean state){
-        ArrayList<SmartDevice> Arr = divisions.get(div);
-        int i =Arr.indexOf(smart);
-        Arr.get(i).setIs_on(state);
-        divisions.put(div, Arr);
-    }
-
-
-
-}
-
-
-    //public void getDevices
-
-    public void addDevice(String s,SmartDevice m) {
-
-        if (divisions.get(s) == null) {
-            ArrayList<SmartDevice> Arr = new ArrayList<SmartDevice>();
-            Arr.add(m);
-            divisions.put(s, Arr);
-        } else {
-            ArrayList<SmartDevice> Arr = divisions.get(s);
-            Arr.add(m);
-            divisions.put(s, Arr);
-        }
-
-    }
-
-    public void turnAllOnOFF(boolean state){
-        for(Map.Entry<String, ArrayList<SmartDevice>> entry : this.divisions.entrySet()) {
-            for (SmartDevice dev : entry.getValue()) {
-                dev.setIs_on(state);
-            }
-        }
-    }
-
-    public void divisionOnOff(String div,boolean state){
-
-        ArrayList<SmartDevice> alldevices = this.divisions.get(div);
-
-        for(SmartDevice device : alldevices){
-            device.setIs_on(state);
-        }
-        this.divisions.put(div,alldevices);
-
-    }
-
-    public void turnOneOnOFF(String div,SmartDevice smart,boolean state){
-
-        ArrayList<SmartDevice> Arr = this.divisions.get(div);
-
-        int i =Arr.indexOf(smart);
-
-        Arr.get(i).setIs_on(state);
-
-        this.divisions.put(div, Arr);
-    }
-
-
-}
-
-
-
-
-    public HashSet<House> getHouses() {
-        HashSet<House> out = new HashSet<>();
-        for(House house: this.houses){
-            out.add(house.clone());
-        }
-        return out;
-    }
-
-    public void setHouses(HashSet<House> houses) {
-        HashSet<House> out = new HashSet<>();
-        for(House house: houses){
-            out.add(house.clone());
-        }
-        this.houses = out;
-    }
-
-
-
-
-*/

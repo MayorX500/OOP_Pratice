@@ -3,8 +3,8 @@ package House;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import Exceptions.Empty_Division;
-import SmartDevice.SmartDevice;
+import Exceptions.*;
+import SmartDevice.*;
 
 public class Divisions {
     private static final AtomicInteger count = new AtomicInteger(0); 
@@ -13,7 +13,7 @@ public class Divisions {
 
     public Divisions(String division_name, HashSet<SmartDevice> devices) {
         this.division_name = division_name;
-        this.devices = devices;
+        this.setDevices(devices);
     }
 
     public Divisions() {
@@ -33,11 +33,23 @@ public class Divisions {
     }
 
     public HashSet<SmartDevice> getDevices() {
-        return this.devices;
+	    HashSet<SmartDevice> out = new HashSet<>();
+	    if(this.devices.size()>0){
+		    for(SmartDevice dev : this.devices){
+			    out.add(dev.clone());
+		    }
+	    }
+	    return out;
     }
 
     public void setDevices(HashSet<SmartDevice> devices) {
-        this.devices = devices;
+ 	    HashSet<SmartDevice> out = new HashSet<>();
+	    if(devices.size()>0){
+		    for(SmartDevice dev : devices){
+			    out.add(dev.clone());
+		    }
+	    }
+	    this.devices = out;
     }
 
     @Override
@@ -76,7 +88,7 @@ public class Divisions {
             }
             this.devices=list;
         }
-        else throw new Empty_Division("Empty Division");
+        else throw new Empty_Division( this.division_name + " - Empty Division");
     }
 
     public double getDaily_Division_Power_Usage() throws Empty_Division{
@@ -90,4 +102,30 @@ public class Divisions {
         return out;
     }
 
+    public void addDevice(SmartDevice dev){
+	    HashSet<SmartDevice> new_set = new HashSet<>();
+	    new_set.add(dev.clone());
+	    if(this.getDevices().size()>0){
+		    for(SmartDevice device : this.getDevices()){
+			    new_set.add(device.clone());
+		    }
+	    }
+	    setDevices(new_set);
+    }
+
+    public void manageDevice(SmartDevice dev, boolean state) throws State_Not_Changed,Device_Non_Existent,Empty_Division{
+	    if(this.devices.size()>0){
+		    for(SmartDevice device : this.devices){
+			    if(device.equals(dev)){
+				    if(device.getIs_on() != state){
+					    device.setIs_on(state);
+				    }
+				    else throw new State_Not_Changed(device.getDevice_name());
+			    }
+			    else throw new Device_Non_Existent(dev.getDevice_name()); 
+		    }
+	    }
+	    else throw new Empty_Division(this.division_name);
+    }
 }
+

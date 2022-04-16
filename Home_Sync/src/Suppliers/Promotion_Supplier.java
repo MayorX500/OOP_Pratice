@@ -22,6 +22,10 @@ public class Promotion_Supplier extends Suppliers{
 		this(o.getSupplier_id(),o.getSupplier_name(),o.getBase_price(),o.getTax(),o.getOut_of_range_tax(),o.getPromotion_price());
 	}
 
+	public Promotion_Supplier(Suppliers o,float promotion_price){
+		this(o.getSupplier_id(),o.getSupplier_name(),o.getBase_price(),o.getTax(),o.getOut_of_range_tax(),promotion_price);
+	}
+
 	public float getPromotion_price() {
 		return this.promotion_price;
 	}
@@ -56,5 +60,9 @@ public class Promotion_Supplier extends Suppliers{
 	@Override
 	public Promotion_Supplier clone(){
 		return new Promotion_Supplier(this);
+	}
+
+	public float getSupplier_rate(){
+		return(this.getPromotion_price()*(this.getTax()+this.getOut_of_range_tax()));
 	}
 }
