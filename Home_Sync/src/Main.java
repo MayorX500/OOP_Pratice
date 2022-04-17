@@ -2,7 +2,9 @@ import java.util.HashSet;
 
 import Auxiliar.*;
 import Client.*;
+import Exceptions.Empty_Simulation;
 import House.*;
+import Simulator.Simulator;
 import SmartDevice.*;
 import Suppliers.*;
 
@@ -20,7 +22,21 @@ public class Main {
 		divisions1.add(division1);
 
 		House house1 = new House(address1, client1, divisions1, supplier1, 10);
-		
+
+		HashSet<House> house_list = new HashSet<>();
+		house_list.add(house1);
+
+		Simulator sim = new Simulator(house_list);
+
+		for(int i = 0;i>5;i++){
+			try{
+				sim.increment_Day();
+			}
+			catch (Empty_Simulation s){
+				System.out.println(s.toString());
+			}
+		}
+
 		System.out.println(house1.toString());
 	}
 }

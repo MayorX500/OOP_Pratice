@@ -14,18 +14,18 @@ public class House{
     private Client owner;
     private HashSet<Divisions> divisions;
     private Suppliers supplier;
-    private double max_consume;
+    private double daily_consumption;
     
-    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double MaxConsume) {
+    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double daily_consumption) {
 	this.house_id = id;
         this.address = address.clone();
         this.owner = owner.clone();
         this.setDivisions(divisions);
         this.supplier = supplier.clone();
-        this.max_consume = MaxConsume;
+        this.daily_consumption = daily_consumption;
     }
-    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double MaxConsume) {
-	    this(count.incrementAndGet(), address, owner, divisions, supplier, MaxConsume);
+    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double daily_consumption) {
+	    this(count.incrementAndGet(), address, owner, divisions, supplier, daily_consumption);
     }
 
     public House() {
@@ -33,7 +33,7 @@ public class House{
     }
 
     public House(House o) {
-        this(o.getHouse_id(), o.getAddress(), o.getOwner(), o.getDivisions(), o.getSupplier(), o.getMaxConsume());
+        this(o.getHouse_id(), o.getAddress(), o.getOwner(), o.getDivisions(), o.getSupplier(), o.getDaily_consumption());
     }
 
     public int getHouse_id(){
@@ -59,8 +59,8 @@ public class House{
         return out;
     }
 
-    public double getMaxConsume() {
-        return this.max_consume;
+    public double getDaily_consumption() {
+        return this.daily_consumption;
     }
 
     public void setHouse_id(int id){
@@ -80,9 +80,9 @@ public class House{
         for(Divisions a : divisions){
 		out.add(a.clone());
 		try{
-			this.max_consume += a.getDaily_Division_Power_Usage();
+			this.daily_consumption += a.getDaily_Division_Power_Usage();
 		}catch(Empty_Division e){
-			this.max_consume += 0 ;
+			this.daily_consumption += 0 ;
 		}
 	}
         this.divisions = out;
@@ -92,8 +92,8 @@ public class House{
         this.supplier = supplier.clone();
     }
 
-    public void setMax_Consume(double max_consume) {
-        this.max_consume = max_consume;
+    public void setDaily_Consumption(double daily_consumption) {
+        this.daily_consumption = daily_consumption;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class House{
             return false;
         }
         House house = (House) o;
-        return (this.house_id==house.getHouse_id() && this.address.equals(house.getAddress()) && this.max_consume == house.max_consume && this.supplier.equals(house.getSupplier()) && this.divisions.equals( house.getDivisions()));
+        return (this.house_id==house.getHouse_id() && this.address.equals(house.getAddress()) && this.daily_consumption == house.daily_consumption && this.supplier.equals(house.getSupplier()) && this.divisions.equals( house.getDivisions()));
     }
 
     @Override
@@ -120,7 +120,7 @@ public class House{
             " address='" + getOwner().toString() + "'" +
             ", divisions='" + getDivisions() + "'" +
             ", supplier='" + getSupplier().toString() + "'" +
-            ", MaxConsume='" + getMaxConsume() + "'" +
+            ", daily_consumption='" + getDaily_consumption() + "'" +
             "}";
     }
 
