@@ -25,6 +25,11 @@ public class SmartBulb extends SmartDevice{
 		this(false,LocalDate.now(),"SmartBulb","OOP_Bulbs",216.0,15.0,Tonality.OFF,6.0f,new HashSet<>());
 	}
 	
+	public SmartBulb(String device_name, String brand ,float dimension){
+		this(false,LocalDate.now(),device_name,brand,36.0*dimension,2.5*dimension,Tonality.OFF,dimension,new HashSet<>());
+		
+	}
+
 	public SmartBulb(SmartBulb o){
 		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getBase_cost(),o.getColor(),o.getDimension(),o.getLog());
 	}

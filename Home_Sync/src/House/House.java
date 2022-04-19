@@ -142,6 +142,12 @@ public class House{
 	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
     }
 
+	public void addDivision(Divisions div){
+		HashSet<Divisions> list = this.getDivisions();
+		list.add(div.clone());
+		this.setDivisions(list);
+	}
+
     public void addDevice(String division,SmartDevice device) throws Division_Non_Existent {
 	    for(Divisions div : this.getDivisions()){
 		    if(div.getDivision_name().equals(division))

@@ -10,7 +10,11 @@ public class SmartCamera extends SmartDevice{
     private double file_size;
 
     public SmartCamera() {
-        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 0.0,0.0,new HashSet<>(), 0.0, 0.0);
+        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 36.0,2.5,new HashSet<>(), 0.0, 0.0);
+    }
+
+    public SmartCamera(String device_name, String brand, double resolution, double file_size) {
+        this(false, LocalDate.now(), device_name, brand, 3.6*resolution, 2.5*resolution, new HashSet<>(), resolution, file_size);
     }
 
     public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, HashSet<State> log,double resolution, double file_size) {
