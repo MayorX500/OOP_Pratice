@@ -5,6 +5,7 @@ import Exceptions.*;
 import SmartDevice.*;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.*;
 
 public class House{
@@ -12,11 +13,11 @@ public class House{
     private int house_id;
     private Address address;
     private Client owner;
-    private HashSet<Divisions> divisions;
+    private Set<Divisions> divisions;
     private Suppliers supplier;
     private double daily_consumption;
     
-    public House(int id,Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double daily_consumption) {
+    public House(int id,Address address, Client owner, Set<Divisions> divisions, Suppliers supplier, double daily_consumption) {
 	this.house_id = id;
         this.address = address.clone();
         this.owner = owner.clone();
@@ -24,7 +25,7 @@ public class House{
         this.supplier = supplier.clone();
         this.daily_consumption = daily_consumption;
     }
-    public House(Address address, Client owner, HashSet<Divisions> divisions, Suppliers supplier, double daily_consumption) {
+    public House(Address address, Client owner, Set<Divisions> divisions, Suppliers supplier, double daily_consumption) {
 	    this(count.incrementAndGet(), address, owner, divisions, supplier, daily_consumption);
     }
 
@@ -52,8 +53,8 @@ public class House{
         return this.supplier.clone();
     }
 
-    public HashSet<Divisions> getDivisions(){
-        HashSet<Divisions> out = new HashSet<>();
+    public Set<Divisions> getDivisions(){
+		Set<Divisions> out = new HashSet<>();
         for(Divisions a : this.divisions)
 		out.add(a.clone());
         return out;
@@ -75,8 +76,8 @@ public class House{
         this.owner = owner.clone();
     }
 
-    public void setDivisions(HashSet<Divisions> divisions) {
-        HashSet<Divisions> out = new HashSet<>();
+    public void setDivisions(Set<Divisions> divisions) {
+        Set<Divisions> out = new HashSet<>();
         for(Divisions a : divisions){
 		out.add(a.clone());
 		try{
@@ -143,7 +144,7 @@ public class House{
     }
 
 	public void addDivision(Divisions div){
-		HashSet<Divisions> list = this.getDivisions();
+		Set<Divisions> list = this.getDivisions();
 		list.add(div.clone());
 		this.setDivisions(list);
 	}
@@ -216,7 +217,7 @@ public class House{
     public void change_device_state(String dev_name, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
 	    if(this.divisions.size()>0){
 		    for(Divisions div : this.divisions){
-			    HashSet<SmartDevice> devices_from_division =  div.getDevices();
+			    Set<SmartDevice> devices_from_division =  div.getDevices();
 			    if(devices_from_division.size()>0){
 				    for(SmartDevice dev :devices_from_division){
 					    if(dev.getDevice_name().equals(dev_name)){
@@ -245,7 +246,7 @@ public class House{
     public void change_device_state(int dev_id, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
 	    if(this.divisions.size()>0){
 		    for(Divisions div : this.divisions){
-			    HashSet<SmartDevice> devices_from_division =  div.getDevices();
+			    Set<SmartDevice> devices_from_division =  div.getDevices();
 			    if(devices_from_division.size()>0){
 				    for(SmartDevice dev :devices_from_division){
 					    if(dev.getDevice_id() == dev_id){

@@ -2,6 +2,7 @@ package Simulator;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import House.*;
 import Exceptions.*;
@@ -10,17 +11,17 @@ import Auxiliar.*;
 import Suppliers.*;
 
 public class Simulator {
-	private HashSet<House> houses;
+	private Set<House> houses;
 	private LocalDate simulation_date;
-	private HashSet<Events> events;
+	private Set<Events> events;
 
-    public Simulator(HashSet<House> houses, LocalDate simulation_date, HashSet<Events> events) {
+    public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events) {
         this.setHouses(houses);;
         this.simulation_date = simulation_date;
         this.setEvents(events);;
     }
 
-    public Simulator(HashSet<House> houses) {
+    public Simulator(Set<House> houses) {
         this(houses, LocalDate.now(),new HashSet<Events>());
     }
 
@@ -32,8 +33,8 @@ public class Simulator {
         this(sim.getHouses(),sim.getSimulation_date(),sim.getEvents());
     }
 
-    public HashSet<House> getHouses() {
-        HashSet<House> out = new HashSet<>();
+    public Set<House> getHouses() {
+        set<House> out = new HashSet<>();
         if(this.houses.size()>0){
             for(House house : this.houses){
                 out.add(house.clone());
@@ -42,8 +43,8 @@ public class Simulator {
         return out;
     }
 
-    public void setHouses(HashSet<House> houses) {
-        HashSet<House> out = new HashSet<>();
+    public void setHouses(Set<House> houses) {
+        Set<House> out = new HashSet<>();
         if(houses.size()>0){
             for(House house : houses){
                 out.add(house.clone());
@@ -61,8 +62,8 @@ public class Simulator {
         this.simulation_date = simulation_date;
     }
 
-    public HashSet<Events> getEvents() {
-        HashSet<Events> out = new HashSet<>();
+    public Set<Events> getEvents() {
+        Set<Events> out = new HashSet<>();
         if(this.events.size()>0){
             for(Events event : this.events){
                 out.add(event.clone());
@@ -71,8 +72,8 @@ public class Simulator {
         return out;
     }
 
-    public void setEvents(HashSet<Events> events) {
-        HashSet<Events> out = new HashSet<>();
+    public void setEvents(Set<Events> events) {
+        Set<Events> out = new HashSet<>();
         if(events.size()>0){
             for(Events event : events){
                 out.add(event.clone());

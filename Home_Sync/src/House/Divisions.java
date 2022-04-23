@@ -1,6 +1,7 @@
 package House;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Exceptions.*;
@@ -9,9 +10,9 @@ import SmartDevice.*;
 public class Divisions {
     private static final AtomicInteger count = new AtomicInteger(0); 
     private String division_name;
-    private HashSet<SmartDevice> devices;
+    private Set<SmartDevice> devices;
 
-    public Divisions(String division_name, HashSet<SmartDevice> devices) {
+    public Divisions(String division_name, Set<SmartDevice> devices) {
         this.division_name = division_name;
         this.setDevices(devices);
     }
@@ -32,8 +33,8 @@ public class Divisions {
         this.division_name = division_name;
     }
 
-    public HashSet<SmartDevice> getDevices() {
-	    HashSet<SmartDevice> out = new HashSet<>();
+    public Set<SmartDevice> getDevices() {
+	    Set<SmartDevice> out = new HashSet<>();
 	    if(this.devices.size()>0){
 		    for(SmartDevice dev : this.devices){
 			    out.add(dev.clone());
@@ -42,8 +43,8 @@ public class Divisions {
 	    return out;
     }
 
-    public void setDevices(HashSet<SmartDevice> devices) {
- 	    HashSet<SmartDevice> out = new HashSet<>();
+    public void setDevices(Set<SmartDevice> devices) {
+ 	    Set<SmartDevice> out = new HashSet<>();
 	    if(devices.size()>0){
 		    for(SmartDevice dev : devices){
 			    out.add(dev.clone());
@@ -77,7 +78,7 @@ public class Divisions {
     }
 
     public void manageDivision(boolean state) throws Empty_Division{
-        HashSet<SmartDevice> list = new HashSet<>();
+        Set<SmartDevice> list = new HashSet<>();
 
         if(this.devices.size()>1){
             for(SmartDevice e : this.devices){
@@ -103,7 +104,7 @@ public class Divisions {
     }
 
     public void addDevice(SmartDevice dev){
-	    HashSet<SmartDevice> new_set = new HashSet<>();
+	    Set<SmartDevice> new_set = new HashSet<>();
 	    new_set.add(dev.clone());
 	    if(this.getDevices().size()>0){
 		    for(SmartDevice device : this.getDevices()){

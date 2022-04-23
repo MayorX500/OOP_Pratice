@@ -1,6 +1,5 @@
 package Simulator;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -9,7 +8,6 @@ import SmartDevice.SmartBulb;
 import SmartDevice.SmartCamera;
 import SmartDevice.SmartDevice;
 import SmartDevice.SmartSpeaker;
-import Exceptions.*;
 import Client.*;
 import Auxiliar.*;
 import Suppliers.*;
