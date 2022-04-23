@@ -2,6 +2,7 @@ package SmartDevice;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import Auxiliar.State;
 
@@ -17,13 +18,13 @@ public class SmartSpeaker extends SmartDevice {
         this(false, LocalDate.now(), device_name, brand, 0.0, 0.0, volume, radio_info, new HashSet<>());
     }
 
-    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info,HashSet<State> log) {
+    public SmartSpeaker(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info, Set<State> log) {
         super(device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
         this.volume = volume;
         this.radio_info = radio_info;
     }
 
-    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info,HashSet<State> log) {
+    public SmartSpeaker(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, int volume, String radio_info,Set<State> log) {
         super(is_on, installed_on, device_name, brand, power_usage, base_cost, log);
         this.volume = volume;
         this.radio_info = radio_info;

@@ -37,7 +37,7 @@ public class SmartDevice {
 		this(UUID.randomUUID(), device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
 	}
 
-	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, HashSet<State> log){
+	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log){
 		this(count.incrementAndGet(), is_on, installed_on, device_name, brand, power_usage, base_cost, log); 
 	}
   

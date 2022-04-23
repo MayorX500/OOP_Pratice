@@ -2,6 +2,7 @@ package SmartDevice;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import Auxiliar.State;
 
@@ -17,14 +18,14 @@ public class SmartCamera extends SmartDevice{
         this(false, LocalDate.now(), device_name, brand, 3.6*resolution, 2.5*resolution, new HashSet<>(), resolution, file_size);
     }
 
-    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, HashSet<State> log,double resolution, double file_size) {
+    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log,double resolution, double file_size) {
         super(is_on, installed_on, device_name, brand, power_usage,base_cost,log);
         this.resolution = resolution;
         this.file_size = file_size;
 
     }
     
-    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,HashSet<State> log,double resolution, double file_size) {
+    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,Set<State> log,double resolution, double file_size) {
         super(device_id, is_on, installed_on, device_name, brand, power_usage,base_cost,log);
         this.resolution = resolution;
         this.file_size = file_size;

@@ -2,6 +2,7 @@ package SmartDevice;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import Auxiliar.State;
 
@@ -9,13 +10,13 @@ public class SmartBulb extends SmartDevice{
 	private Tonality color;
 	private  float dimension;
 	
-	public SmartBulb(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, HashSet<State> log) {
+	public SmartBulb(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, Set<State> log) {
 		super(device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
 		this.color = color;
 		this.dimension = dimension;
 	}
 
-	public SmartBulb(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, HashSet<State> log) {
+	public SmartBulb(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Tonality color, float dimension, Set<State> log) {
 		super(is_on, installed_on, device_name, brand, power_usage, base_cost, log);
 		this.color = color;
 		this.dimension = dimension;
