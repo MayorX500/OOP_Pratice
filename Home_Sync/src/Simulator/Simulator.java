@@ -34,7 +34,7 @@ public class Simulator {
     }
 
     public Set<House> getHouses() {
-        set<House> out = new HashSet<>();
+        Set<House> out = new HashSet<>();
         if(this.houses.size()>0){
             for(House house : this.houses){
                 out.add(house.clone());
