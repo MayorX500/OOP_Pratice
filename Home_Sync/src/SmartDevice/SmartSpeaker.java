@@ -51,16 +51,6 @@ public class SmartSpeaker extends SmartDevice {
         this.radio_info = radio_info;
     }
 
-    public SmartSpeaker volume(int volume) {
-        setVolume(volume);
-        return this;
-    }
-
-    public SmartSpeaker radio_info(String radio_info) {
-        setRadio_info(radio_info);
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
