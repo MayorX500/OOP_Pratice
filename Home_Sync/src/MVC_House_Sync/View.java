@@ -1,5 +1,9 @@
 package MVC_House_Sync;
 import java.util.Scanner;
+
+import Auxiliar.Pair;
+import Simulator.Invoice;
+
 import java.time.*;
 import java.time.format.*;
 
@@ -38,7 +42,7 @@ public class View{
             1 - Create a simulation
             2 - Import a simulation file
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -56,7 +60,7 @@ public class View{
             1 - Add energy provider
             2 - Add house
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -69,7 +73,7 @@ public class View{
             1 - Alter energy provider parameters
             2 - Present billing statistics
 
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -83,7 +87,7 @@ public class View{
             2 - Eliminate existing house
             3 - Edit existing house
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -97,7 +101,7 @@ public class View{
             2 - Turn ON/OFF specific device
             3 - Swap energy provider
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -115,6 +119,22 @@ public class View{
         return (input.nextInt());
     }
 
+    public void printAddress(String street, int street_number, String city, Pair<Integer,Integer> post_code){
+        System.out.println(street + " " + street_number + "\n" + city + " " + post_code.getL() + "-" + post_code.getR() + "\n");
+    }
+
+    public void printDate (LocalDate initial_date, LocalDate final_date){
+        System.out.println("Issued from" + initial_date.toString() + " to " + final_date.toString() + "\n");
+    }
+
+    public void invoice(Invoice invoice){
+        System.out.println("###################################\nInvoice\n");
+        printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
+                     invoice.getAddress().getPost_code());
+        printDate(invoice.getInitial_date(), invoice.getFinal_date());
+        
+        //falta completar
+    }
 
     // ask user for a string:
     public String ask_input_s(String s){
