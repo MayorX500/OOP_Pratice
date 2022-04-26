@@ -17,7 +17,7 @@ public class Controler {
     private Model model;
     private View view;
 
-    public Client create_Client(){
+    public Client createClient(){
         String name = view.ask_input_s("Enter the name of the new Client:");
         int nif = view.ask_input_i("Enter the NIF of the new Client:");
         return new Client(name, nif);
@@ -92,6 +92,28 @@ public class Controler {
                 break;
         }
         return division;
+    }
+
+    public void createSimulation(){
+        boolean exit = false;
+        int choice = view.menu_C1();
+        while(!exit){
+            switch(choice){
+                case 1:
+                    createClient();
+                    break;
+                case 2:
+                    createAddress();
+                    break;
+                case 3:
+                    createSuppliers();
+                    break;
+                case 0:
+                    exit = true;
+                    break;
+            }
+        }
+
     }
 
 }

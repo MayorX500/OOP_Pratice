@@ -102,6 +102,19 @@ public class View{
         return (input.nextInt());
     }
 
+    public int menu_C1(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Create a client
+            2 - Create an address
+            3 - Create a supplier
+            0 - Save changes
+
+            """);
+        return (input.nextInt());
+    }
+
 
     // ask user for a string:
     public String ask_input_s(String s){
