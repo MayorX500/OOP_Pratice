@@ -57,7 +57,7 @@ public class View{
         return ask_input_l("Provide new date in format 'YYYY-MM-DD'.");
     }
 
-    public int advTimeMenu(){
+    public int addTimeMenu(){
         System.out.println("""
             Select an option:
 

@@ -5,10 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import House.*;
-import Exceptions.*;
-import Client.*;
-import Auxiliar.*;
-import Suppliers.*;
 
 public class Simulator {
 	private Set<House> houses;
@@ -30,6 +26,7 @@ public class Simulator {
         if (houses.size() > 0){
             for (House house : houses){
                 Invoice a = new Invoice(house.getDaily_consumption(), house.getHouse_id(), house.getAddress(), simulation_date, simulation_date );
+                invoices.add(a);
             }
         }
         this.invoices = invoices;
@@ -127,7 +124,7 @@ public class Simulator {
         return new Simulator(this);
     }
 
-    public void increment_Day() throws Empty_Simulation{
+ /*   public  void increment_Day() throws Empty_Simulation{
         this.setSimulation_date(this.getSimulation_date().plusDays(1));
         if(this.houses.size()>0){
             for(House house : this.houses){
@@ -142,7 +139,7 @@ public class Simulator {
         }
         else throw new Empty_Simulation(this.toString()); 
     }
-    
+    */
 
     public House getHouseFromAddress(Address address) { ///////////morada sem casa
         House out = new House();

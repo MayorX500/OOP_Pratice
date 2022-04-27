@@ -1,4 +1,9 @@
 package MVC_House_Sync;
+import Exceptions.Device_Non_Existent;
+import Exceptions.Division_Non_Existent;
+import Exceptions.Empty_Division;
+import Exceptions.Empty_House;
+import Exceptions.State_Not_Changed;
 import House.*;
 import Simulator.Simulator;
 import SmartDevice.*;
@@ -16,14 +21,38 @@ public class Model{
 
     public void newDate(){}//avançar tempo
 
-    public void turnDivision(House home, String divis, boolean state){
-
-        //home.divisionOnOff(divis,state);
+    public void turnDivision(House home, String division, boolean state) throws Division_Non_Existent, Empty_Division, Empty_House{
+        try{
+            home.change_division_state(division, state);
+        }
+        catch(Empty_House s1){
+            throw s1;
+        }
+        catch(Division_Non_Existent s2){
+            throw s2;
+        }
+        catch(Empty_Division s3){
+            throw s3;
+        }
 
     }//turn on/off entire division
 
-    public void turnDevice(House home, String divis, SmartDevice device, boolean state){
-        //home.turnOneOnOFF(divis,device,state);
+    public void turnDevice(House home, String divis, SmartDevice device, boolean state) throws State_Not_Changed, Device_Non_Existent, Empty_Division, Empty_House{
+        try{
+            home.change_device_state(device,state);
+        } 
+        catch(State_Not_Changed s1){
+            throw s1;
+        }
+        catch(Device_Non_Existent s2){
+            throw s2;
+        }
+        catch(Empty_Division s3){
+            throw s3;
+        }
+        catch(Empty_House s4){
+            throw s4;
+        }
     }//turn on/off specific device
 
     public void swapProvider(House home, Suppliers f){
