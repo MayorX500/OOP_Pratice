@@ -100,7 +100,7 @@ public class Controler {
 
     public void createSimulation() {
         boolean exit = false;
-        int choice = view.menu_C1();
+        int choice = view.menu_C();
         while (!exit) {
             switch (choice) {
                 case 1:
@@ -163,13 +163,15 @@ public class Controler {
         int choice = view.houseMenu();
         switch (choice) {
             case 1:
-
+                view.menu_C();
                 break;
             case 2:
-
+                Address address = createAddress();
+                this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), address);
+                view.houseMenu();
                 break;
             case 3:
-
+                view.menu_Edit();
                 break;
             case 0:
                 firstMenu();
@@ -181,7 +183,7 @@ public class Controler {
         int choice = view.menu_CS();
         switch (choice) {
             case 1:
-                // crNewSimMenu_3();
+                view.menu_C();
                 break;
             case 2:
                 // impSimMenu_3();
@@ -196,7 +198,7 @@ public class Controler {
         int choice = view.menu_SV();
         switch (choice) {
             case 1:
-
+                
                 break;
             case 2:
 

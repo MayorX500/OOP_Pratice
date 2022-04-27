@@ -151,5 +151,16 @@ public class Simulator {
         else  out = null;
         return out;
     }
+    
+    public Set<House> eliminateHouses (Set<House> houses, Address address){
+        if(houses.size() > 0){
+            for (House house: this.houses){
+                if (house.getAddress().equals(address))
+                    this.houses.remove(house);
+            }
+        }
+        else return null;
+        return houses;
+    }
 
 }

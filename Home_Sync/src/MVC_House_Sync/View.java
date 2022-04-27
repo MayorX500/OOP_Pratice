@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import Auxiliar.Pair;
 import Exceptions.Empty_House;
+import House.Address;
 import House.House;
 import Simulator.Invoice;
 
@@ -110,13 +111,26 @@ public class View{
         return (input.nextInt());
     }
 
-    public int menu_C1(){
+    public int menu_C(){
         System.out.println("""
             Select an option:
             
             1 - Create a client
             2 - Create an address
             3 - Create a supplier
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
+    public int menu_Edit(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit client
+            2 - Edit address
+            3 - Edit supplier
             
             0 - Save changes
             """);
