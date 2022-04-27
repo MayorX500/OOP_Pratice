@@ -1,5 +1,6 @@
 package MVC_House_Sync;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 
 import Auxiliar.Pair;
@@ -12,6 +13,7 @@ import SmartDevice.SmartCamera;
 import SmartDevice.SmartDevice;
 import SmartDevice.SmartSpeaker;
 import Suppliers.Suppliers;
+import MVC_House_Sync.View;
 
 public class Controler {
     private Model model;
@@ -56,6 +58,7 @@ public class Controler {
     public House createDivision(House house){
         String division_name = view.ask_input_s("Enter the name of the division:");
         Divisions division = new Divisions(division_name,new HashSet<>());
+        createDevice(division);
         house.addDivision(division);
         return house;
     }
@@ -114,6 +117,93 @@ public class Controler {
             }
         }
 
+    }
+
+    public void firstMenu(){
+        int choice = view.welcomeMenu();
+        switch(choice){
+            case 1:
+                adTimeMenu_2();
+                break;
+            case 2:
+                addHouseMenu_2();
+                break;
+            case 3:
+                crSimMenu_2();
+                break;
+            case 4:
+                edSimMenu_2();
+                break;
+            case 0:
+                System.out.println("Thank you for choosing Smart House Simulator. We hope to see you again soon.");
+                break;
+        }
+
+    }
+
+    public void adTimeMenu_2(){
+        int choice = view.advTimeMenu();
+        switch(choice){
+            case 1:
+                //Simulator.Simulator.increment_Day();
+                break;
+            case 2:
+                LocalDate date = view.menu_SD();
+                //
+                break;
+            case 0:
+                firstMenu();
+                break;
+        }
+        //falta completar
+    }
+
+    public void addHouseMenu_2(){
+        int choice = view.houseMenu();
+        switch(choice){
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+            case 0:
+                firstMenu();
+                break;
+        }
+    }
+
+    public void crSimMenu_2(){
+        int choice = view.menu_CS();
+        switch(choice){
+            case 1:
+                //crNewSimMenu_3();
+                break;
+            case 2:
+                //impSimMenu_3();
+                break;
+            case 0:
+                firstMenu();
+                break;
+        }
+    }
+
+    public void edSimMenu_2(){
+        int choice = view.menu_SV();
+        switch(choice){
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+            case 0:
+                firstMenu();
+                break;
+        }
     }
 
 }

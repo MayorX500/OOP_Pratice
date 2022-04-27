@@ -26,8 +26,9 @@ public class View{
             Select an option:
 
             1 - Advance time
-            2 - Edit/add houses 
-            3 - Edit simulation values
+            2 - Edit/add houses
+            3 - Create simulation
+            4 - Edit simulation values
             
             0 - Quit
             """);
@@ -49,18 +50,18 @@ public class View{
 
     //menu set date -- first thing after selecting 'Create a simulation'
     public LocalDate menu_SD(){
-        return ask_input_l("Provide starting date in format 'YYYY-MM-DD'.");
+
+        return ask_input_l("Provide new date in format 'YYYY-MM-DD'.");
     }
 
-    //menu create new simulation
-    public int menu_CNS(){
+    public int advTimeMenu(){
         System.out.println("""
             Select an option:
+
+            1 - Advance 1 day
+            2 - Advance to new date
             
-            1 - Add energy provider
-            2 - Add house
-            
-            0 - Back
+            0 - Quit
             """);
         return (input.nextInt());
     }
@@ -113,8 +114,8 @@ public class View{
             1 - Create a client
             2 - Create an address
             3 - Create a supplier
+            
             0 - Save changes
-
             """);
         return (input.nextInt());
     }
@@ -160,6 +161,7 @@ public class View{
         return input.nextDouble();
     }
 
+    // ask user for a LocalDate
     public LocalDate ask_input_l(String s){
         System.out.println(s);
         String newS = input.nextLine();

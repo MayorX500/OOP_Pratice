@@ -119,4 +119,6 @@ public class Simulator {
         }
         else throw new Empty_Simulation(this.toString()); 
     }
+
+
 }
