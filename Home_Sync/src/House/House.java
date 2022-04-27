@@ -151,8 +151,10 @@ public class House{
 
     public void addDevice(String division,SmartDevice device) throws Division_Non_Existent {
 	    for(Divisions div : this.getDivisions()){
-		    if(div.getDivision_name().equals(division))
+		    if(div.getDivision_name().equals(division)){
 			    div.addDevice(device);
+				this.daily_consumption += device.getPower_usage();
+			}
 		    else throw new Division_Non_Existent(division);
 	    }
     }

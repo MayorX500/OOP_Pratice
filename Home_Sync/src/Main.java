@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 
 import Auxiliar.*;
@@ -11,6 +13,7 @@ import Suppliers.*;
 public class Main {
 
 	public static void main(String[] args) {
+		/*
 		Suppliers supplier1 = new Suppliers("EDP", 2.4f, 0.13f, 0.0f);
 		Address address1 = new Address("Rua Random", 2, "Cidade Random", new Pair<Integer,Integer>(420, 69));
 		Client client1 = new Client("Miguel Gomes", 999999999);
@@ -38,5 +41,10 @@ public class Main {
 		}
 
 		System.out.println(house1.toString());
+*/
+	LocalDate date = LocalDate.now();
+	LocalDate date2 = LocalDate.now().plusDays(5);
+	System.out.println("QUANTOS DIAS = " + date.until(date2,ChronoUnit.DAYS) );
 	}
+
 }

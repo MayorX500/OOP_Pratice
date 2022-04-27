@@ -2,10 +2,13 @@ package MVC_House_Sync;
 import java.util.Scanner;
 
 import Auxiliar.Pair;
+import Exceptions.Empty_House;
+import House.House;
 import Simulator.Invoice;
 
 import java.time.*;
 import java.time.format.*;
+import java.time.temporal.ChronoUnit;
 
 public class View{
     private final Scanner input = new Scanner(System.in);
@@ -128,13 +131,37 @@ public class View{
         System.out.println("Issued from" + initial_date.toString() + " to " + final_date.toString() + "\n");
     }
 
-    public void invoice(Invoice invoice){
-        System.out.println("###################################\nInvoice\n");
+    public void printConsumption(House house){
+        System.out.println("Consumption - " + house.getDaily_consumption());
+    }
+
+    
+    public void printPricePerWatt(House house){
+        System.out.println("Price per Watt - " + house.getSupplier().getBase_price());
+    }
+
+
+    public void printFinalPrice(House house,LocalDate date, LocalDate date2){
+        double price = 0;
+        try {
+            price = house.getHouse_daily_Price() * date.until(date2,ChronoUnit.DAYS);
+        }
+        catch(Empty_House e) {
+            System.out.println("The house is empty therefore doesn't have expenses." );   
+        }
+        System.out.println("Price to pay - " + price);
+    }
+
+
+    public void invoice(Invoice invoice,House house){
+        System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
         printDate(invoice.getInitial_date(), invoice.getFinal_date());
-        
-        //falta completar
+        printConsumption(house);
+        printPricePerWatt(house);
+        printFinalPrice(house, invoice.getInitial_date(), invoice.getFinal_date());
+        System.out.println("\n###################################\n\n");
     }
 
     // ask user for a string:

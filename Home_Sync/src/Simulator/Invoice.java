@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import House.Address;
 
 public class Invoice extends Simulator{
-    private float mensal_consum;
+    private double mensal_consum;
     private int id;
     private Address address;
     private LocalDate initial_date;
@@ -15,7 +15,7 @@ public class Invoice extends Simulator{
         this(0, 0, new Address(), LocalDate.now(), LocalDate.now());
     }
 
-    public Invoice(float mensal_consum, int id, Address address, LocalDate initial_date, LocalDate final_date){
+    public Invoice(double mensal_consum, int id, Address address, LocalDate initial_date, LocalDate final_date){
         this.mensal_consum = mensal_consum;
         this.id = id;
         this.address = address;
@@ -23,11 +23,11 @@ public class Invoice extends Simulator{
         this.final_date = final_date;
     }
 
-    public float getMensal_consum() {
+    public double getMensal_consum() {
         return this.mensal_consum;
     }
 
-    public void setMensal_consum(float mensal_consum) {
+    public void setMensal_consum(double mensal_consum) {
         this.mensal_consum = mensal_consum;
     }
 
@@ -63,7 +63,7 @@ public class Invoice extends Simulator{
         this.final_date = final_date;
     }
 
-    public Invoice mensal_consum(float mensal_consum) {
+    public Invoice mensal_consum(double mensal_consum) {
         setMensal_consum(mensal_consum);
         return this;
     }

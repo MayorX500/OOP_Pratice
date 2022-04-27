@@ -1,17 +1,15 @@
 #!/bin/bash
 
-PATH_TO_FX=./JavaFX/lib
-
 app=$1
 
 
 function compile {
 
-	javac --module-path $PATH_TO_FX --add-modules javafx.controls $app.java
+	javac $app.java
 }
 
 function run {
-	java --module-path $PATH_TO_FX --add-modules javafx.controls $app
+	java $app
 }
 
 function main {

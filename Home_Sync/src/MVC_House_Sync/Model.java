@@ -1,9 +1,19 @@
 package MVC_House_Sync;
 import House.*;
+import Simulator.Simulator;
 import SmartDevice.*;
 import Suppliers.*;
 
 public class Model{
+    private Simulator simulator = new Simulator();
+
+    public Model(){
+    }
+
+    public Simulator getSimulator(){
+        return this.simulator.clone();
+    }
+
     public void newDate(){}//avançar tempo
 
     public void turnDivision(House home, String divis, boolean state){

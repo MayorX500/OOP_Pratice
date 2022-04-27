@@ -14,6 +14,7 @@ public class Simulator {
 	private Set<House> houses;
 	private LocalDate simulation_date;
 	private Set<Events> events;
+    private Set<Invoice> invoices;
 
     public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events) {
         this.setHouses(houses);;
@@ -22,8 +23,27 @@ public class Simulator {
     }
 
     public Simulator(Set<House> houses) {
-        this(houses, LocalDate.now(),new HashSet<Events>());
+        this.houses = houses;
+        this.simulation_date = LocalDate.now();
+        this.events = new HashSet<Events>();
+        Set<Invoice> invoices = new HashSet<>(); 
+        if (houses.size() > 0){
+            for (House house : houses){
+                Invoice a = new Invoice(house.getDaily_consumption(), house.getHouse_id(), house.getAddress(), simulation_date, simulation_date );
+            }
+        }
+        this.invoices = invoices;
     }
+
+    public Set<Invoice> getInvoices() {
+        return this.invoices;
+    }
+
+    public void setInvoices(Set<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+
 
     public Simulator() {
         this(new HashSet<House>());
@@ -102,7 +122,10 @@ public class Simulator {
             "}";
     }
 
-    //
+    @Override
+    public Simulator clone(){
+        return new Simulator(this);
+    }
 
     public void increment_Day() throws Empty_Simulation{
         this.setSimulation_date(this.getSimulation_date().plusDays(1));
@@ -119,6 +142,17 @@ public class Simulator {
         }
         else throw new Empty_Simulation(this.toString()); 
     }
+    
 
+    public House getHouseFromAddress(Address address) { ///////////morada sem casa
+        House out = new House();
+        if (houses.size() > 0){
+            for (House house: this.houses){
+                if (house.getAddress().equals(address)) out = house.clone();
+            }
+        } 
+        else  out = null;
+        return out;
+    }
 
 }
