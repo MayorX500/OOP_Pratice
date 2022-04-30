@@ -6,29 +6,49 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import Client.Client;
 import Exceptions.Wrong_Line;
+import House.Address;
 import House.Divisions;
 import House.House;
 import MVC_House_Sync.Model;
 import Suppliers.Suppliers;
 
+import com.github.javafaker.*;
+
+import Auxiliar.MyRandom;
+import Auxiliar.Pair;
+
 public class Parser {
     public static Model parse(String fileName) throws  Wrong_Line{
+        ArrayList<Suppliers> suppliers = new ArrayList<>();
         Model model = new Model();
         List<String> lines = readFile(fileName);
-        Divisions last = null;
-        House j = null;
+        House last = null;
         String[] splitLine;
-        for (String linha : lines) {
-            splitLine = linha.split(":", 2);
+        for (String line : lines) {
+            splitLine = line.split(":", 2);
             switch (splitLine[0]) {
                 case "Fornecedor" -> {
                     Suppliers e = new Suppliers(splitLine[1]);
-                    model.addSupplier(e);
-                    last = e;
+                    suppliers.add(e);
                 }
-                case "Guarda-Redes", "Defesa", "Medio", "Lateral", "Avancado" -> {
+                case "Casa" -> {
+                    String[] args = splitLine[1].split(",");
+                    Client client = new Client(args[0],Integer.parseInt(args[1]));
+                    Suppliers supplier;
+                    for(Suppliers sup : suppliers){
+                        if(sup.getSupplier_name().equals(args[2])){
+                            supplier = sup.clone();
+                        }
+                    }
+                    Faker faker = new Faker(new Locale("pt"));
+                    String streetAddress = faker.address().streetAddress(); // 60018 Sawayn Brooks Suite 449
+                    Address o = new Address(faker.address().streetAddress(),MyRandom.random_i(1, 43), faker.address().city(), new Pair<Integer,Integer>(faker.address().zipCode()., r))
+                    
+                    House house = new House()
                     j = FootballPlayer.parse(splitLine[0], splitLine[1]);
                     model.addPlayer(j);
                     if (last == null)
@@ -64,6 +84,5 @@ public class Parser {
         catch(IOException exc) { lines = new ArrayList<>(); }
         return lines;
     }
-
 
 }
