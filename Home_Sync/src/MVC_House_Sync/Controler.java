@@ -3,12 +3,14 @@ package MVC_House_Sync;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import Auxiliar.*;
 import Client.*;
 import Exceptions.*;
 import House.*;
 import Parser.*;
+import Simulator.Simulator;
 import SmartDevice.*;
 import Suppliers.*;
 
@@ -32,10 +34,20 @@ public class Controler {
         view.welcomeMenu();
     }
 
+    //Create client
     public Client createClient() {
         String name = view.ask_input_s("Enter the name of the new Client:");
         int nif = view.ask_input_i("Enter the NIF of the new Client:");
         return new Client(name, nif);
+    }
+    
+    //Edit client
+    public Client editClient(Client client) {
+        String name = view.ask_input_s("Enter the name of the new Client:");
+        int nif = view.ask_input_i("Enter the NIF of the new Client:");
+        client.setClient_name(name);
+        client.setClient_NIF(nif);
+        return client;
     }
 
     // create Address
@@ -50,6 +62,22 @@ public class Controler {
         return new Address(street, street_number, city, post_code);
     }
 
+    // Edit Address
+    public Address editAddress(Address address) {
+        String city = view.ask_input_s("Enter the name of the city:");
+        String street = view.ask_input_s("Enter the name of the street:");
+        int street_number = view.ask_input_i("Enter the number of the street:");
+        int l = view.ask_input_i("Enter the first four numbers of the post-code:");
+        int r = view.ask_input_i("Enter the last three numbers of the post-code:");
+        Pair<Integer, Integer> post_code = new Pair<Integer, Integer>(l, r);
+        address.setCity(city);
+        address.setStreet(street);
+        address.setStreet_number(street_number);
+        address.setPost_code(post_code);
+        return address;
+    }
+
+
     // create Suppliers
     public Suppliers createSuppliers() {
         String supplier_name = view.ask_input_s("Enter the name of the supplier:");
@@ -62,9 +90,31 @@ public class Controler {
         return new Suppliers(supplier_name, base_price, tax, out_of_range_tax);
     }
 
+    // Edit Suppliers
+    public Suppliers editSuppliers(Simulator simulation) {
+        Suppliers supp_clone = simulation.getSuppliers().clone();
+        String supplier_name = view.ask_input_s("Enter the name of the supplier:");
+        float base_price = view.ask_input_f("Enter the base price");
+        int tax_int = view.ask_input_i("Enter the tax percentage:");
+        float tax = tax_int / 100;
+        int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
+        float out_of_range_tax = out_of_range_tax_int / 100;
+        suppliers.setSupplier_name(supplier_name);
+        suppliers.setBase_price(base_price);
+        suppliers.setTax(tax);
+        suppliers.setOut_of_range_tax(out_of_range_tax);
+        return suppliers;
+    }
+    
     // create House
     public House createHouse(Client owner, Address address, Suppliers supplier) {
         return new House(address, owner, new HashSet<>(), supplier, 0);
+    }
+
+    // edit House
+    public House editHouse(House house) {
+        
+        return house;
     }
 
     // create Divisions
@@ -73,6 +123,33 @@ public class Controler {
         Divisions division = new Divisions(division_name, new HashSet<>());
         createDevice(division);
         house.addDivision(division);
+        return house;
+    }
+
+    // edit Divisions
+    public House editDivision(House house) throws Empty_House {
+        int choice = view.pageDivision(house);
+        Divisions divisions[] = new Divisions[this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().size()];
+        this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
+              
+        int choice2 = view.menu_EditDivision();
+        switch(choice2) {
+            case 1:
+                String division_name = view.ask_input_s("Enter the new name for the division:");
+                divisions[choice].setDivision_name(division_name);
+                house.setDivisions(new HashSet<>());
+                for(Divisions div : divisions){
+                    house.addDivision(div.clone());
+                }
+                view.menu_EditDivision();
+                break;
+            case 2:
+                int choice3 = view.pageDevices(this.model.getSimulator().getHouseFromAddress(house.getAddress()).division[choice]);
+                House houses[] = new House[this.model.getSimulator().getHouses().size()];
+                this.model.getSimulator().getHouses().toArray(houses);
+
+
+        }
         return house;
     }
 
@@ -113,8 +190,8 @@ public class Controler {
 
     public void createSimulation() {
         boolean exit = false;
-        int choice = view.menu_C();
         while (!exit) {
+            int choice = view.menu_C();
             switch (choice) {
                 case 1:
                     createClient();
@@ -127,6 +204,9 @@ public class Controler {
                     break;
                 case 0:
                     exit = true;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
                     break;
             }
         }
@@ -146,10 +226,18 @@ public class Controler {
                 crSimMenu_2();
                 break;
             case 4:
-                edSimMenu_2();
+            //Present billing statistics
+                int choice2 = view.pageHouses(this.model.getSimulator());
+                House houses[] = new House[this.model.getSimulator().getHouses().size()];
+                this.model.getSimulator().getHouses().toArray(houses);
+                Address address = houses[choice2].getAddress();
+                view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);
                 break;
             case 0:
                 System.out.println("Thank you for choosing Smart House Simulator. We hope to see you again soon.");
+                break;
+            default:
+                View.unrecognizedCommandError();
                 break;
         }
 
@@ -168,6 +256,9 @@ public class Controler {
             case 0:
                 firstMenu();
                 break;
+            default:
+                View.unrecognizedCommandError();
+                break;
         }
         addTimeMenu_2();
     }
@@ -176,7 +267,7 @@ public class Controler {
         int choice = view.houseMenu();
         switch (choice) {
             case 1:
-                view.menu_C();
+                createHouse(view.menu_C());
                 break;
             case 2:
                 Address address = createAddress();
@@ -184,10 +275,59 @@ public class Controler {
                 view.houseMenu();
                 break;
             case 3:
-                view.menu_Edit();
+                editHouse(view.pageHouses(this.model.getSimulator()));
+                break;
+            case 4:
+                view.viewHouses(this.model.getSimulator());
                 break;
             case 0:
                 firstMenu();
+                break;
+            default:
+                View.unrecognizedCommandError();
+                break;
+        }
+    }
+
+    public void createHouse(int choice){
+        switch (choice) {
+            case 1:
+                //Create client
+                createClient();
+                break;
+            case 2:
+                //Create address
+                createAddress();
+                break;
+            case 3:
+                //Create supplier
+                createSuppliers();
+                break;
+            case 0:
+                firstMenu();
+                break;
+            default:
+                View.unrecognizedCommandError();
+                break;
+        }
+    }
+
+    public void editHouse(int choice){
+        switch (choice) {
+            case 1:
+                //Edit client
+                break;
+            case 2:
+                //Edit address
+                break;
+            case 3:
+                //Edit supplier
+                break;
+            case 0:
+                firstMenu();
+                break;
+            default:
+                View.unrecognizedCommandError();
                 break;
         }
     }
@@ -204,30 +344,12 @@ public class Controler {
             case 0:
                 firstMenu();
                 break;
-        }
-    }
-
-    public void edSimMenu_2() {
-        int choice = view.menu_SV();
-        switch (choice) {
-            case 1:
-            //1 - Alter energy provider parameters
-
-                break;
-            case 2:
-            //2 - Present billing statistics
-                int choice2 = view.pageHouses(this.model.getSimulator());
-                House houses[] = new House[this.model.getSimulator().getHouses().size()];
-                this.model.getSimulator().getHouses().toArray(houses);
-                Address address = houses[choice2].getAddress();
-                view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);
-                break;
-            case 0:
-                firstMenu();
+            default:
+                View.unrecognizedCommandError();
                 break;
         }
     }
-    
+
     //EXPORT
     public void exportSimulationMenu() {
         try {

@@ -5,17 +5,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import House.*;
+import Suppliers.Suppliers;
 
 public class Simulator {
 	private Set<House> houses;
 	private LocalDate simulation_date;
 	private Set<Events> events;
     private Set<Invoice> invoices;
+    private Set<Suppliers> suppliers;
 
     public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events) {
         this.setHouses(houses);;
         this.simulation_date = simulation_date;
-        this.setEvents(events);;
+        this.setEvents(events);
     }
 
     public Simulator(Set<House> houses) {
@@ -30,6 +32,7 @@ public class Simulator {
             }
         }
         this.invoices = invoices;
+        this.suppliers = new HashSet<Suppliers>();
     }
 
     public Set<Invoice> getInvoices() {
@@ -40,7 +43,13 @@ public class Simulator {
         this.invoices = invoices;
     }
 
+    public Set<Suppliers> getSuppliers(){
+        return this.suppliers;
+    }
 
+    public void setSuppliers(Set<Suppliers> suppliers) {
+        this.suppliers = suppliers;
+    }
 
     public Simulator() {
         this(new HashSet<House>());
@@ -151,7 +160,7 @@ public class Simulator {
         else  out = null;
         return out;
     }
-    
+
     public Set<House> eliminateHouses (Set<House> houses, Address address){
         if(houses.size() > 0){
             for (House house: this.houses){

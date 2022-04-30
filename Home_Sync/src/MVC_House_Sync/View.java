@@ -1,12 +1,15 @@
 package MVC_House_Sync;
 import java.util.Scanner;
+import java.util.Set;
 
 import Auxiliar.Pair;
 import Exceptions.Empty_House;
 import House.Address;
+import House.Divisions;
 import House.House;
 import Simulator.Invoice;
 import Simulator.Simulator;
+import SmartDevice.SmartDevice;
 
 import java.time.*;
 import java.time.format.*;
@@ -35,7 +38,7 @@ public class View{
             1 - Advance time
             2 - Edit/add houses
             3 - Create simulation
-            4 - Edit simulation values
+            4 - Present billing statistics
             
             0 - Quit
             """);
@@ -73,18 +76,6 @@ public class View{
         return (input.nextInt());
     }
 
-   //menu edit a simulation's values -- 'Edit simulation values'
-    public int menu_SV(){
-        System.out.println("""
-            Select an option:
-            
-            1 - Alter energy provider parameters
-            2 - Present billing statistics
-
-            0 - Back
-            """);
-        return (input.nextInt());
-    }
 
     //menu when 'Edit/add houses' is selected
     public int houseMenu(){
@@ -94,6 +85,7 @@ public class View{
             1 - Add new house
             2 - Eliminate existing house
             3 - Edit existing house
+            4 - View existing houses
             
             0 - Back
             """);
@@ -121,6 +113,7 @@ public class View{
             1 - Create a client
             2 - Create an address
             3 - Create a supplier
+            4 - Create a division
             
             0 - Save changes
             """);
@@ -134,6 +127,33 @@ public class View{
             1 - Edit client
             2 - Edit address
             3 - Edit supplier
+            4 - Edit division
+            5 - View divisions
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
+    public int menu_EditDivision(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit division's name
+            2 - Edit division's devices
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
+    public int menu_EditValues(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit base price
+            2 - Edit tax value
+            3 - Edit tax out of range value
             
             0 - Save changes
             """);
@@ -144,8 +164,24 @@ public class View{
         printAddress(a.getStreet(), a.getStreet_number(), a.getCity(), a.getPost_code());
     }
 
+    public void printDivision(Divisions a){
+        printDivision(a.getDivision_name());
+    }
+
+    public void printDevice(SmartDevice a){
+        printDivision(a.getDevice_name());
+    }
+
     public void printAddress(String street, int street_number, String city, Pair<Integer,Integer> post_code){
         System.out.println(street + " " + street_number + "\n" + city + " " + post_code.getL() + "-" + post_code.getR() + "\n");
+    }
+
+    public void printDivision(String division_name){
+        System.out.println(division_name + "\n");
+    }
+
+    public void printDevice(String device_name){
+        System.out.println(device_name + "\n");
     }
 
     public void printDate (LocalDate initial_date, LocalDate final_date){
@@ -172,8 +208,7 @@ public class View{
         }
         System.out.println("Price to pay - " + price);
     }
-
-    public int pageHouses(Simulator simulator){
+    public void viewHouses(Simulator simulator){
         int j = 0,i = 0;
         House houses[] = new House[simulator.getHouses().size()];
         simulator.getHouses().toArray(houses);
@@ -199,7 +234,75 @@ public class View{
 					break;
 			}
 		}
-        return ask_input_i("Please choose a Address to view its billing.");
+    }
+    public int pageHouses(Simulator simulator){
+        viewHouses(simulator);
+        return ask_input_i("Please choose a Address");
+    }
+
+    public void viewDivisions(House house){
+        int j = 0,i = 0;
+        Divisions division[] = new Divisions[house.getDivisions().size()];
+        house.getDivisions().toArray(division);
+		for(;i>=0 && i<division.length;){
+			for(j = i;j<(i+ENTRIES);j++){
+                System.out.println("\n" + j + " - ");
+                printDivision(division[j].getDivision_name());
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+    }
+
+    public int pageDivision(House house){
+        viewDivisions(house);
+        return ask_input_i("Please choose a Division");
+    }
+
+    public void viewDevices(Divisions division){
+        int j = 0,i = 0;
+        SmartDevice device[] = new SmartDevice[division.getDevices().size()];
+        division.getDevices().toArray(device);
+		for(;i>=0 && i<device.length;){
+			for(j = i;j<(i+ENTRIES);j++){
+                System.out.println("\n" + j + " - ");
+                printDevice(device[j].getDevice_name());
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+    }
+    public int pageDevices(Divisions division){
+        viewDevices(division);
+        return ask_input_i("Please choose a SmartDevice");
     }
 
     public void invoice(Invoice invoice,House house){

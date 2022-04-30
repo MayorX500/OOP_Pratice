@@ -1,8 +1,6 @@
 package MVC_House_Sync;
 import java.io.Serializable;
-import java.util.Set;
 
-import Client.Client;
 import Exceptions.*;
 import House.*;
 import Simulator.*;
@@ -10,10 +8,7 @@ import SmartDevice.*;
 import Suppliers.*;
 
 public class Model implements Serializable{
-    private Set<Suppliers> suppliers;
-    private Set<Client> clients;
     private Simulator simulator;
-
 
     public Model(){
         this.simulator = new Simulator();
