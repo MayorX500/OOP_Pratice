@@ -13,7 +13,6 @@ import SmartDevice.SmartCamera;
 import SmartDevice.SmartDevice;
 import SmartDevice.SmartSpeaker;
 import Suppliers.Suppliers;
-import MVC_House_Sync.View;
 
 public class Controler {
     private Model model;
@@ -186,7 +185,7 @@ public class Controler {
                 view.menu_C();
                 break;
             case 2:
-                // impSimMenu_3();
+                // impSimMenu_3(); import simulation file
                 break;
             case 0:
                 firstMenu();
@@ -198,10 +197,16 @@ public class Controler {
         int choice = view.menu_SV();
         switch (choice) {
             case 1:
-                
+            //1 - Alter energy provider parameters
+
                 break;
             case 2:
-
+            //2 - Present billing statistics
+                int choice2 = view.pageHouses(this.model.getSimulator());
+                House houses[] = new House[this.model.getSimulator().getHouses().size()];
+                this.model.getSimulator().getHouses().toArray(houses);
+                Address address = houses[choice2].getAddress();
+                view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);
                 break;
             case 0:
                 firstMenu();

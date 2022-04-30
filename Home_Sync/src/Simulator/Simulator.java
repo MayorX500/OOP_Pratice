@@ -163,4 +163,14 @@ public class Simulator {
         return houses;
     }
 
+    public Invoice getInvoiceFromAddress(Address address){
+        Invoice out = new Invoice();
+        if (invoices.size() > 0){
+            for (Invoice invoice : this.invoices){
+                if (invoice.getAddress().equals(address)) out = invoice.clone();
+            }
+        } 
+        else  out = null;
+        return out;
+    }
 }

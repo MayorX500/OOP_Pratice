@@ -15,6 +15,10 @@ public class Invoice extends Simulator{
         this(0, 0, new Address(), LocalDate.now(), LocalDate.now());
     }
 
+    public Invoice(Invoice o){
+        this(o.getMensal_consum(), o.getId(), o.getAddress(), o.getInitial_date(), o.getFinal_date());
+    }
+
     public Invoice(double mensal_consum, int id, Address address, LocalDate initial_date, LocalDate final_date){
         this.mensal_consum = mensal_consum;
         this.id = id;
@@ -97,5 +101,9 @@ public class Invoice extends Simulator{
             ", initial_date='" + getInitial_date() + "'" +
             ", final_date='" + getFinal_date() + "'" +
             "}";
+    }
+
+    public Invoice clone(){
+        return new Invoice(this);
     }
 }

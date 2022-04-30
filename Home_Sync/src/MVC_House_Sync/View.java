@@ -6,6 +6,7 @@ import Exceptions.Empty_House;
 import House.Address;
 import House.House;
 import Simulator.Invoice;
+import Simulator.Simulator;
 
 import java.time.*;
 import java.time.format.*;
@@ -166,6 +167,15 @@ public class View{
         System.out.println("Price to pay - " + price);
     }
 
+    public int pageHouses(Simulator simulator){
+        int i = 0;
+        House houses[] = new House[simulator.getHouses().size()];
+        simulator.getHouses().toArray(houses);
+        for (i = 0; i < simulator.getHouses().size(); i++){
+            System.out.println("\n" + i + " - " + houses[i].getAddress() + "\n");
+        }
+        return input.nextInt();
+    }
 
     public void invoice(Invoice invoice,House house){
         System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
