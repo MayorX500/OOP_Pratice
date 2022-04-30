@@ -10,6 +10,7 @@ import House.House;
 import Simulator.Invoice;
 import Simulator.Simulator;
 import SmartDevice.SmartDevice;
+import Suppliers.Suppliers;
 
 import java.time.*;
 import java.time.format.*;
@@ -147,13 +148,55 @@ public class View{
         return (input.nextInt());
     }
 
+    public int menu_EditDevice(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit device's name
+            2 - Change device's mode
+            3 - Edit device's brand
+            4 - Edit device's power usage
+            5 - Edit device's base cost
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
     public int menu_EditValues(){
         System.out.println("""
             Select an option:
             
-            1 - Edit base price
-            2 - Edit tax value
-            3 - Edit tax out of range value
+            1 - Edit supplier's name
+            2 - Edit base price
+            3 - Edit tax value
+            4 - Edit tax out of range value
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
+    public int menu_EditAddress(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit the city's name
+            2 - Edit the street's name
+            3 - Edit  number of the street
+            4 - Edit the first post-code
+            
+            0 - Save changes
+            """);
+        return (input.nextInt());
+    }
+
+    public int menu_EditClient(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit the client's name
+            2 - Edit the client's nif
             
             0 - Save changes
             """);
@@ -162,6 +205,10 @@ public class View{
 
     public void printAddress(Address a){
         printAddress(a.getStreet(), a.getStreet_number(), a.getCity(), a.getPost_code());
+    }
+
+    public void printSupplier(Suppliers a){
+        printSupplier(a.getSupplier_name());
     }
 
     public void printDivision(Divisions a){
@@ -174,6 +221,10 @@ public class View{
 
     public void printAddress(String street, int street_number, String city, Pair<Integer,Integer> post_code){
         System.out.println(street + " " + street_number + "\n" + city + " " + post_code.getL() + "-" + post_code.getR() + "\n");
+    }
+
+    public void printSupplier(String supplier_name){
+        System.out.println(supplier_name + "\n");
     }
 
     public void printDivision(String division_name){
@@ -238,6 +289,38 @@ public class View{
     public int pageHouses(Simulator simulator){
         viewHouses(simulator);
         return ask_input_i("Please choose a Address");
+    }
+
+    public void viewSuppliers(Simulator simulator){
+        int j = 0,i = 0;
+        Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
+        simulator.getSuppliers().toArray(suppliers);
+		for(;i>=0 && i<suppliers.length;){
+			for(j = i;j<(i+ENTRIES);j++){
+                System.out.println("\n" + j + " - ");
+                printSupplier(suppliers[j]);
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+    }
+    public int pageSuppliers(Simulator simulator){
+        viewSuppliers(simulator);
+        return ask_input_i("Please choose a Supplier");
     }
 
     public void viewDivisions(House house){

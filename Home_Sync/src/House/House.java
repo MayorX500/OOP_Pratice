@@ -273,4 +273,5 @@ public class House{
 	    }
 	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
     }
+
 }
