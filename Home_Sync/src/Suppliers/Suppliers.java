@@ -2,6 +2,8 @@ package Suppliers;
 
 import java.util.concurrent.atomic.*;
 
+import Auxiliar.MyRandom;
+
 public class Suppliers {
 	private static final AtomicInteger count = new AtomicInteger(0);
 	private int supplier_id;
@@ -28,6 +30,9 @@ public class Suppliers {
 
 	public Suppliers(){
 		this("Supplier", 1.0f, 0.13f, 0.05f);
+	}
+	public Suppliers(String s){
+		this(s,MyRandom.random_f(0.5f,0.75f),MyRandom.random_f(0.001f, 0.05f),MyRandom.random_f(0.0f,0.005f));
 	}
 
 	public Suppliers(Suppliers o){

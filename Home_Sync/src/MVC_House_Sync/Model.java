@@ -1,18 +1,26 @@
 package MVC_House_Sync;
-import Exceptions.Device_Non_Existent;
-import Exceptions.Division_Non_Existent;
-import Exceptions.Empty_Division;
-import Exceptions.Empty_House;
-import Exceptions.State_Not_Changed;
+import java.io.Serializable;
+import java.util.Set;
+
+import Client.Client;
+import Exceptions.*;
 import House.*;
-import Simulator.Simulator;
+import Simulator.*;
 import SmartDevice.*;
 import Suppliers.*;
 
-public class Model{
-    private Simulator simulator = new Simulator();
+public class Model implements Serializable{
+    private Set<Suppliers> suppliers;
+    private Set<Client> clients;
+    private Simulator simulator;
+
 
     public Model(){
+        this.simulator = new Simulator();
+    }
+
+    public Model(Model m){
+        this.simulator = simulator.clone();
     }
 
     public Simulator getSimulator(){

@@ -13,6 +13,8 @@ import java.time.format.*;
 import java.time.temporal.ChronoUnit;
 
 public class View{
+
+    private final static int ENTRIES = 5;
     private final Scanner input = new Scanner(System.in);
 
     public int welcomeMenu(){
@@ -138,6 +140,10 @@ public class View{
         return (input.nextInt());
     }
 
+    public void printAddress(Address a){
+        printAddress(a.getStreet(), a.getStreet_number(), a.getCity(), a.getPost_code());
+    }
+
     public void printAddress(String street, int street_number, String city, Pair<Integer,Integer> post_code){
         System.out.println(street + " " + street_number + "\n" + city + " " + post_code.getL() + "-" + post_code.getR() + "\n");
     }
@@ -168,13 +174,32 @@ public class View{
     }
 
     public int pageHouses(Simulator simulator){
-        int i = 0;
+        int j = 0,i = 0;
         House houses[] = new House[simulator.getHouses().size()];
         simulator.getHouses().toArray(houses);
-        for (i = 0; i < simulator.getHouses().size(); i++){
-            System.out.println("\n" + i + " - " + houses[i].getAddress() + "\n");
-        }
-        return input.nextInt();
+		for(;i>=0 && i<houses.length;){
+			for(j = i;j<(i+ENTRIES);j++){
+                System.out.println("\n" + j + " - ");
+                printAddress(houses[j].getAddress());
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+        return ask_input_i("Please choose a Address to view its billing.");
     }
 
     public void invoice(Invoice invoice,House house){
@@ -222,4 +247,18 @@ public class View{
 
         return date;
     }
+
+
+
+
+
+
+    //STATIC DEFINITIONS
+    public static void unrecognizedCommandError() {
+        System.out.println("Option not recognized.");
+    
+    }
+
+    public static void showException (Exception e) {System.out.println(e.toString());}
+
 }

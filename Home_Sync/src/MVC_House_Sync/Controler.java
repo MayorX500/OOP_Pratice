@@ -1,22 +1,36 @@
 package MVC_House_Sync;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-import Auxiliar.Pair;
-import Client.Client;
-import House.Address;
-import House.Divisions;
-import House.House;
-import SmartDevice.SmartBulb;
-import SmartDevice.SmartCamera;
-import SmartDevice.SmartDevice;
-import SmartDevice.SmartSpeaker;
-import Suppliers.Suppliers;
+import Auxiliar.*;
+import Client.*;
+import Exceptions.*;
+import House.*;
+import Parser.*;
+import SmartDevice.*;
+import Suppliers.*;
 
 public class Controler {
     private Model model;
     private View view;
+    private boolean unsavedChanges; 
+
+    public Controler(){
+        Model m;
+        try {
+            m = Parser.parse("logs.txt");
+        }
+        catch (Wrong_Line e) {
+            View.showException(e);
+            m = new Model();
+        }
+        this.model = m;
+        this.view = new View();
+        this.unsavedChanges = false;
+        view.welcomeMenu();
+    }
 
     public Client createClient() {
         String name = view.ask_input_s("Enter the name of the new Client:");
@@ -213,5 +227,25 @@ public class Controler {
                 break;
         }
     }
+    
+    //EXPORT
+    public void exportSimulationMenu() {
+        try {
+            FileHandler.exportModelToFile(this.model, view.ask_input_s("Qual o nome do ficheiro?"));
+            this.unsavedChanges = false;
+        }
+        catch (IOException e) {
+            View.showException(e);
+        }
+    }
 
+    //IMPORT
+    public void importSimulatMenu() {
+        try {
+            this.model = FileHandler.importModelFromFile(view.ask_input_s("Qual o nome do ficheiro?"));
+        }
+        catch (IOException | ClassNotFoundException e) {
+            View.showException(e);
+        }
+    }
 }
