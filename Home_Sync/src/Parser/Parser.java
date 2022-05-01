@@ -23,7 +23,6 @@ import Auxiliar.MyRandom;
 import Auxiliar.Pair;
 
 public class Parser {
-    /*
     public static Model parse(String fileName) throws  Wrong_Line{
         ArrayList<Suppliers> suppliers = new ArrayList<>();
         Model model = new Model();
@@ -90,5 +89,4 @@ public class Parser {
         catch(IOException exc) { lines = new ArrayList<>(); }
         return lines;
     }
-*/
 }
