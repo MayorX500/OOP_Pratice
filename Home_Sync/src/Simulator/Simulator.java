@@ -14,10 +14,12 @@ public class Simulator {
     private Set<Invoice> invoices;
     private Set<Suppliers> suppliers;
 
-    public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events) {
+    public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
         this.setHouses(houses);;
         this.simulation_date = simulation_date;
         this.setEvents(events);
+        this.setInvoices(invoices);
+        this.setSuppliers(suppliers);
     }
 
     public Simulator(Set<House> houses) {
@@ -25,10 +27,12 @@ public class Simulator {
         this.simulation_date = LocalDate.now();
         this.events = new HashSet<Events>();
         Set<Invoice> invoices = new HashSet<>(); 
+        this.suppliers = new HashSet<Suppliers>();
         if (houses.size() > 0){
             for (House house : houses){
                 Invoice a = new Invoice(house.getDaily_consumption(), house.getHouse_id(), house.getAddress(), simulation_date, simulation_date );
                 invoices.add(a);
+                this.suppliers.add(house.getSupplier());
             }
         }
         this.invoices = invoices;
@@ -56,7 +60,7 @@ public class Simulator {
     }
 
     public Simulator(Simulator sim) {
-        this(sim.getHouses(),sim.getSimulation_date(),sim.getEvents());
+        this(sim.getHouses(),sim.getSimulation_date(),sim.getEvents(),sim.getInvoices(),sim.getSuppliers());
     }
 
     public Set<House> getHouses() {

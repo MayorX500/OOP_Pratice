@@ -2,14 +2,14 @@
 
 app=$1
 
-jars=.:../../Resources/automaton-1.11-8.jar:../../Resources/commons-lang3-3.5.jar:../../Resources/generex-1.0.2.jar:../../Resources/javafaker-1.0.2.jar:../../Resources/snakeyaml-1.23-android.jar
+classpath="-cp .:../../Libs/automaton-1.11-8.jar:../../Libs/commons-lang3-3.5.jar:../../Libs/generex-1.0.2.jar:../../Libs/javafaker-1.0.2.jar:../../Libs/snakeyaml-1.23-android.jar"
 
 function compile {
-	javac -classpath $jars $app.java
+	javac $classpath $app.java
 }
 
 function run {
-	java -cp $jars $app
+	java $classpath $app
 }
 
 function main {

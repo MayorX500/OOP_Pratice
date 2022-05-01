@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ import Auxiliar.MyRandom;
 import Auxiliar.Pair;
 
 public class Parser {
+    /*
     public static Model parse(String fileName) throws  Wrong_Line{
         ArrayList<Suppliers> suppliers = new ArrayList<>();
         Model model = new Model();
@@ -45,10 +47,14 @@ public class Parser {
                         }
                     }
                     Faker faker = new Faker(new Locale("pt"));
-                    String streetAddress = faker.address().streetAddress(); // 60018 Sawayn Brooks Suite 449
-                    Address o = new Address(faker.address().streetAddress(),MyRandom.random_i(1, 43), faker.address().city(), new Pair<Integer,Integer>(faker.address().zipCode()., r))
-                    
-                    House house = new House()
+                    Address add = new Address(faker.address().streetName(),
+                                            Integer.parseInt(faker.address().buildingNumber()),
+                                            faker.address().city(),
+                                            new Pair<Integer,Integer>(
+                                                        Integer.parseInt(faker.address().zipCode()),
+                                                        MyRandom.random_i(0, 999)
+                                                        ));
+                    House house = new House(add, client, new HashSet<>(), supplier, 0);
                     j = FootballPlayer.parse(splitLine[0], splitLine[1]);
                     model.addPlayer(j);
                     if (last == null)
@@ -84,5 +90,5 @@ public class Parser {
         catch(IOException exc) { lines = new ArrayList<>(); }
         return lines;
     }
-
+*/
 }
