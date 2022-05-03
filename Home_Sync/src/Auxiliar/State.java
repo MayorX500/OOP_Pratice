@@ -1,6 +1,6 @@
 package Auxiliar;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.*;
 
 public class State {
@@ -8,23 +8,23 @@ public class State {
 	private int log_id;
     private boolean old_state;
     private boolean new_state;
-    private LocalDate update_day;
+    private LocalDateTime updated_at;
     
 
 
-    public State(int log_id, boolean old_state, boolean new_state, LocalDate update_day) {
+    public State(int log_id, boolean old_state, boolean new_state, LocalDateTime updated_at) {
         this.log_id = log_id;
         this.old_state = old_state;
         this.new_state = new_state;
-        this.update_day = update_day;
+        this.updated_at = updated_at;
     }
 
-    public State(boolean old_state, boolean new_state, LocalDate update_day) {
-        this(count.incrementAndGet(), old_state, new_state, LocalDate.now());
+    public State(boolean old_state, boolean new_state, LocalDateTime updated_at) {
+        this(count.incrementAndGet(), old_state, new_state, LocalDateTime.now());
     }
 
     public State(boolean old_state, boolean new_state) {
-        this(old_state, new_state, LocalDate.now());
+        this(old_state, new_state, LocalDateTime.now());
     }
 
     public State() {
@@ -32,7 +32,7 @@ public class State {
     }
     
     public State(State s) {
-        this(s.getLog_id(),s.getOld_state(),s.getNew_state(),s.getUpdate_day());
+        this(s.getLog_id(),s.getOld_state(),s.getNew_state(),s.getUpdated_at());
     }
 
 
@@ -68,12 +68,12 @@ public class State {
         this.new_state = new_state;
     }
 
-    public LocalDate getUpdate_day() {
-        return this.update_day;
+    public LocalDateTime getUpdated_at() {
+        return this.updated_at;
     }
 
-    public void setUpdate_day(LocalDate update_day) {
-        this.update_day = update_day;
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class State {
             return false;
         }
         State state = (State) o;
-        return log_id == state.log_id && old_state == state.old_state && new_state == state.new_state && this.update_day.equals(state.getUpdate_day());
+        return log_id == state.log_id && old_state == state.old_state && new_state == state.new_state && this.updated_at.equals(state.getUpdated_at());
     }
 
     @Override
@@ -93,7 +93,7 @@ public class State {
             " log_id='" + getLog_id() + "'" +
             ", old_state='" + isOld_state() + "'" +
             ", new_state='" + isNew_state() + "'" +
-            ", update_day='" + getUpdate_day() + "'" +
+            ", updated_at='" + getUpdated_at() + "'" +
             "}";
     }
 

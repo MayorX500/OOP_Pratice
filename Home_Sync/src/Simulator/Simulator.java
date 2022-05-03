@@ -1,20 +1,24 @@
 package Simulator;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Exceptions.Empty_Division;
+import Exceptions.Empty_House;
+import Exceptions.Empty_Simulation;
 import House.*;
-import Suppliers.Suppliers;
+import SmartDevice.SmartDevice;
+import Suppliers.*;
 
 public class Simulator {
 	private Set<House> houses;
-	private LocalDate simulation_date;
+	private LocalDateTime simulation_date;
 	private Set<Events> events;
     private Set<Invoice> invoices;
     private Set<Suppliers> suppliers;
 
-    public Simulator(Set<House> houses, LocalDate simulation_date, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
+    public Simulator(Set<House> houses, LocalDateTime simulation_date, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
         this.setHouses(houses);;
         this.simulation_date = simulation_date;
         this.setEvents(events);
@@ -22,21 +26,12 @@ public class Simulator {
         this.setSuppliers(suppliers);
     }
 
-    public Simulator(Set<House> houses) {
+    public Simulator(Set<House> houses, Set<Suppliers> suppliers) {
         this.houses = houses;
-        this.simulation_date = LocalDate.now();
+        this.simulation_date = LocalDateTime.now();
         this.events = new HashSet<Events>();
-        Set<Invoice> invoices = new HashSet<>(); 
-        this.suppliers = new HashSet<Suppliers>();
-        if (houses.size() > 0){
-            for (House house : houses){
-                Invoice a = new Invoice(house.getDaily_consumption(), house.getHouse_id(), house.getAddress(), simulation_date, simulation_date );
-                invoices.add(a);
-                this.suppliers.add(house.getSupplier());
-            }
-        }
-        this.invoices = invoices;
-        this.suppliers = new HashSet<Suppliers>();
+        this.invoices = new HashSet<>(); 
+        this.setSuppliers(suppliers);
     }
 
     public Set<Invoice> getInvoices() {
@@ -48,15 +43,23 @@ public class Simulator {
     }
 
     public Set<Suppliers> getSuppliers(){
-        return this.suppliers;
+        Set<Suppliers> out = new HashSet<>();
+        for(Suppliers s : this.suppliers){
+            out.add(s.clone());
+        }
+        return out;
     }
 
     public void setSuppliers(Set<Suppliers> suppliers) {
-        this.suppliers = suppliers;
+        Set<Suppliers> out = new HashSet<>();
+        for(Suppliers s : suppliers){
+            out.add(s.clone());
+        }
+        this.suppliers = out;
     }
 
     public Simulator() {
-        this(new HashSet<House>());
+        this(new HashSet<House>(),new HashSet<Suppliers>());
     }
 
     public Simulator(Simulator sim) {
@@ -84,11 +87,11 @@ public class Simulator {
         this.houses = out;
     }
 
-    public LocalDate getSimulation_date() {
+    public LocalDateTime getSimulation_date() {
         return this.simulation_date;
     }
 
-    public void setSimulation_date(LocalDate simulation_date) {
+    public void setSimulation_date(LocalDateTime simulation_date) {
         this.simulation_date = simulation_date;
     }
 
@@ -137,23 +140,6 @@ public class Simulator {
         return new Simulator(this);
     }
 
- /*   public  void increment_Day() throws Empty_Simulation{
-        this.setSimulation_date(this.getSimulation_date().plusDays(1));
-        if(this.houses.size()>0){
-            for(House house : this.houses){
-                try{
-                    System.out.println(house.getHouse_daily_Price());
-                }
-                catch(Empty_House empty){
-                    System.out.println(empty.toString());
-                }
-            }
-
-        }
-        else throw new Empty_Simulation(this.toString()); 
-    }
-    */
-
     public House getHouseFromAddress(Address address) { ///////////morada sem casa
         House out = new House();
         if (houses.size() > 0){
@@ -185,5 +171,33 @@ public class Simulator {
         } 
         else  out = null;
         return out;
+    }
+
+    public void addHouse(House e){
+        this.events.add(new Events("House " + e.getHouse_id() + " was added", LocalDateTime.now()));
+        this.houses.add(e.clone());
+        for(Suppliers sup : this.suppliers){
+            if (! sup.getSupplier_name().equals(e.getSupplier().getSupplier_name())){
+                this.suppliers.add(e.getSupplier().clone());
+            }
+        }
+    }
+
+    public void advanceOneHour() throws Empty_Simulation, Empty_House, Empty_Division{
+        if(this.houses.size()>0){
+            for(House house : houses){
+                if (house.getDivisions().size()>0){
+                    for(Divisions division : house.getDivisions()){
+                        if(division.getDevices().size()>0){
+                            for(SmartDevice device : division.getDevices()){
+                                if(device.is_on())
+                                    device.add_time_on(1);
+                            }
+                        }else throw new Empty_Division(division.getDivision_name());
+                    }
+                }else throw new Empty_House(house.getHouse_id() + "");
+            }
+        }
+        else throw new Empty_Simulation(this.toString());
     }
 }

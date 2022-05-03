@@ -6,16 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Locale;
 
-import Client.Client;
-import Exceptions.Wrong_Line;
+import Client.*;
+import Exceptions.*;
+import House.*;
 import House.Address;
-import House.Divisions;
-import House.House;
-import MVC_House_Sync.Model;
-import Suppliers.Suppliers;
+import MVC_House_Sync.*;
+import Simulator.*;
+import SmartDevice.*;
+import Suppliers.*;
 
 import com.github.javafaker.*;
 
@@ -24,11 +26,14 @@ import Auxiliar.Pair;
 
 public class Parser {
     public static Model parse(String fileName) throws  Wrong_Line{
-        ArrayList<Suppliers> suppliers = new ArrayList<>();
+        Set<Suppliers> suppliers = new HashSet<>();
+        Set<House> houses = new HashSet<>();
         Model model = new Model();
         List<String> lines = readFile(fileName);
-        House last = null;
+        House lasth = null;
+        Divisions lastd = null;
         String[] splitLine;
+
         for (String line : lines) {
             splitLine = line.split(":", 2);
             switch (splitLine[0]) {
@@ -37,9 +42,13 @@ public class Parser {
                     suppliers.add(e);
                 }
                 case "Casa" -> {
+                    if(lasth != null && lastd != null){
+                        lasth.addDivision(lastd.clone());
+                        houses.add(lasth.clone());
+                    }
                     String[] args = splitLine[1].split(",");
                     Client client = new Client(args[0],Integer.parseInt(args[1]));
-                    Suppliers supplier;
+                    Suppliers supplier = new Suppliers();
                     for(Suppliers sup : suppliers){
                         if(sup.getSupplier_name().equals(args[2])){
                             supplier = sup.clone();
@@ -53,33 +62,59 @@ public class Parser {
                                                         Integer.parseInt(faker.address().zipCode()),
                                                         MyRandom.random_i(0, 999)
                                                         ));
-                    House house = new House(add, client, new HashSet<>(), supplier, 0);
-                    j = FootballPlayer.parse(splitLine[0], splitLine[1]);
-                    model.addPlayer(j);
-                    if (last == null)
-                        throw new Wrong_Line(); //we need to insert the player into the team
-                    last.addPlayer(j); //if no team was parsed previously, file is not well-formed
+                    House house = new House(add.clone(), client.clone(), new HashSet<>(), supplier.clone(), 0);
+                    lasth = house;
                 }
-                case "Jogo" -> {
-                    String[] args = splitLine[1].split(",");
-                    int scoreT1 = Integer.parseInt(args[2]);
-                    int scoreT2 = Integer.parseInt(args[3]);
-                    Team t1 = model.getTeamByName(args[0]);
-                    Team t2 = model.getTeamByName(args[1]);
-                    if (scoreT1 > scoreT2) {
-                        t1.setWins(t1.getWins() + 1);
-                        t2.setLosses(t2.getLosses() + 1);
-                    } else if (scoreT2 > scoreT1) {
-                        t2.setWins(t2.getWins() + 1);
-                        t1.setLosses(t1.getLosses() + 1);
-                    } else {
-                        t1.setTies(t1.getTies() + 1);
-                        t2.setTies(t2.getTies() + 1);
+                case "Divisao" -> {
+                    if(lasth != null && lastd != null){
+                        lasth.addDivision(lastd.clone());
                     }
+                    Divisions division = new Divisions(splitLine[1], new HashSet<>());
+                    lastd = division;                    
+                }
+
+                case "SmartBulb" -> {
+                    if(lasth == null || lastd == null){
+                        throw new Wrong_Line(); // Wrong devices Order
+                    }
+                    String[] args = splitLine[1].split(",");
+                    Faker fake = new Faker();
+                    SmartDevice bulb = new SmartBulb(fake.funnyName().name(),args[0],Float.parseFloat(args[1]),Float.parseFloat(args[2]));
+                    lastd.addDevice(bulb.clone());
+                
+                }
+                case "SmartSpeaker" -> {
+                    if(lasth == null || lastd == null){
+                        throw new Wrong_Line(); // Wrong devices Order
+                    }
+                    String[] args = splitLine[1].split(",");
+                    Faker fake = new Faker();
+                    SmartDevice speaker = new SmartSpeaker(fake.funnyName().name(),args[2],Integer.parseInt(args[0]),Float.parseFloat(args[3]),args[1]);
+                    lastd.addDevice(speaker.clone());
+                
+                }
+                case "SmartCamera" -> {
+                    if(lasth == null || lastd == null){
+                        throw new Wrong_Line(); // Wrong devices Order
+                    }
+                    String[] args = splitLine[1].split(",");
+
+                    String resol = args[0].replaceAll("\\(", "").replaceAll("\\)","");
+                    String[] resolution = resol.split("x");
+
+                    Faker fake = new Faker();
+                    SmartDevice camera = new SmartCamera(fake.funnyName().name(),new Pair<Integer,Integer>(Integer.parseInt(resolution[0]),Integer.parseInt(resolution[1])),Double.parseDouble(args[1]),Float.parseFloat(args[2]));
+                    lastd.addDevice(camera.clone());
+                
                 }
                 default -> throw new Wrong_Line();
             }
         }
+        if(lasth != null && lastd != null){
+            lasth.addDivision(lastd.clone());
+            houses.add(lasth.clone());
+        }
+        model.setSimulator(new Simulator(houses,suppliers));
         return model;
     }
 

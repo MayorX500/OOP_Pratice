@@ -1,45 +1,50 @@
 package SmartDevice;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Auxiliar.Pair;
 import Auxiliar.State;
 
 public class SmartCamera extends SmartDevice{
-    private double resolution;
+    private Pair<Integer,Integer> resolution;
     private double file_size;
 
     public SmartCamera() {
-        this(false, LocalDate.now(), "SmartCamera", "OOP_Camera", 36.0,2.5,new HashSet<>(), 0.0, 0.0);
+        this(false, LocalDateTime.now(), "SmartCamera", "OOP_Camera", 36.0,2.5,new HashSet<>(), new Pair<Integer,Integer>(0, 0), 0.0);
     }
 
-    public SmartCamera(String device_name, String brand, double resolution, double file_size) {
-        this(false, LocalDate.now(), device_name, brand, 3.6*resolution, 2.5*resolution, new HashSet<>(), resolution, file_size);
+    public SmartCamera(String device_name, String brand, Pair<Integer,Integer> resolution, double file_size) {
+        this(false, LocalDateTime.now(), device_name, brand, 3.6 * resolution.getL() * resolution.getR(), 2.5 * resolution.getL() * resolution.getR(), new HashSet<>(), resolution, file_size);
     }
 
-    public SmartCamera(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log,double resolution, double file_size) {
-        super(is_on, installed_on, device_name, brand, power_usage,base_cost,log);
+    public SmartCamera(String device_name, Pair<Integer,Integer> resolution, double file_size, float consumption) {
+        this(false, LocalDateTime.now(), device_name, "OOP_SmartDevices", consumption * resolution.getL() * resolution.getR(), 2.5 * resolution.getL() * resolution.getR(), new HashSet<>(), resolution, file_size);
+    }
+
+    public SmartCamera(boolean is_on,LocalDateTime installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log, Pair<Integer,Integer> resolution, double file_size) {
+        super(is_on, installed_on, device_name, brand, power_usage,base_cost,log,0);
         this.resolution = resolution;
         this.file_size = file_size;
 
     }
     
-    public SmartCamera(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,Set<State> log,double resolution, double file_size) {
-        super(device_id, is_on, installed_on, device_name, brand, power_usage,base_cost,log);
+    public SmartCamera(int device_id,boolean is_on,LocalDateTime installed_on,String device_name, String brand,double power_usage,double base_cost,Set<State> log,Pair<Integer,Integer> resolution, double file_size,int time_on) {
+        super(device_id, is_on, installed_on, device_name, brand, power_usage,base_cost,log,time_on);
         this.resolution = resolution;
         this.file_size = file_size;
     }
 
     public SmartCamera(SmartCamera o){
-		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getBase_cost(),o.getLog(),o.getResolution(), o.getFile_size());
+		this(o.getDevice_id(), o.getIs_on(),o.getInstalled_on(), o.getDevice_name(), o.getBrand(),o.getPower_usage(),o.getBase_cost(),o.getLog(),o.getResolution(), o.getFile_size(),o.getTime_on());
     }
 
-    public double getResolution() {
+    public Pair<Integer,Integer> getResolution() {
         return this.resolution;
     }
 
-    public void setResolution(double resolution) {
+    public void setResolution(Pair<Integer,Integer> resolution) {
         this.resolution = resolution;
     }
 
@@ -49,16 +54,6 @@ public class SmartCamera extends SmartDevice{
 
     public void setFile_size(double file_size) {
         this.file_size = file_size;
-    }
-
-    public SmartCamera resolution(double resolution) {
-        setResolution(resolution);
-        return this;
-    }
-
-    public SmartCamera file_size(double file_size) {
-        setFile_size(file_size);
-        return this;
     }
     
     public boolean equals(Object o) {
@@ -84,7 +79,7 @@ public class SmartCamera extends SmartDevice{
     }
 
     public double getPower_usage() {
-		return super.getPower_usage()*(this.getFile_size()*0.1)*(this.getResolution()*0.05);
+		return super.getPower_usage()*(this.getFile_size()*0.1)*(this.getResolution().getL() * this.getResolution().getR()*0.05);
 	}
 
 }

@@ -1,6 +1,5 @@
 package MVC_House_Sync;
 import java.util.Scanner;
-import java.util.Set;
 
 import Auxiliar.Pair;
 import Exceptions.Empty_House;
@@ -21,9 +20,16 @@ public class View{
     private final static int ENTRIES = 5;
     private final Scanner input = new Scanner(System.in);
 
+    public void loadingMenu(){
+        System.out.println("""
+                SimCity
+                    _by_HouseSync_
+                """);
+    }
+
     public int welcomeMenu(){
         System.out.println("""
-            Welcome to the Smart House Simulator, please select an option: 
+            Welcome, please select an option: 
             
             1 - Start 
             2 - Quit
@@ -41,7 +47,7 @@ public class View{
             3 - Create simulation
             4 - Present billing statistics
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -51,7 +57,7 @@ public class View{
         System.out.println("""
             Select an option:
             
-            1 - Create a simulation
+            1 - Create simulation
             2 - Import a simulation file
             
             0 - Back
@@ -60,7 +66,7 @@ public class View{
     }
 
     //menu set date -- first thing after selecting 'Create a simulation'
-    public LocalDate menu_SD(){
+    public LocalDateTime menu_SD(){
 
         return ask_input_l("Provide new date in format 'YYYY-MM-DD'.");
     }
@@ -72,7 +78,7 @@ public class View{
             1 - Advance 1 day
             2 - Advance to new date
             
-            0 - Quit
+            0 - Back
             """);
         return (input.nextInt());
     }
@@ -235,7 +241,7 @@ public class View{
         System.out.println(device_name + "\n");
     }
 
-    public void printDate (LocalDate initial_date, LocalDate final_date){
+    public void printDate (LocalDateTime initial_date, LocalDateTime final_date){
         System.out.println("Issued from" + initial_date.toString() + " to " + final_date.toString() + "\n");
     }
 
@@ -249,7 +255,7 @@ public class View{
     }
 
 
-    public void printFinalPrice(House house,LocalDate date, LocalDate date2){
+    public void printFinalPriceAproximation(House house,LocalDateTime date, LocalDateTime date2){
         double price = 0;
         try {
             price = house.getHouse_daily_Price() * date.until(date2,ChronoUnit.DAYS);
@@ -259,6 +265,20 @@ public class View{
         }
         System.out.println("Price to pay - " + price);
     }
+
+    public void printFinalPrice(House house){
+        double final_price = 0;
+        if(house.getDivisions().size()>0){
+            for(Divisions division : house.getDivisions()){
+                for(SmartDevice device : division.getDevices()){
+                    final_price += device.getPower_usage()*device.getTime_on();
+                }
+            }
+        }else System.out.println("The house is empty therefore doesn't have expenses." );
+        
+        System.out.println("Price to pay - " + final_price);
+    }
+
     public void viewHouses(Simulator simulator){
         int j = 0,i = 0;
         House houses[] = new House[simulator.getHouses().size()];
@@ -395,8 +415,14 @@ public class View{
         printDate(invoice.getInitial_date(), invoice.getFinal_date());
         printConsumption(house);
         printPricePerWatt(house);
-        printFinalPrice(house, invoice.getInitial_date(), invoice.getFinal_date());
+        printFinalPrice(house);
+        System.out.println("Aproximated price:");
+        printFinalPriceAproximation(house, invoice.getInitial_date(), invoice.getFinal_date());
         System.out.println("\n###################################\n\n");
+    }
+
+    public void print_s(String s){
+        System.out.println(s);
     }
 
     // ask user for a string:
@@ -423,13 +449,13 @@ public class View{
         return input.nextDouble();
     }
 
-    // ask user for a LocalDate
-    public LocalDate ask_input_l(String s){
+    // ask user for a LocalDateTime
+    public LocalDateTime ask_input_l(String s){
         System.out.println(s);
         String newS = input.nextLine();
 
         DateTimeFormatter f = DateTimeFormatter.ofPattern("YYYY-MM-DD");
-        LocalDate date = LocalDate.parse(newS, f);
+        LocalDateTime date = LocalDateTime.parse(newS, f);
 
         return date;
     }

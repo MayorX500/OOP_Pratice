@@ -1,9 +1,9 @@
 package MVC_House_Sync;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time. LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
-import java.util.Set;
 
 import Auxiliar.*;
 import Client.*;
@@ -22,7 +22,7 @@ public class Controler {
     public Controler(){
         Model m;
         try {
-            m = Parser.parse("logs.txt");
+            m = Parser.parse("../../../Resources/logs.txt");
         }
         catch (Wrong_Line e) {
             View.showException(e);
@@ -31,7 +31,7 @@ public class Controler {
         this.model = m;
         this.view = new View();
         this.unsavedChanges = false;
-        view.welcomeMenu();
+        view.loadingMenu();
     }
 
     //Create client
@@ -172,21 +172,23 @@ public class Controler {
             case 1:
                 float dimension = view.ask_input_f("Enter the dimension of the bulb:");
                 SmartDevice smartdevice1 = new SmartBulb(device_name, brand, dimension);
-                division.addDevice(smartdevice1);
+                division.addDevice(smartdevice1.clone());
                 break;
 
             case 2:
-                double resolution = view.ask_input_d("Enter the resolution of the camera:");
+                String resolution = view.ask_input_s("Enter the resolution of the camera in the following format (1234x1234):");
+                String resol = resolution.replaceAll("\\(", "").replaceAll("\\)","");
+                String[] real = resol.split("x");
                 double file_size = view.ask_input_d("Enter the size of the files on the camera:");
-                SmartDevice smartdevice2 = new SmartCamera(device_name, brand, resolution, file_size);
-                division.addDevice(smartdevice2);
+                SmartDevice smartdevice2 = new SmartCamera(device_name, brand, new Pair<Integer,Integer>(Integer.parseInt(real[0]),Integer.parseInt(real[1])), file_size);
+                division.addDevice(smartdevice2.clone());
                 break;
 
             case 3:
                 int volume = view.ask_input_i("Enter the volume of the speaker:");
                 String radio_info = view.ask_input_s("Enter the online radio on:");
-                SmartDevice smartdevice3 = new SmartSpeaker(device_name, brand, volume, radio_info);
-                division.addDevice(smartdevice3);
+                SmartDevice smartdevice3 = new SmartSpeaker(device_name, brand, volume, 15f, radio_info);
+                division.addDevice(smartdevice3.clone());
                 break;
 
             default:
@@ -211,7 +213,7 @@ public class Controler {
                     createSuppliers();
                     break;
                 case 0:
-                    exit = true;
+
                     break;
                 default:
                     View.unrecognizedCommandError();
@@ -221,34 +223,66 @@ public class Controler {
 
     }
 
-    public void firstMenu() throws Empty_Simulation{
-        int choice = view.welcomeMenu();
-        switch (choice) {
-            case 1:
-                addTimeMenu_2();
-                break;
-            case 2:
-                addHouseMenu_2();
-                break;
-            case 3:
-                crSimMenu_2();
-                break;
-            case 4:
-            //Present billing statistics
-                int choice2 = view.pageHouses(this.model.getSimulator());
-                House houses[] = new House[this.model.getSimulator().getHouses().size()];
-                this.model.getSimulator().getHouses().toArray(houses);
-                Address address = houses[choice2].getAddress();
-                view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);
-                break;
-            case 0:
-                System.out.println("Thank you for choosing Smart House Simulator. We hope to see you again soon.");
-                break;
-            default:
-                View.unrecognizedCommandError();
-                break;
+    public void loadingMenu_controler(){
+        boolean flag = true;
+        while(flag) {
+            if(unsavedChanges){
+                String saves = view.ask_input_s("There are some unsaved changes, Do you wish to save them (Yes/No):");
+                switch (saves){
+                    case "Yes","Y","yes","y" -> {
+                        //exportSimulationMenu();
+                        unsavedChanges = false;
+                        view.print_s("Closing SimCity.");
+                        flag = false;
+                    }
+                    case "No","no","N","n" ->{
+                        view.print_s("Closing SimCity.");
+                        flag = false;
+                    }
+                    default -> {  
+                        flag = true;
+                    }
+                }
+            }
         }
+    }
 
+    public void billing_menu()throws Empty_Simulation{
+        if(this.model.getSimulator().getSuppliers().size()>0){
+            int choice2 = view.pageHouses(this.model.getSimulator());
+            House houses[] = new House[this.model.getSimulator().getHouses().size()];
+            this.model.getSimulator().getHouses().toArray(houses);
+            Address address = houses[choice2].getAddress();
+            view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);        
+        }else throw new Empty_Simulation(this.model.getSimulator().getHouses().toString());
+    }
+
+    public void firstMenu() throws Empty_Simulation{
+        boolean flag = true;
+        while(flag) {
+            int choice = view.baseMenu();
+            switch (choice) {
+                case 1:
+                    addTimeMenu_2();
+                    break;
+                case 2:
+                    addHouseMenu_2();
+                    break;
+                case 3:
+                    crSimMenu_2();
+                    break;
+                case 4:
+                    billing_menu();
+                    break;
+                case 0:
+                    loadingMenu_controler();
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
     }
 
     public void addTimeMenu_2() {
@@ -258,13 +292,31 @@ public class Controler {
             switch (choice) {
                 case 1:
                     this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusDays(1));
+                    try{
+                        for(int i = 0; i<24;i++)
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
+                    catch(Empty_House empty_hous){View.showException(empty_hous);}
+                    catch(Empty_Division empty_div){View.showException(empty_div);}
                     break;
                 case 2:
-                    LocalDate date = LocalDate.of(view.menu_SD().getYear(), view.menu_SD().getMonth(), view.menu_SD().getDayOfMonth());
-                    this.model.getSimulator().setSimulation_date(date);
+                    LocalDateTime ask = view.menu_SD();
+                    LocalDateTime date =  LocalDateTime.of(ask.getYear(), ask.getMonth(), ask.getDayOfMonth(), ask.getHour(), ask.getMinute(), ask.getSecond());
+                    long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), date);
+                    try{
+                        for(int i = 0; i<diff;i++)
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
+                    catch(Empty_House empty_hous){View.showException(empty_hous);}
+                    catch(Empty_Division empty_div){View.showException(empty_div);}                    this.model.getSimulator().setSimulation_date(date);
                     break;
                 case 0:
-                    flag = false;
+                    try{firstMenu();}
+                    catch(Empty_Simulation e){
+                        View.showException(e);
+                    }
                     break;
                 default:
                     View.unrecognizedCommandError();
@@ -296,7 +348,10 @@ public class Controler {
                     view.pageHouses(this.model.getSimulator());
                     break;
                 case 0:
-                    flag = false;
+                    try{firstMenu();}
+                    catch(Empty_Simulation e){
+                        View.showException(e);
+                    }
                     break;
                 default:
                     View.unrecognizedCommandError();
@@ -402,7 +457,7 @@ public class Controler {
             int choice = view.menu_EditAddress();
             switch(choice){
                 case 1:
-                    String city = view.ask_input_s("Entere the name of the city:");
+                    String city = view.ask_input_s("Enter the name of the city:");
                     address.setCity(city);
                     break;
                 case 2:
@@ -464,7 +519,10 @@ public class Controler {
                     importSimulatMenu();
                     break;
                 case 0:
-                    flag = false;
+                    try{firstMenu();}
+                    catch(Empty_Simulation e){
+                        View.showException(e);
+                    }
                     break;
                 default:
                     View.unrecognizedCommandError();
@@ -476,7 +534,7 @@ public class Controler {
     //EXPORT
     public void exportSimulationMenu() {
         try {
-            FileHandler.exportModelToFile(this.model, view.ask_input_s("Qual o nome do ficheiro?"));
+            FileHandler.exportModelToFile(this.model, view.ask_input_s("Name of the file:"));
             this.unsavedChanges = false;
         }
         catch (IOException e) {
@@ -486,8 +544,9 @@ public class Controler {
 
     //IMPORT
     public void importSimulatMenu() {
+        String file = view.ask_input_s("Name of the file:");
         try {
-            this.model = FileHandler.importModelFromFile(view.ask_input_s("Qual o nome do ficheiro?"));
+            this.model = FileHandler.importModelFromFile(file);
         }
         catch (IOException | ClassNotFoundException e) {
             View.showException(e);

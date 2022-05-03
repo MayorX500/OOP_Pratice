@@ -1,6 +1,6 @@
 package Simulator;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import House.Address;
 
@@ -8,18 +8,18 @@ public class Invoice extends Simulator{
     private double mensal_consum;
     private int id;
     private Address address;
-    private LocalDate initial_date;
-    private LocalDate final_date;
+    private LocalDateTime initial_date;
+    private LocalDateTime final_date;
 
     public Invoice() {
-        this(0, 0, new Address(), LocalDate.now(), LocalDate.now());
+        this(0, 0, new Address(), LocalDateTime.now(), LocalDateTime.now());
     }
 
     public Invoice(Invoice o){
         this(o.getMensal_consum(), o.getId(), o.getAddress(), o.getInitial_date(), o.getFinal_date());
     }
 
-    public Invoice(double mensal_consum, int id, Address address, LocalDate initial_date, LocalDate final_date){
+    public Invoice(double mensal_consum, int id, Address address, LocalDateTime initial_date, LocalDateTime final_date){
         this.mensal_consum = mensal_consum;
         this.id = id;
         this.address = address;
@@ -51,19 +51,19 @@ public class Invoice extends Simulator{
         this.address = address;
     }
 
-    public LocalDate getInitial_date() {
+    public LocalDateTime getInitial_date() {
         return this.initial_date;
     }
 
-    public void setInitial_date(LocalDate initial_date) {
+    public void setInitial_date(LocalDateTime initial_date) {
         this.initial_date = initial_date;
     }
 
-    public LocalDate getFinal_date() {
+    public LocalDateTime getFinal_date() {
         return this.final_date;
     }
 
-    public void setFinal_date(LocalDate final_date) {
+    public void setFinal_date(LocalDateTime final_date) {
         this.final_date = final_date;
     }
 
@@ -82,12 +82,12 @@ public class Invoice extends Simulator{
         return this;
     }
 
-    public Invoice initial_date(LocalDate initial_date) {
+    public Invoice initial_date(LocalDateTime initial_date) {
         setInitial_date(initial_date);
         return this;
     }
 
-    public Invoice final_date(LocalDate final_date) {
+    public Invoice final_date(LocalDateTime final_date) {
         setFinal_date(final_date);
         return this;
     }

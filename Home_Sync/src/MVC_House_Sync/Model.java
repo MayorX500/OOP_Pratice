@@ -21,6 +21,13 @@ public class Model implements Serializable{
     public Simulator getSimulator(){
         return this.simulator.clone();
     }
+    public void setSimulator(Simulator s){
+        this.simulator = s;
+    }
+
+    public void addHouse(House h) {
+        this.simulator.addHouse(h);
+    }
 
     //public void newDate(){}//avançar tempo
 

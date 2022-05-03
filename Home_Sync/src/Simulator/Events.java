@@ -1,25 +1,39 @@
 package Simulator;
 
-public class Events {
-    private int loops;
+import java.time.LocalDateTime;
 
+public class Events {
+    private String event;
+    private LocalDateTime time;
+
+    public Events(Events e) {
+        this(e.getEvent(),e.getTime());
+    }
 
     public Events() {
-        this(0);
+        this("",LocalDateTime.now());
     }
 
-    public Events(int loops) {
-        this.loops = loops;
+    public Events(String s, LocalDateTime d) {
+        this.event = s;
+        this.time = d;
     }
 
-    public int getLoops() {
-        return this.loops;
+    public String getEvent() {
+        return this.event;
     }
 
-    public void setLoops(int loops) {
-        this.loops = loops;
+    public void setEvent(String event) {
+        this.event = event;
     }
 
+    public LocalDateTime getTime() {
+        return this.time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -29,17 +43,19 @@ public class Events {
             return false;
         }
         Events events = (Events) o;
-        return loops == events.loops;
+        return this.event.equals(events.event) && this.time.equals(events.time);
     }
 
+    @Override
     public Events clone(){
-        return new Events(this.getLoops());
+        return new Events(this);
     }
 
     @Override
     public String toString() {
         return "{" +
-            " loops='" + getLoops() + "'" +
+            " event='" + getEvent() + "'" +
+            ", time='" + getTime() + "'" +
             "}";
     }
 

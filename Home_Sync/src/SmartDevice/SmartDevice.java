@@ -1,6 +1,6 @@
 package SmartDevice;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -14,14 +14,15 @@ public class SmartDevice {
 	private UUID _uuid_ ;
 	private int device_id;
 	private boolean is_on;
-	private LocalDate installed_on;
+	private LocalDateTime installed_on;
 	private String device_name;
 	private String brand;
 	private double power_usage;
 	private double base_cost;
 	private Set<State> log;
+	private int time_on = 0;
 
-	public SmartDevice(UUID uuid, int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand, double power_usage, double base_cost, Set<State> log){
+	public SmartDevice(UUID uuid, int device_id,boolean is_on,LocalDateTime installed_on,String device_name, String brand, double power_usage, double base_cost, Set<State> log, int time_on){
 		this._uuid_= uuid;
 		this.device_id = device_id;
 		this.is_on=is_on;
@@ -31,18 +32,19 @@ public class SmartDevice {
 		this.power_usage=power_usage;
 		this.base_cost=base_cost;
 		this.log=log;
+		this.time_on = time_on;
 	}
 
-	public SmartDevice(int device_id,boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage,double base_cost,Set<State> log){
-		this(UUID.randomUUID(), device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log);
+	public SmartDevice(int device_id,boolean is_on,LocalDateTime installed_on,String device_name, String brand,double power_usage,double base_cost,Set<State> log, int time_on){
+		this(UUID.randomUUID(), device_id, is_on, installed_on, device_name, brand, power_usage, base_cost, log, time_on);
 	}
 
-	public SmartDevice(boolean is_on,LocalDate installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log){
-		this(count.incrementAndGet(), is_on, installed_on, device_name, brand, power_usage, base_cost, log); 
+	public SmartDevice(boolean is_on,LocalDateTime installed_on,String device_name, String brand,double power_usage, double base_cost, Set<State> log, int time_on){
+		this(count.incrementAndGet(), is_on, installed_on, device_name, brand, power_usage, base_cost, log, time_on); 
 	}
   
 	public SmartDevice(){
-		this(false,LocalDate.now(), "SmartDevice", "Brand", 0.0, 0.0, new HashSet<>());
+		this(false,LocalDateTime.now(), "SmartDevice", "Brand", 0.0, 0.0, new HashSet<>(),0);
 	}
   
 	public SmartDevice(SmartDevice o){
@@ -54,7 +56,8 @@ public class SmartDevice {
 			o.getBrand(),
 			o.getPower_usage(),
 			o.getBase_cost(),
-			o.getLog());
+			o.getLog(),
+			o.getTime_on());
 	}
 
 	public UUID getUUID() {
@@ -86,11 +89,11 @@ public class SmartDevice {
 		this.is_on = is_on;
 	}
 
-	public LocalDate getInstalled_on(){
+	public LocalDateTime getInstalled_on(){
 		return this.installed_on;
 	}
 
-	public void setInstalled_on(LocalDate installed_on){
+	public void setInstalled_on(LocalDateTime installed_on){
 		this.installed_on = installed_on;
 	}
 
@@ -134,6 +137,19 @@ public class SmartDevice {
 		this.log = log;
 	}
 
+	public int getTime_on(){
+		return this.time_on;
+	}
+	
+	public void setTime_on(int time_on){
+		this.time_on = time_on;
+	}
+
+
+	public void add_time_on(int plus){
+		this.time_on = getTime_on() + plus;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -150,7 +166,8 @@ public class SmartDevice {
 			this.brand.equals(smartDevice.brand) &&
 			this.power_usage == smartDevice.power_usage &&
 			this.base_cost == smartDevice.getBase_cost() &&
-			this.log.equals(smartDevice.getLog()));
+			this.log.equals(smartDevice.getLog()) &&
+			this.time_on == smartDevice.getTime_on());
 	}
 
 	@Override
@@ -169,6 +186,7 @@ public class SmartDevice {
 			", brand='" + getBrand() + "'" +
 			", power_usage='" + getPower_usage() + "'" +
 			", device_log='" + getLog().toString() + "'" +
+			", time_on='" + getTime_on() + "'" +
 			"}";
 	}
 
