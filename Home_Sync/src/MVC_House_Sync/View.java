@@ -20,6 +20,11 @@ public class View{
     private final static int ENTRIES = 5;
     private final Scanner input = new Scanner(System.in);
 
+
+    public View() {
+    }
+
+
     public void loadingMenu(){
         System.out.println("""
                 SimCity
@@ -266,16 +271,8 @@ public class View{
         System.out.println("Price to pay - " + price);
     }
 
-    public void printFinalPrice(House house){
-        double final_price = 0;
-        if(house.getDivisions().size()>0){
-            for(Divisions division : house.getDivisions()){
-                for(SmartDevice device : division.getDevices()){
-                    final_price += device.getPower_usage()*device.getTime_on();
-                }
-            }
-        }else System.out.println("The house is empty therefore doesn't have expenses." );
-        
+    public void printFinalPrice(Double final_usage,Suppliers supplier){
+        double final_price = final_usage*supplier.getSupplier_rate();
         System.out.println("Price to pay - " + final_price);
     }
 
@@ -408,14 +405,14 @@ public class View{
         return ask_input_i("Please choose a SmartDevice");
     }
 
-    public void invoice(Invoice invoice,House house){
+    public void invoice(Invoice invoice,House house,double final_usage){
         System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
         printDate(invoice.getInitial_date(), invoice.getFinal_date());
         printConsumption(house);
         printPricePerWatt(house);
-        printFinalPrice(house);
+        printFinalPrice(final_usage,house.getSupplier());
         System.out.println("Aproximated price:");
         printFinalPriceAproximation(house, invoice.getInitial_date(), invoice.getFinal_date());
         System.out.println("\n###################################\n\n");
@@ -459,11 +456,6 @@ public class View{
 
         return date;
     }
-
-
-
-
-
 
     //STATIC DEFINITIONS
     public static void unrecognizedCommandError() {

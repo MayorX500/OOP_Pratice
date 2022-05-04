@@ -10,21 +10,23 @@ public class Invoice extends Simulator{
     private Address address;
     private LocalDateTime initial_date;
     private LocalDateTime final_date;
+    private double final_usage;
 
     public Invoice() {
-        this(0, 0, new Address(), LocalDateTime.now(), LocalDateTime.now());
+        this(0, 0, new Address(), LocalDateTime.now(), LocalDateTime.now(),0);
     }
 
     public Invoice(Invoice o){
-        this(o.getMensal_consum(), o.getId(), o.getAddress(), o.getInitial_date(), o.getFinal_date());
+        this(o.getMensal_consum(), o.getId(), o.getAddress(), o.getInitial_date(), o.getFinal_date(),o.getFinal_Price());
     }
 
-    public Invoice(double mensal_consum, int id, Address address, LocalDateTime initial_date, LocalDateTime final_date){
+    public Invoice(double mensal_consum, int id, Address address, LocalDateTime initial_date, LocalDateTime final_date, double final_usage){
         this.mensal_consum = mensal_consum;
         this.id = id;
         this.address = address;
         this.initial_date = initial_date;
         this.final_date = final_date;
+        this.final_usage = final_usage;
     }
 
     public double getMensal_consum() {
@@ -67,29 +69,12 @@ public class Invoice extends Simulator{
         this.final_date = final_date;
     }
 
-    public Invoice mensal_consum(double mensal_consum) {
-        setMensal_consum(mensal_consum);
-        return this;
+    public double getFinal_Price(){
+        return this.final_usage;
     }
 
-    public Invoice id(int id) {
-        setId(id);
-        return this;
-    }
-
-    public Invoice address(Address address) {
-        setAddress(address);
-        return this;
-    }
-
-    public Invoice initial_date(LocalDateTime initial_date) {
-        setInitial_date(initial_date);
-        return this;
-    }
-
-    public Invoice final_date(LocalDateTime final_date) {
-        setFinal_date(final_date);
-        return this;
+    public void eetFinal_Price(double final_usage){
+        this.final_usage = final_usage;
     }
 
     @Override
@@ -100,6 +85,7 @@ public class Invoice extends Simulator{
             ", address='" + getAddress() + "'" +
             ", initial_date='" + getInitial_date() + "'" +
             ", final_date='" + getFinal_date() + "'" +
+            ", final_usage='" + getFinal_Price() + "'" +
             "}";
     }
 

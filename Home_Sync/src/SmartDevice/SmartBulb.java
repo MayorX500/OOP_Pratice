@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Auxiliar.Consumption;
 import Auxiliar.State;
 
-public class SmartBulb extends SmartDevice{
+public class SmartBulb extends SmartDevice implements Consumption{
 	private Tonality color;
 	private  float dimension;
 	

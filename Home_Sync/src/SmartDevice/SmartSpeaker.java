@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Auxiliar.Consumption;
 import Auxiliar.State;
 
-public class SmartSpeaker extends SmartDevice {
+public class SmartSpeaker extends SmartDevice implements Consumption{
     private int volume;
     private String radio_info;
 

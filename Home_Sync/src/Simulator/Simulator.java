@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Auxiliar.Consumption;
+import Auxiliar.Pair;
 import Exceptions.Empty_Division;
 import Exceptions.Empty_House;
 import Exceptions.Empty_Simulation;
 import House.*;
+import MVC_House_Sync.View;
 import SmartDevice.SmartDevice;
 import Suppliers.*;
 
@@ -199,5 +202,41 @@ public class Simulator {
             }
         }
         else throw new Empty_Simulation(this.toString());
+    }
+
+    public Set<Pair<Integer,Double>> time_price(House h) throws Empty_Division, Empty_House{
+        Set<Pair<Integer,Double>> out = new HashSet<>();
+        if(h.getDivisions().size()>0){
+            for(Divisions div: h.getDivisions()){
+                if(div.getDevices().size()>0){
+                    for(SmartDevice device : div.getDevices()){
+                        Consumption a = (Consumption)device;
+                        Pair<Integer,Double> price = new Pair<Integer,Double>(device.getTime_on(), a.getPower_usage());
+                        out.add(price.clone());
+                    }
+                }else throw new Empty_Division(div.getDivision_name());
+            }
+        }else throw new Empty_House(h.getAddress().toString());
+        return out;
+    }
+
+    public double create_invoice_final_usage(House house) throws Empty_House{
+        double final_usage = 0;
+        try{
+            Set<Pair<Integer,Double>> prices = time_price(house);
+            if(prices.size()>0){
+                for(Pair<Integer,Double> pair : prices){
+                    final_usage += pair.getL()*pair.getR();
+                }
+            }else throw new Empty_House(house.getAddress().toString());
+        }
+        catch(Empty_House empty_house){
+            View.showException(empty_house);
+        }
+        catch(Empty_Division empty_division){
+            View.showException(empty_division);
+        }
+
+        return final_usage;
     }
 }

@@ -33,7 +33,6 @@ public class Parser {
         House lasth = null;
         Divisions lastd = null;
         String[] splitLine;
-
         for (String line : lines) {
             splitLine = line.split(":", 2);
             switch (splitLine[0]) {
@@ -121,7 +120,7 @@ public class Parser {
     public static List<String> readFile(String Filename) {
         List<String> lines;
         try { lines = Files.readAllLines(Paths.get(Filename), StandardCharsets.UTF_8); }
-        catch(IOException exc) { lines = new ArrayList<>(); }
+        catch(IOException exc) { View.showException(exc); lines = new ArrayList<>(); }
         return lines;
     }
 }

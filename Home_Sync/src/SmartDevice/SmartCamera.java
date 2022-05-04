@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import Auxiliar.Consumption;
 import Auxiliar.Pair;
 import Auxiliar.State;
 
-public class SmartCamera extends SmartDevice{
+public class SmartCamera extends SmartDevice implements Consumption{
     private Pair<Integer,Integer> resolution;
     private double file_size;
 

@@ -16,20 +16,19 @@ import Suppliers.*;
 
 public class Controler {
     private Model model;
-    private View view;
-    private boolean unsavedChanges; 
+    private View view = new View();
+    private boolean unsavedChanges = false; 
 
     public Controler(){
         Model m;
         try {
-            m = Parser.parse("../../../Resources/logs.txt");
+            m = Parser.parse("../../Resources/logs.txt");
         }
         catch (Wrong_Line e) {
             View.showException(e);
             m = new Model();
         }
         this.model = m;
-        this.view = new View();
         this.unsavedChanges = false;
         view.loadingMenu();
     }
@@ -253,7 +252,12 @@ public class Controler {
             House houses[] = new House[this.model.getSimulator().getHouses().size()];
             this.model.getSimulator().getHouses().toArray(houses);
             Address address = houses[choice2].getAddress();
-            view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2]);        
+            double fu=0;
+            try{model.getSimulator().create_invoice_final_usage(houses[choice2]);}
+            catch(Empty_House e){
+                View.showException(e);
+            }
+            view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2],fu);        
         }else throw new Empty_Simulation(this.model.getSimulator().getHouses().toString());
     }
 
