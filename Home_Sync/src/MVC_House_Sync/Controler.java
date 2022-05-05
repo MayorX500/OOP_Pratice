@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time. LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Set;
 
 import Auxiliar.*;
 import Client.*;
@@ -17,10 +18,11 @@ import Suppliers.*;
 public class Controler {
     private Model model;
     private View view = new View();
-    private boolean unsavedChanges = false; 
+    private boolean unsavedChanges; 
 
     public Controler(){
-        Model m;
+        Model m = new Model();
+        
         try {
             m = Parser.parse("../../Resources/logs.txt");
         }
@@ -28,8 +30,9 @@ public class Controler {
             View.showException(e);
             m = new Model();
         }
+        
         this.model = m;
-        this.unsavedChanges = false;
+        this.unsavedChanges = true;
         view.loadingMenu();
     }
 
@@ -37,6 +40,8 @@ public class Controler {
     public Client createClient() {
         String name = view.ask_input_s("Enter the name of the new Client:");
         int nif = view.ask_input_i("Enter the NIF of the new Client:");
+        this.unsavedChanges = false;
+
         return new Client(name, nif);
     }
 
@@ -48,6 +53,7 @@ public class Controler {
         int l = view.ask_input_i("Enter the first four numbers of the post-code:");
         int r = view.ask_input_i("Enter the last three numbers of the post-code:");
         Pair<Integer, Integer> post_code = new Pair<Integer, Integer>(l, r);
+        this.unsavedChanges = false;
 
         return new Address(street, street_number, city, post_code);
     }
@@ -60,6 +66,7 @@ public class Controler {
         float tax = tax_int / 100;
         int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
         float out_of_range_tax = out_of_range_tax_int / 100;
+        this.unsavedChanges = false;
 
         return new Suppliers(supplier_name, base_price, tax, out_of_range_tax);
     }
@@ -79,11 +86,13 @@ public class Controler {
             }
         }
         else throw new Empty_Simulation("Empty simulator");
+        this.unsavedChanges = false;
 
     }
     
     // create House
     public House createHouse(Client owner, Address address, Suppliers supplier) {
+        this.unsavedChanges = false;
         return new House(address, owner, new HashSet<>(), supplier, 0);
     }
 
@@ -94,12 +103,11 @@ public class Controler {
     }
 
     // create Divisions
-    public House createDivision(House house) {
+    public Divisions createDivision() {
         String division_name = view.ask_input_s("Enter the name of the division:");
         Divisions division = new Divisions(division_name, new HashSet<>());
-        createDevice(division);
-        house.addDivision(division);
-        return house;
+        this.unsavedChanges = false;
+        return division;
     }
 
     // edit Divisions
@@ -108,32 +116,36 @@ public class Controler {
         Divisions divisions[] = new Divisions[house.getDivisions().size()];
         this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
               
-        int choice2 = view.menu_EditDivision();
+        String choice2 = view.menu_EditDivision();
         switch(choice2) {
-            case 1:
+            case "1":
                 String division_name = view.ask_input_s("Enter the new name for the division:");
                 divisions[choice].setDivision_name(division_name);
                 view.menu_EditDivision();
                 break;
-            case 2:
+            case "2":
                 int choice3 = view.pageDevices(divisions[choice]);
                 SmartDevice devices[] = new SmartDevice[this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().size()];
                 this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
                 
                 editDevice(devices[choice3]);
-                view.menu_EditDevice();         
+                view.menu_EditDevice();   
+                break;
+            default:
+                break;      
             }
+        this.unsavedChanges = false;
         return house;
     }
 
     private void editDevice(SmartDevice device) {
-        int choice = view.menu_EditDevice();
+        String choice = view.menu_EditDevice();
         switch(choice){
-            case 1:
+            case "1":
                 String device_name = view.ask_input_s("Enter the new name of the device:");
                 device.setDevice_name(device_name);
                 break;
-            case 2:
+            case "2":
                 if(device.getIs_on()==true) {
                     System.out.println("The device is now off");
                     device.setIs_on(false);
@@ -142,22 +154,26 @@ public class Controler {
                     device.setIs_on(true);
                 }
                 break;
-            case 3:
+            case "3":
                 String brand = view.ask_input_s("Enter the new brand of the device:");
                 device.setBrand(brand);
                 break;
-            case 4:
+            case "4":
                 double power_usage = view.ask_input_d("Enter the new power usage of the device:");
                 device.setPower_usage(power_usage);
                 break;
-            case 5:
+            case "5":
                 double base_cost = view.ask_input_d("Enter the new base cost of the device:");
                 device.setBase_cost(base_cost);
                 break;
-            case 0:
+            case "0":
             
                 break;
+            default:
+                break;
         }
+        this.unsavedChanges = false;
+
     }
 
     // create SmartDevices
@@ -191,27 +207,28 @@ public class Controler {
                 break;
 
             default:
-                System.out.println("Error");
+            View.unrecognizedCommandError();
                 break;
         }
+        this.unsavedChanges = false;
         return division;
     }
 
     public void createSimulation() {
         boolean exit = false;
         while (!exit) {
-            int choice = view.menu_C();
+            String choice = view.menu_C();
             switch (choice) {
-                case 1:
+                case "1":
                     createClient();
                     break;
-                case 2:
+                case "2":
                     createAddress();
                     break;
-                case 3:
+                case "3":
                     createSuppliers();
                     break;
-                case 0:
+                case "0":
 
                     break;
                 default:
@@ -225,24 +242,25 @@ public class Controler {
     public void loadingMenu_controler(){
         boolean flag = true;
         while(flag) {
-            if(unsavedChanges){
-                String saves = view.ask_input_s("There are some unsaved changes, Do you wish to save them (Yes/No):");
-                switch (saves){
-                    case "Yes","Y","yes","y" -> {
-                        //exportSimulationMenu();
-                        unsavedChanges = false;
-                        view.print_s("Closing SimCity.");
-                        flag = false;
-                    }
-                    case "No","no","N","n" ->{
-                        view.print_s("Closing SimCity.");
-                        flag = false;
-                    }
-                    default -> {  
-                        flag = true;
-                    }
-                }
+            View.clear();
+            String saves = view.ask_input_s("There are some unsaved changes, Do you wish to save them (Yes/No):");
+            switch (saves){
+                case "Yes","Y","yes","y" :
+                    exportSimulationMenu();
+                    unsavedChanges = false;
+                    view.print_s("Closing SimCity.");
+                    flag = false;
+                    break;
+                case "No","no","N","n" :
+                    view.print_s("Closing SimCity.");
+                    flag = false;
+                    break;
+                default :
+                    break;
             }
+        }
+        if(!flag){
+            System.exit(0);
         }
     }
 
@@ -264,23 +282,28 @@ public class Controler {
     public void firstMenu() throws Empty_Simulation{
         boolean flag = true;
         while(flag) {
-            int choice = view.baseMenu();
+            String choice = view.baseMenu();
             switch (choice) {
-                case 1:
+                case "1":
                     addTimeMenu_2();
                     break;
-                case 2:
+                case "2":
                     addHouseMenu_2();
                     break;
-                case 3:
+                case "3":
                     crSimMenu_2();
                     break;
-                case 4:
+                case "4":
                     billing_menu();
                     break;
-                case 0:
-                    loadingMenu_controler();
-                    flag = false;
+                case "5":
+                    view.viewSuppliers(model.getSimulator());
+                    break;
+                case "0":
+                    if (!this.unsavedChanges) {
+                        loadingMenu_controler();
+                    }
+                    else System.exit(0);
                     break;
                 default:
                     View.unrecognizedCommandError();
@@ -292,9 +315,9 @@ public class Controler {
     public void addTimeMenu_2() {
         boolean flag = true;
         while(flag) {
-            int choice = view.addTimeMenu();
+            String choice = view.addTimeMenu();
             switch (choice) {
-                case 1:
+                case "1":
                     this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusDays(1));
                     try{
                         for(int i = 0; i<24;i++)
@@ -304,7 +327,7 @@ public class Controler {
                     catch(Empty_House empty_hous){View.showException(empty_hous);}
                     catch(Empty_Division empty_div){View.showException(empty_div);}
                     break;
-                case 2:
+                case "2":
                     LocalDateTime ask = view.menu_SD();
                     LocalDateTime date =  LocalDateTime.of(ask.getYear(), ask.getMonth(), ask.getDayOfMonth(), ask.getHour(), ask.getMinute(), ask.getSecond());
                     long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), date);
@@ -316,7 +339,7 @@ public class Controler {
                     catch(Empty_House empty_hous){View.showException(empty_hous);}
                     catch(Empty_Division empty_div){View.showException(empty_div);}                    this.model.getSimulator().setSimulation_date(date);
                     break;
-                case 0:
+                case "0":
                     try{firstMenu();}
                     catch(Empty_Simulation e){
                         View.showException(e);
@@ -332,26 +355,26 @@ public class Controler {
     public void addHouseMenu_2() throws Empty_Simulation {
         boolean flag = true;
         while(flag) {
-            int choice = view.houseMenu();
+            String choice = view.houseMenu();
             switch (choice) {
-                case 1:
-                    createHouse(view.menu_C());
+                case "1":
+                    createHouse();
                     break;
-                case 2:
+                case "2":
                     Address address = createAddress();
                     this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), address);
                     view.houseMenu();
                     break;
-                case 3:
+                case "3":
                     int choice2 = view.pageHouses(this.model.getSimulator());
                     House houses[] = new House[this.model.getSimulator().getHouses().size()];
                     this.model.getSimulator().getHouses().toArray(houses);
                     editHouseMenu(houses[choice2]);
                     break;
-                case 4:
-                    view.pageHouses(this.model.getSimulator());
+                case "4":
+                    view.viewHouses(this.model.getSimulator());
                     break;
-                case 0:
+                case "0":
                     try{firstMenu();}
                     catch(Empty_Simulation e){
                         View.showException(e);
@@ -364,23 +387,37 @@ public class Controler {
         }
     }
 
-    public void createHouse(int choice){
+    public void createHouse(){
         boolean flag = true;
+        Client c = new Client();
+        Address a = new Address();
+        Suppliers s = new Suppliers();
+        Set<Divisions> divs = new HashSet<>();
         while(flag) {
+            View.clear();
+            String choice = view.menu_C();
             switch (choice) {
-                case 1:
+                case "1":
                     //Create client
-                    createClient();
+                    c = createClient();
                     break;
-                case 2:
+                case "2":
                     //Create address
-                    createAddress();
+                    a = createAddress();
                     break;
-                case 3:
+                case "3":
                     //Create supplier
-                    createSuppliers();
+                    s = createSuppliers();
                     break;
-                case 0:
+                case "4":
+                    //Create supplier
+                    divs.add(createDivision());
+                    break;
+                case "9":
+                    flag = false;
+                    break;
+                case "0":
+                    model.addHouse(new House(a, c, divs , s, 0));
                     flag = false;
                     break;
                 default:
@@ -393,26 +430,26 @@ public class Controler {
     public void editHouseMenu(House house) throws Empty_Simulation{
         boolean flag = true;
         while(flag) {
-            int choice = view.menu_Edit();
+            String choice = view.menu_Edit();
             switch (choice) {
-                case 1:
+                case "1":
                     //Edit client
                     editClientMenu(house.getOwner());
                     break;
-                case 2:
+                case "2":
                     //Edit address
                     editAddressMenu(house.getAddress());
                     break;
-                case 3:
+                case "3":
                     //Edit supplier
                     editSuppliers(this.model.getSimulator());
                     break;
-                case 4:
+                case "4":
                     break;
-                case 5:
+                case "5":
                     view.pageDivision(house);
                     break;
-                case 0:
+                case "0":
                     flag = false;
                     break;
                 default:
@@ -425,27 +462,27 @@ public class Controler {
     public void editSuppliersMenu(Suppliers supplier){
         boolean flag = true;
         while(flag) {
-            int choice = view.menu_EditValues();
+            String choice = view.menu_EditValues();
             switch(choice){
-                case 1:
+                case "1":
                     String supplier_name = view.ask_input_s("Enter the name of the supplier:");
                     supplier.setSupplier_name(supplier_name);
                     break;
-                case 2:
+                case "2":
                     float base_price = view.ask_input_f("Enter the base price");
                     supplier.setBase_price(base_price);
                     break;
-                case 3:
+                case "3":
                     int tax_int = view.ask_input_i("Enter the tax percentage:");
                     float tax = tax_int / 100;
                     supplier.setTax(tax);
                     break;
-                case 4:
+                case "4":
                     int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
                     float out_of_range_tax = out_of_range_tax_int / 100;
                     supplier.setOut_of_range_tax(out_of_range_tax);
                     break;
-                case 0:
+                case "0":
                     flag = false;
                     break;
                 default:
@@ -458,27 +495,27 @@ public class Controler {
     public void editAddressMenu(Address address){
         boolean flag = true;
         while(flag) {
-            int choice = view.menu_EditAddress();
+            String choice = view.menu_EditAddress();
             switch(choice){
-                case 1:
+                case "1":
                     String city = view.ask_input_s("Enter the name of the city:");
                     address.setCity(city);
                     break;
-                case 2:
+                case "2":
                     String street = view.ask_input_s("Enter the name of the street:");
                     address.setStreet(street);
                     break;
-                case 3:
+                case "3":
                     int street_number = view.ask_input_i("Enter the number of the street:");
                     address.setStreet_number(street_number);
                     break;
-                case 4:
+                case "4":
                     int l = view.ask_input_i("Enter the first four numbers of the post-code:");
                     int r = view.ask_input_i("Enter the last three numbers of the post-code:");
                     Pair<Integer,Integer> post_code = new Pair<>(l,r);
                     address.setPost_code(post_code);
                     break;
-                case 0:
+                case "0":
                     flag = false;
                     break;
                 default:
@@ -491,17 +528,17 @@ public class Controler {
     public void editClientMenu(Client client){
         boolean flag = true;
         while(flag) {
-            int choice = view.menu_EditClient();
+            String choice = view.menu_EditClient();
             switch(choice){
-                case 1:
+                case "1":
                     String name = view.ask_input_s("Enter the name of the new Client:");
                     client.setClient_name(name);
                     break;
-                case 2:
+                case "2":
                     int nif = view.ask_input_i("Enter the NIF of the new Client:");
                     client.setClient_NIF(nif);
                     break;
-                case 0:
+                case "0":
                     flag = false;
                     break;
                 default:
@@ -514,15 +551,15 @@ public class Controler {
     public void crSimMenu_2() {
         boolean flag = true;
         while(flag) {
-            int choice = view.menu_CS();
+            String choice = view.menu_CS();
             switch (choice) {
-                case 1:
+                case "1":
                     view.menu_C();
                     break;
-                case 2:
+                case "2":
                     importSimulatMenu();
                     break;
-                case 0:
+                case "0":
                     try{firstMenu();}
                     catch(Empty_Simulation e){
                         View.showException(e);

@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 
 public class View{
 
-    private final static int ENTRIES = 5;
+    private final static int ENTRIES = 10;
     private final Scanner input = new Scanner(System.in);
 
 
@@ -32,33 +32,24 @@ public class View{
                 """);
     }
 
-    public int welcomeMenu(){
-        System.out.println("""
-            Welcome, please select an option: 
-            
-            1 - Start 
-            2 - Quit
-            """);
-        return (input.nextInt());
-    }
-
     //base menu
-    public int baseMenu(){
+    public String baseMenu(){
         System.out.println("""
             Select an option:
 
-            1 - Advance time
+            1 - Create simulation
             2 - Edit/add houses
-            3 - Create simulation
+            3 - Advance time
             4 - Present billing statistics
+            5 - Print Suppliers
             
-            0 - Back
+            0 - Quit
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
     //menu create a simulation or use one 
-    public int menu_CS(){
+    public String menu_CS(){
         System.out.println("""
             Select an option:
             
@@ -67,7 +58,7 @@ public class View{
             
             0 - Back
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
     //menu set date -- first thing after selecting 'Create a simulation'
@@ -76,7 +67,7 @@ public class View{
         return ask_input_l("Provide new date in format 'YYYY-MM-DD'.");
     }
 
-    public int addTimeMenu(){
+    public String addTimeMenu(){
         System.out.println("""
             Select an option:
 
@@ -85,12 +76,12 @@ public class View{
             
             0 - Back
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
 
     //menu when 'Edit/add houses' is selected
-    public int houseMenu(){
+    public String houseMenu(){
         System.out.println("""
             Select an option:
 
@@ -101,11 +92,11 @@ public class View{
             
             0 - Back
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
     //menu edit a house
-    public int menu_EH(){
+    public String menu_EH(){
         System.out.println("""
             Select an option:
 
@@ -115,24 +106,27 @@ public class View{
             
             0 - Back
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_C(){
+    public String menu_C(){
         System.out.println("""
             Select an option:
             
             1 - Create a client
             2 - Create an address
             3 - Create a supplier
-            4 - Create a division
+            4 - Add a division
             
-            0 - Save changes
+            0 - Create
+
+            Disclaimer:
+            If not all fields are filled, default values may be applied.
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_Edit(){
+    public String menu_Edit(){
         System.out.println("""
             Select an option:
             
@@ -144,10 +138,10 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_EditDivision(){
+    public String menu_EditDivision(){
         System.out.println("""
             Select an option:
             
@@ -156,10 +150,10 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_EditDevice(){
+    public String menu_EditDevice(){
         System.out.println("""
             Select an option:
             
@@ -171,10 +165,10 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_EditValues(){
+    public String menu_EditValues(){
         System.out.println("""
             Select an option:
             
@@ -185,10 +179,10 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_EditAddress(){
+    public String menu_EditAddress(){
         System.out.println("""
             Select an option:
             
@@ -199,10 +193,10 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
-    public int menu_EditClient(){
+    public String menu_EditClient(){
         System.out.println("""
             Select an option:
             
@@ -211,7 +205,7 @@ public class View{
             
             0 - Save changes
             """);
-        return (input.nextInt());
+        return (input.nextLine());
     }
 
     public void printAddress(Address a){
@@ -281,9 +275,13 @@ public class View{
         House houses[] = new House[simulator.getHouses().size()];
         simulator.getHouses().toArray(houses);
 		for(;i>=0 && i<houses.length;){
-			for(j = i;j<(i+ENTRIES);j++){
-                System.out.println("\n" + j + " - ");
-                printAddress(houses[j].getAddress());
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<houses.length;j++){
+                printAddress(j + " - " + houses[j].getAddress().getStreet(),
+                                        houses[j].getAddress().getStreet_number(),
+                                        houses[j].getAddress().getCity(),
+                                        houses[j].getAddress().getPost_code()
+                                        );
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
 			switch (d) {
@@ -313,9 +311,9 @@ public class View{
         Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
         simulator.getSuppliers().toArray(suppliers);
 		for(;i>=0 && i<suppliers.length;){
-			for(j = i;j<(i+ENTRIES);j++){
-                System.out.println("\n" + j + " - ");
-                printSupplier(suppliers[j]);
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<suppliers.length;j++){
+                printSupplier(j + " - " + suppliers[j].getSupplier_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
 			switch (d) {
@@ -345,8 +343,8 @@ public class View{
         Divisions division[] = new Divisions[house.getDivisions().size()];
         house.getDivisions().toArray(division);
 		for(;i>=0 && i<division.length;){
-			for(j = i;j<(i+ENTRIES);j++){
-                System.out.println("\n" + j + " - ");
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<division.length;j++){
                 printDivision(division[j].getDivision_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
@@ -378,8 +376,7 @@ public class View{
         SmartDevice device[] = new SmartDevice[division.getDevices().size()];
         division.getDevices().toArray(device);
 		for(;i>=0 && i<device.length;){
-			for(j = i;j<(i+ENTRIES);j++){
-                System.out.println("\n" + j + " - ");
+			for(j = i;j<(i+ENTRIES) && j<device.length;j++){
                 printDevice(device[j].getDevice_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
@@ -431,19 +428,19 @@ public class View{
     // ask user for a int:
     public int ask_input_i(String s){
         System.out.println(s);
-        return input.nextInt();
+        return Integer.parseInt(input.nextLine());
     }
 
     // ask user for a float:
     public float ask_input_f(String s){
         System.out.println(s);
-        return input.nextFloat();
+        return Float.parseFloat(input.nextLine());
     }
 
     // ask user for a double
     public double ask_input_d(String s){
         System.out.println(s);
-        return input.nextDouble();
+        return Double.parseDouble(input.nextLine());
     }
 
     // ask user for a LocalDateTime
@@ -462,6 +459,8 @@ public class View{
         System.out.println("Option not recognized.");
     
     }
+
+    public static void clear(){ System.out.print("\033\143"); }
 
     public static void showException (Exception e) {System.out.println(e.toString());}
 
