@@ -1,10 +1,11 @@
 package Suppliers;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.*;
 
 import Auxiliar.MyRandom;
 
-public class Suppliers {
+public class Suppliers implements Serializable {
 	private static final AtomicInteger count = new AtomicInteger(0);
 	private int supplier_id;
 	private String supplier_name;

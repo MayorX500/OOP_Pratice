@@ -117,6 +117,7 @@ public class View{
             2 - Create an address
             3 - Create a supplier
             4 - Add a division
+            9 - Cancel
             
             0 - Create
 
@@ -202,6 +203,19 @@ public class View{
             
             1 - Edit the client's name
             2 - Edit the client's nif
+            
+            0 - Save changes
+            """);
+        return (input.nextLine());
+    }
+
+    public String menu_chooseSupplier(){
+        System.out.println("""
+            Select an option:
+            
+            1 - Create Supplier
+            2 - Choose existing Supplier
+            2 - View Suppliers
             
             0 - Save changes
             """);

@@ -285,13 +285,13 @@ public class Controler {
             String choice = view.baseMenu();
             switch (choice) {
                 case "1":
-                    addTimeMenu_2();
+                    crSimMenu_2();
                     break;
                 case "2":
                     addHouseMenu_2();
                     break;
                 case "3":
-                    crSimMenu_2();
+                    addTimeMenu_2();
                     break;
                 case "4":
                     billing_menu();
@@ -407,7 +407,7 @@ public class Controler {
                     break;
                 case "3":
                     //Create supplier
-                    s = createSuppliers();
+                    s = chooseSupplier();
                     break;
                 case "4":
                     //Create supplier
@@ -425,6 +425,15 @@ public class Controler {
                     break;
             }
         }
+    }
+
+    public void chooseSupplier(){
+        boolean flag = true;
+        while(flag) {
+            String choice = view.menu_chooseSupplier();
+            switch (choice) {
+                
+            }
     }
 
     public void editHouseMenu(House house) throws Empty_Simulation{

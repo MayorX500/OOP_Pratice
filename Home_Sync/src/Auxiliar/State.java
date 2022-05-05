@@ -1,9 +1,10 @@
 package Auxiliar;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.*;
 
-public class State {
+public class State implements Serializable{
     private static final AtomicInteger count = new AtomicInteger(0);
 	private int log_id;
     private boolean old_state;

@@ -15,7 +15,7 @@ public class Model implements Serializable{
     }
 
     public Model(Model m){
-        this.simulator = simulator.clone();
+        this.simulator = m.getSimulator();
     }
 
     public Simulator getSimulator(){

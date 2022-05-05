@@ -1,5 +1,6 @@
 package Simulator;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ import MVC_House_Sync.View;
 import SmartDevice.SmartDevice;
 import Suppliers.*;
 
-public class Simulator {
+public class Simulator implements Serializable{
 	private Set<House> houses;
 	private LocalDateTime simulation_date;
 	private Set<Events> events;

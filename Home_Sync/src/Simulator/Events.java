@@ -1,8 +1,9 @@
 package Simulator;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Events {
+public class Events implements Serializable{
     private String event;
     private LocalDateTime time;
 

@@ -1,5 +1,6 @@
 package SmartDevice;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.concurrent.atomic.*;
 
 import Auxiliar.State;
 
-public class SmartDevice {
+public class SmartDevice implements Serializable {
 
 	private static final AtomicInteger count = new AtomicInteger(0);
 	private UUID _uuid_ ;

@@ -4,11 +4,12 @@ import Client.*;
 import Exceptions.*;
 import SmartDevice.*;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.*;
 
-public class House{
+public class House implements Serializable{
     private static final AtomicInteger count = new AtomicInteger(0); 
     private int house_id;
     private Address address;

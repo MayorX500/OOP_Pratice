@@ -1,8 +1,10 @@
 package House;
 
+import java.io.Serializable;
+
 import Auxiliar.Pair;
 
-public class Address {
+public class Address implements Serializable{
     private String street;
     private int street_number;
     private String city;

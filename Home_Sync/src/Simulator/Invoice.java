@@ -1,10 +1,11 @@
 package Simulator;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import House.Address;
 
-public class Invoice extends Simulator{
+public class Invoice implements Serializable{
     private double mensal_consum;
     private int id;
     private Address address;

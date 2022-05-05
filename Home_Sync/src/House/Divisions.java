@@ -1,5 +1,6 @@
 package House;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import Exceptions.*;
 import SmartDevice.*;
 
-public class Divisions {
+public class Divisions implements Serializable{
     private static final AtomicInteger count = new AtomicInteger(0); 
     private String division_name;
     private Set<SmartDevice> devices;

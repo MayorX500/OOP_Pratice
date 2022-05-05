@@ -1,8 +1,9 @@
 package Client;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Client {
+public class Client implements Serializable{
     private static final AtomicInteger count = new AtomicInteger(0);
     private int client_id;
     private String client_name;
