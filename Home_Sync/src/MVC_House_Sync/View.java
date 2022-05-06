@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import Auxiliar.Pair;
 import Exceptions.Empty_House;
+import Exceptions.Empty_Simulation;
 import House.Address;
 import House.Divisions;
 import House.House;
@@ -115,7 +116,7 @@ public class View{
             
             1 - Create a client
             2 - Create an address
-            3 - Create a supplier
+            3 - Add a supplier
             4 - Add a division
             9 - Cancel
             
@@ -215,7 +216,6 @@ public class View{
             
             1 - Create Supplier
             2 - Choose existing Supplier
-            2 - View Suppliers
             
             0 - Save changes
             """);
@@ -315,9 +315,11 @@ public class View{
 			}
 		}
     }
-    public int pageHouses(Simulator simulator){
-        viewHouses(simulator);
-        return ask_input_i("Please choose a Address");
+    public int pageHouses(Simulator simulator) throws Empty_Simulation{
+        if (simulator.getHouses().size() > 0){
+            viewHouses(simulator);
+            return ask_input_i("Please choose a Address");
+        } else throw new Empty_Simulation("Empty Simulator");
     }
 
     public void viewSuppliers(Simulator simulator){
@@ -347,9 +349,11 @@ public class View{
 			}
 		}
     }
-    public int pageSuppliers(Simulator simulator){
-        viewSuppliers(simulator);
-        return ask_input_i("Please choose a Supplier");
+    public int pageSuppliers(Simulator simulator) throws Empty_Simulation{
+        if (simulator.getSuppliers().size() > 0){
+            viewSuppliers(simulator);
+            return ask_input_i("Please choose a Supplier");
+        } else throw new Empty_Simulation("Empty Simulator");
     }
 
     public void viewDivisions(House house){
@@ -358,8 +362,8 @@ public class View{
         house.getDivisions().toArray(division);
 		for(;i>=0 && i<division.length;){
             View.clear();
-			for(j = i;j<(i+ENTRIES) && j<division.length;j++){
-                printDivision(division[j].getDivision_name());
+            for(j = i;j<(i+ENTRIES) && j<division.length;j++){
+                    printDivision(j + " - " + division[j].getDivision_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
 			switch (d) {
@@ -380,9 +384,11 @@ public class View{
 		}
     }
 
-    public int pageDivision(House house){
-        viewDivisions(house);
-        return ask_input_i("Please choose a Division");
+    public int pageDivision(House house) throws Empty_House{
+        if (house.getDivisions().size() > 0){
+            viewDivisions(house);
+            return ask_input_i("Please choose a division");
+        } else throw new Empty_House("Empty House");
     }
 
     public void viewDevices(Divisions division){

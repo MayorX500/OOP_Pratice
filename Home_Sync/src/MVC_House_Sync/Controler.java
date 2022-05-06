@@ -38,6 +38,7 @@ public class Controler {
 
     //Create client
     public Client createClient() {
+        View.clear();
         String name = view.ask_input_s("Enter the name of the new Client:");
         int nif = view.ask_input_i("Enter the NIF of the new Client:");
         this.unsavedChanges = false;
@@ -47,6 +48,7 @@ public class Controler {
 
     // create Address
     public Address createAddress() {
+        View.clear();
         String city = view.ask_input_s("Enter the name of the city:");
         String street = view.ask_input_s("Enter the name of the street:");
         int street_number = view.ask_input_i("Enter the number of the street:");
@@ -60,6 +62,7 @@ public class Controler {
 
     // create Suppliers
     public Suppliers createSuppliers() {
+        View.clear();
         String supplier_name = view.ask_input_s("Enter the name of the supplier:");
         float base_price = view.ask_input_f("Enter the base price");
         int tax_int = view.ask_input_i("Enter the tax percentage:");
@@ -73,6 +76,7 @@ public class Controler {
 
     // Edit Suppliers
     public void editSuppliers(Simulator simulator) throws Empty_Simulation {
+        View.clear();
         int choice = view.pageSuppliers(simulator);
         Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
         simulator.getSuppliers().toArray(suppliers);
@@ -96,14 +100,9 @@ public class Controler {
         return new House(address, owner, new HashSet<>(), supplier, 0);
     }
 
-    // edit House
-    public House editHouse(House house) {
-        
-        return house;
-    }
-
     // create Divisions
     public Divisions createDivision() {
+        View.clear();
         String division_name = view.ask_input_s("Enter the name of the division:");
         Divisions division = new Divisions(division_name, new HashSet<>());
         this.unsavedChanges = false;
@@ -112,10 +111,11 @@ public class Controler {
 
     // edit Divisions
     public House editDivision(House house) throws Empty_House {
+        View.clear();
         int choice = view.pageDivision(house);
         Divisions divisions[] = new Divisions[house.getDivisions().size()];
         this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
-              
+        View.clear();
         String choice2 = view.menu_EditDivision();
         switch(choice2) {
             case "1":
@@ -139,6 +139,7 @@ public class Controler {
     }
 
     private void editDevice(SmartDevice device) {
+        View.clear();
         String choice = view.menu_EditDevice();
         switch(choice){
             case "1":
@@ -178,6 +179,7 @@ public class Controler {
 
     // create SmartDevices
     public Divisions createDevice(Divisions division) {
+        View.clear();
         int select = view.ask_input_i(
                 "Choose the type of smart device:\n\t1 - SmartBulb\n\t2 - SmartCamera\n\t3 - SmartSpeaker");
         String device_name = view.ask_input_s("Enter the name of the new device:");
@@ -217,7 +219,9 @@ public class Controler {
     public void createSimulation() {
         boolean exit = false;
         while (!exit) {
+            View.clear();
             String choice = view.menu_C();
+            
             switch (choice) {
                 case "1":
                     createClient();
@@ -265,6 +269,7 @@ public class Controler {
     }
 
     public void billing_menu()throws Empty_Simulation{
+        View.clear();
         if(this.model.getSimulator().getSuppliers().size()>0){
             int choice2 = view.pageHouses(this.model.getSimulator());
             House houses[] = new House[this.model.getSimulator().getHouses().size()];
@@ -279,9 +284,10 @@ public class Controler {
         }else throw new Empty_Simulation(this.model.getSimulator().getHouses().toString());
     }
 
-    public void firstMenu() throws Empty_Simulation{
+    public void firstMenu() throws Empty_Simulation, Empty_House{
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.baseMenu();
             switch (choice) {
                 case "1":
@@ -312,9 +318,10 @@ public class Controler {
         }
     }
 
-    public void addTimeMenu_2() {
+    public void addTimeMenu_2() throws Empty_House{
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.addTimeMenu();
             switch (choice) {
                 case "1":
@@ -352,24 +359,27 @@ public class Controler {
         }
     }
 
-    public void addHouseMenu_2() throws Empty_Simulation {
+    public void addHouseMenu_2() throws Empty_Simulation, Empty_House {
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.houseMenu();
             switch (choice) {
                 case "1":
                     createHouse();
                     break;
                 case "2":
-                    Address address = createAddress();
-                    this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), address);
-                    view.houseMenu();
-                    break;
-                case "3":
                     int choice2 = view.pageHouses(this.model.getSimulator());
                     House houses[] = new House[this.model.getSimulator().getHouses().size()];
                     this.model.getSimulator().getHouses().toArray(houses);
-                    editHouseMenu(houses[choice2]);
+                    this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), houses[choice2].getAddress());
+                    view.houseMenu();
+                    break;
+                case "3":
+                    int choice3 = view.pageHouses(this.model.getSimulator());
+                    House houses2[] = new House[this.model.getSimulator().getHouses().size()];
+                    this.model.getSimulator().getHouses().toArray(houses2);
+                    editHouseMenu(houses2[choice3]);
                     break;
                 case "4":
                     view.viewHouses(this.model.getSimulator());
@@ -427,18 +437,47 @@ public class Controler {
         }
     }
 
-    public void chooseSupplier(){
+    public Suppliers chooseSupplier(){
         boolean flag = true;
+        Suppliers s = new Suppliers();
         while(flag) {
+            View.clear();
             String choice = view.menu_chooseSupplier();
+            
             switch (choice) {
-                
+                case "1":
+                    //Create Suplier
+                    s = createSuppliers();
+                    break;
+                case "2":
+                    // Choose existing suplier
+                    try { 
+                        int choice2 = view.pageSuppliers(this.model.getSimulator());
+                        Suppliers suppliers[] = new Suppliers[this.model.getSimulator().getSuppliers().size()];
+                        this.model.getSimulator().getSuppliers().toArray(suppliers);
+                        s = suppliers[choice2].clone();
+
+                    } catch(Empty_Simulation e){
+                        View.showException(e);
+                        view.print_s("Please create a new Supplier");
+                        s = createSuppliers();
+                    }
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
             }
+        }
+        return s;
     }
 
-    public void editHouseMenu(House house) throws Empty_Simulation{
+    public void editHouseMenu(House house) throws Empty_Simulation, Empty_House{
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.menu_Edit();
             switch (choice) {
                 case "1":
@@ -454,6 +493,7 @@ public class Controler {
                     editSuppliers(this.model.getSimulator());
                     break;
                 case "4":
+                    editDivision(house);
                     break;
                 case "5":
                     view.pageDivision(house);
@@ -471,6 +511,7 @@ public class Controler {
     public void editSuppliersMenu(Suppliers supplier){
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.menu_EditValues();
             switch(choice){
                 case "1":
@@ -504,6 +545,7 @@ public class Controler {
     public void editAddressMenu(Address address){
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.menu_EditAddress();
             switch(choice){
                 case "1":
@@ -537,6 +579,7 @@ public class Controler {
     public void editClientMenu(Client client){
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.menu_EditClient();
             switch(choice){
                 case "1":
@@ -557,9 +600,10 @@ public class Controler {
         }
     }
 
-    public void crSimMenu_2() {
+    public void crSimMenu_2() throws Empty_House, Empty_Simulation{
         boolean flag = true;
         while(flag) {
+            View.clear();
             String choice = view.menu_CS();
             switch (choice) {
                 case "1":
@@ -583,6 +627,7 @@ public class Controler {
 
     //EXPORT
     public void exportSimulationMenu() {
+        View.clear();
         try {
             FileHandler.exportModelToFile(this.model, view.ask_input_s("Name of the file:"));
             this.unsavedChanges = false;
@@ -594,7 +639,9 @@ public class Controler {
 
     //IMPORT
     public void importSimulatMenu() {
+        View.clear();
         String file = view.ask_input_s("Name of the file:");
+        
         try {
             this.model = FileHandler.importModelFromFile(file);
         }
