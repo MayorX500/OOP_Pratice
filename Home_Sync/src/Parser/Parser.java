@@ -21,6 +21,7 @@ import Suppliers.*;
 
 import com.github.javafaker.*;
 
+import Auxiliar.Auxiliar_Methods;
 import Auxiliar.MyRandom;
 import Auxiliar.Pair;
 
@@ -54,7 +55,7 @@ public class Parser {
                         }
                     }
                     Faker faker = new Faker(new Locale("pt"));
-                    Address add = new Address(faker.address().streetName(),
+                    Address add = new Address(Auxiliar_Methods.reverseName(faker.address().streetName()),
                                             Integer.parseInt(faker.address().buildingNumber()),
                                             faker.address().city(),
                                             new Pair<Integer,Integer>(

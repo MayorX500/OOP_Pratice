@@ -5,27 +5,31 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import Auxiliar.Consumption;
-import Auxiliar.Pair;
-import Exceptions.Empty_Division;
-import Exceptions.Empty_House;
-import Exceptions.Empty_Simulation;
+
+import Exceptions.*;
 import House.*;
-import MVC_House_Sync.View;
-import SmartDevice.SmartDevice;
+import SmartDevice.*;
 import Suppliers.*;
 
 public class Simulator implements Serializable{
 	private Set<House> houses;
 	private LocalDateTime starting_simulation_date = LocalDateTime.now();
-    private LocalDateTime simulation_date;
+    private LocalDateTime simulation_date = LocalDateTime.now();
 	private Set<Events> events;
     private Set<Invoice> invoices;
     private Set<Suppliers> suppliers;
 
-    public Simulator(Set<House> houses, LocalDateTime simulation_date, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
+    public Simulator(Set<House> houses,LocalDateTime starting, LocalDateTime simdate, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
         this.setHouses(houses);;
-        this.simulation_date = simulation_date;
+        this.setEvents(events);
+        this.setInvoices(invoices);
+        this.setSuppliers(suppliers);
+        this.simulation_date = simdate;
+        this.starting_simulation_date = starting;
+    }
+
+    public Simulator(Set<House> houses, Set<Events> events,Set<Invoice> invoices,Set<Suppliers> suppliers) {
+        this.setHouses(houses);;
         this.setEvents(events);
         this.setInvoices(invoices);
         this.setSuppliers(suppliers);
@@ -68,7 +72,7 @@ public class Simulator implements Serializable{
     }
 
     public Simulator(Simulator sim) {
-        this(sim.getHouses(),sim.getSimulation_date(),sim.getEvents(),sim.getInvoices(),sim.getSuppliers());
+        this(sim.getHouses(),sim.getStarting_simulation_date(),sim.getSimulation_date(),sim.getEvents(),sim.getInvoices(),sim.getSuppliers());
     }
 
     public Set<House> getHouses() {
@@ -196,6 +200,10 @@ public class Simulator implements Serializable{
         }
     }
 
+    public void addInvoice(Invoice inv){
+        this.invoices.add(inv.clone());
+    }
+
     public void advanceOneHour() throws Empty_Simulation, Empty_House, Empty_Division{
         if(this.houses.size()>0){
             for(House house : houses){
@@ -214,39 +222,24 @@ public class Simulator implements Serializable{
         else throw new Empty_Simulation(this.toString());
     }
 
-    public Set<Pair<Integer,Double>> time_price(House h) throws Empty_Division, Empty_House{
-        Set<Pair<Integer,Double>> out = new HashSet<>();
-        if(h.getDivisions().size()>0){
-            for(Divisions div: h.getDivisions()){
-                if(div.getDevices().size()>0){
-                    for(SmartDevice device : div.getDevices()){
-                        Consumption a = (Consumption)device;
-                        Pair<Integer,Double> price = new Pair<Integer,Double>(device.getTime_on(), a.getPower_usage());
-                        out.add(price.clone());
-                    }
-                }else throw new Empty_Division(div.getDivision_name());
-            }
-        }else throw new Empty_House(h.getAddress().toString());
-        return out;
+    public Invoice create_invoice(House h,LocalDateTime start_date,LocalDateTime final_date){
+        Invoice inv = new Invoice();
+        try {
+            inv = Invoice.generateInvoice(h, start_date, final_date);
+        } catch (Empty_House e) {
+            inv = new Invoice(h.getDaily_consumption(), h.getHouse_id(), h.getAddress(), start_date, final_date, 0, 0, 0, 0);
+        }
+        return inv;
     }
 
-    public double create_invoice_final_usage(House house) throws Empty_House{
-        double final_usage = 0;
-        try{
-            Set<Pair<Integer,Double>> prices = time_price(house);
-            if(prices.size()>0){
-                for(Pair<Integer,Double> pair : prices){
-                    final_usage += pair.getL()*pair.getR();
-                }
-            }else throw new Empty_House(house.getAddress().toString());
-        }
-        catch(Empty_House empty_house){
-            View.showException(empty_house);
-        }
-        catch(Empty_Division empty_division){
-            View.showException(empty_division);
-        }
-
-        return final_usage;
+    public Set<Invoice> generate_invoices(LocalDateTime start_date,LocalDateTime final_date) throws Empty_Simulation{
+        Set<Invoice> s = new HashSet<>();
+        if(this.getHouses().size()>0){
+            for(House h : this.getHouses()){
+                s.add(create_invoice(h, start_date, final_date));
+            }
+        }else throw new Empty_Simulation("There are no houses in this simulation");
+        setInvoices(s);
+        return s;
     }
 }

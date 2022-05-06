@@ -33,7 +33,9 @@ public class Suppliers implements Serializable {
 		this("Supplier", 1.0f, 0.13f, 0.05f);
 	}
 	public Suppliers(String s){
-		this(s,MyRandom.random_f(0.5f,0.75f),MyRandom.random_f(0.001f, 0.05f),MyRandom.random_f(0.0f,0.005f));
+		this(s,MyRandom.random_f(0.001f,0.1f),
+				MyRandom.random_f(0.0001f, 0.005f),
+				MyRandom.random_f(0f,0.0001f));
 	}
 
 	public Suppliers(Suppliers o){

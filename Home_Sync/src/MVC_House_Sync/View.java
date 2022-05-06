@@ -1,5 +1,6 @@
 package MVC_House_Sync;
 import java.util.Scanner;
+import java.util.Set;
 
 import Auxiliar.Pair;
 import Exceptions.Empty_House;
@@ -326,15 +327,15 @@ public class View{
         System.out.println("Price to pay - " + final_price);
     }
 
-    public void viewHouses(Simulator simulator){
+    public void viewHouses(Set<House> h){
         clear();
         int j = 0,i = 0;
-        House houses[] = new House[simulator.getHouses().size()];
-        simulator.getHouses().toArray(houses);
+        House houses[] = new House[h.size()];
+        h.toArray(houses);
 		for(;i>=0 && i<houses.length;){
             View.clear();
 			for(j = i;j<(i+ENTRIES) && j<houses.length;j++){
-                printAddress(j + " - " + houses[j].getAddress().getStreet(),
+                printAddress(houses[j].getHouse_id() + " - " + houses[j].getAddress().getStreet(),
                                         houses[j].getAddress().getStreet_number(),
                                         houses[j].getAddress().getCity(),
                                         houses[j].getAddress().getPost_code()
@@ -358,12 +359,20 @@ public class View{
 			}
 		}
     }
-    public int pageHouses(Simulator simulator) throws Empty_Simulation{
+    public House pageHouses(Set<House> houses) throws Empty_Simulation{
+        House out = null;
+        int h_id =-1;
         clear();
-        if (simulator.getHouses().size() > 0){
-            viewHouses(simulator);
-            return ask_input_i("Please choose a Address");
-        } else throw new Empty_Simulation("Empty Simulator");
+        if(houses.size()>0){
+            viewHouses(houses);
+            h_id = ask_input_i("Please choose a House address using the number.");
+            for(House h : houses){
+                if(h.getHouse_id()== h_id){
+                    out = h.clone();
+                }
+            }
+        }else throw new Empty_Simulation("Empty Simulation.");
+        return out;
     }
 
     public void viewSuppliers(Simulator simulator){
@@ -472,17 +481,18 @@ public class View{
         return ask_input_i("Please choose a SmartDevice");
     }
 
-    public void invoice(Invoice invoice,House house,double final_usage){
+    public void invoice(Invoice invoice){
         clear();
         System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
         printDate(invoice.getInitial_date(), invoice.getFinal_date());
-        printConsumption(house);
-        printPricePerWatt(house);
-        printFinalPrice(final_usage,house.getSupplier());
-        System.out.println("Aproximated price:");
-        printFinalPriceAproximation(house, invoice.getInitial_date(), invoice.getFinal_date());
+        print_s("Consumption Estimate : "+invoice.getAproximation()/invoice.getPrice_per_watt() + "W");
+        print_s("Real Consumption : "+invoice.getFinal_price()/invoice.getPrice_per_watt() + "W");
+
+        print_s("Price Estimate : "+invoice.getAproximation() + "€");
+        print_s("Real Price : "+invoice.getPrice_to_pay() + "€");
+
         System.out.println("\n###################################\n\n");
     }
 

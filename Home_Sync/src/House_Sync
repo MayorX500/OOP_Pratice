@@ -1,6 +1,6 @@
 #!/bin/bash
 
-app=$1
+app=Main
 
 classpath="-cp .:../../Libs/automaton-1.11-8.jar:../../Libs/commons-lang3-3.5.jar:../../Libs/generex-1.0.2.jar:../../Libs/javafaker-1.0.2.jar:../../Libs/snakeyaml-1.23-android.jar"
 

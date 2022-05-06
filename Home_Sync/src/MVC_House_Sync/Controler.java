@@ -11,6 +11,7 @@ import Client.*;
 import Exceptions.*;
 import House.*;
 import Parser.*;
+import Simulator.Invoice;
 import Simulator.Simulator;
 import SmartDevice.*;
 import Suppliers.*;
@@ -25,6 +26,13 @@ public class Controler {
         
         try {
             m = Parser.parse("../../Resources/logs.txt");
+        }
+        catch (Wrong_Line e) {
+            View.showException(e);
+            m = new Model();
+        }
+        try {
+            m = Parser.parse("Resources/logs.txt");
         }
         catch (Wrong_Line e) {
             View.showException(e);
@@ -94,25 +102,33 @@ public class Controler {
     }
 
     public void billing_menu(){
+        House h = null;
         View.clear();
-        if(this.model.getSimulator().getSuppliers().size()>0){
-            int choice2=-1;
-            try {
-                choice2 = view.pageHouses(this.model.getSimulator());
+        Invoice bill = new Invoice();
+        boolean sucs = false;
+        if(this.model.getSimulator().getHouses().size()>0){
+            try{
+            h = view.pageHouses(this.model.getSimulator().getHouses());
             } catch (Empty_Simulation e1) {
                 View.showException(e1);
+                View.clear();
+
+                view.print_s("Empty Simulation. Please create a house.");
+                Wait.wait(5000);
                 createHouse();
             }
-            House houses[] = new House[this.model.getSimulator().getHouses().size()];
-            this.model.getSimulator().getHouses().toArray(houses);
-            Address address = houses[choice2].getAddress();
-            double fu=0;
-            try{model.getSimulator().create_invoice_final_usage(houses[choice2]);}
-            catch(Empty_House e){
-                View.showException(e);
+
+            try{
+                bill = Invoice.generateInvoice(h, this.model.getSimulator().getStarting_simulation_date(), this.model.getSimulator().getSimulation_date());
+                this.model.getSimulator().addInvoice(bill);
+                sucs = true;
+            }catch(Empty_House e){
+                sucs = false;
             }
-            view.invoice(this.model.getSimulator().getInvoiceFromAddress(address), houses[choice2],fu);        
-        }else view.print_s("This simulation is empty, please add some houses in the previous menu");;
+        }
+        if(!sucs) view.print_s("This simulation is empty, please add some houses in the previous menu.");
+        else view.invoice(bill);
+        Wait.wait(5000);
     }
 
     public void firstMenu(){
@@ -173,26 +189,15 @@ public class Controler {
     }
 
     private void manage_divisions() {
-        House h = new House();
-        House houses[] = new House[this.model.getSimulator().getHouses().size()];
+        House h = null;
         boolean flag = true;
-        if(this.model.getSimulator().getHouses().size()>0){
-            this.model.getSimulator().getHouses().toArray(houses);
-            try {
-                h = houses[view.pageHouses(this.model.getSimulator())];
-            } catch (Empty_Simulation e) {
-                
-                View.showException(e);
-                view.print_s("There are no houses available in the simulator, please create some.");
-            Wait.wait(5000);
-            flag = false;
-            }
-        }
-        else{
-            View.clear();
+        try {
+            h = view.pageHouses(model.getSimulator().getHouses());
+        } catch (Empty_Simulation e) {
+            View.showException(e);
             view.print_s("There are no houses available in the simulator, please create some.");
-            Wait.wait(5000);
-            flag = false;
+        Wait.wait(5000);
+        flag = false;
         }
         while(flag) {
             View.clear();
@@ -229,7 +234,7 @@ public class Controler {
             String choice = view.view_menu();
             switch (choice) {
                 case "1":
-                    view.viewHouses(this.model.getSimulator());
+                    view.viewHouses(this.model.getSimulator().getHouses());
                     break;
                 case "2":
                     view.viewSuppliers(this.model.getSimulator());
@@ -283,6 +288,7 @@ public class Controler {
     }
 
     public void addHouseMenu_2(){
+        House h = null;
         boolean flag = true;
         while(flag) {
             View.clear();
@@ -292,24 +298,20 @@ public class Controler {
                     createHouse();
                     break;
                 case "2":
-                    int choice2 = 0;
                     try {
-                        choice2 = view.pageHouses(this.model.getSimulator());
+                        h = view.pageHouses(this.model.getSimulator().getHouses());
                     } catch (Empty_Simulation e1) {
                         View.showException(e1);
                         view.print_s("The simulation is empty, nothing to delete.");
                         Wait.wait(5000);
                         firstMenu();
                     }
-                    House houses[] = new House[this.model.getSimulator().getHouses().size()];
-                    this.model.getSimulator().getHouses().toArray(houses);
-                    this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), houses[choice2].getAddress());
+                    this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), h.getAddress());
                     view.houseMenu();
                     break;
                 case "3":
-                    int choice3 = 0;
                     try {
-                        choice3 = view.pageHouses(this.model.getSimulator());
+                        h = view.pageHouses(this.model.getSimulator().getHouses());
                     } catch (Empty_Simulation e1) {
                         View.showException(e1);
                         view.print_s("The simulation is empty, please create a house.");
@@ -319,7 +321,7 @@ public class Controler {
                     if(this.model.getSimulator().getHouses().size()>0){
                         House houses2[] = new House[this.model.getSimulator().getHouses().size()];
                         this.model.getSimulator().getHouses().toArray(houses2);
-                        editHouseMenu(houses2[choice3]);
+                        editHouseMenu(h);
                     }else{
                         view.print_s("The simulation is empty");
                     Wait.wait(5000);
