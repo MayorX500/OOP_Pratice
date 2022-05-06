@@ -17,7 +17,8 @@ import Suppliers.*;
 
 public class Simulator implements Serializable{
 	private Set<House> houses;
-	private LocalDateTime simulation_date;
+	private LocalDateTime starting_simulation_date = LocalDateTime.now();
+    private LocalDateTime simulation_date;
 	private Set<Events> events;
     private Set<Invoice> invoices;
     private Set<Suppliers> suppliers;
@@ -97,6 +98,14 @@ public class Simulator implements Serializable{
 
     public void setSimulation_date(LocalDateTime simulation_date) {
         this.simulation_date = simulation_date;
+    }
+
+    public LocalDateTime getStarting_simulation_date() {
+        return this.starting_simulation_date;
+    }
+
+    public void setStarting_simulation_date(LocalDateTime s_imulation_date) {
+        this.starting_simulation_date = s_imulation_date;
     }
 
     public Set<Events> getEvents() {

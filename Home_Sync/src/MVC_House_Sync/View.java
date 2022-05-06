@@ -35,27 +35,46 @@ public class View{
 
     //base menu
     public String baseMenu(){
+        clear();
+        loadingMenu();
         System.out.println("""
             Select an option:
 
-            1 - Create simulation
-            2 - Edit/add houses
-            3 - Advance time
-            4 - Present billing statistics
-            5 - Print Suppliers
+            1 - Manage simulation
+            2 - Manage houses
+            3 - Present billing statistics
+            4 - View Menu
             
             0 - Quit
             """);
         return (input.nextLine());
     }
 
+    public String manage_houses(){
+        clear();
+        loadingMenu();
+        System.out.println("""
+            Select an option:
+
+            1 - Create House
+            2 - Manage House
+            3 - Change House Supplier
+            
+            0 - Back
+            """);
+        return (input.nextLine());
+    }
+
     //menu create a simulation or use one 
     public String menu_CS(){
+        clear();
         System.out.println("""
             Select an option:
             
-            1 - Create simulation
-            2 - Import a simulation file
+            1 - Create new simulation
+            2 - Manage current simulation
+            3 - Load Simulation
+            4 - Save Simulation
             
             0 - Back
             """);
@@ -64,11 +83,12 @@ public class View{
 
     //menu set date -- first thing after selecting 'Create a simulation'
     public LocalDateTime menu_SD(){
-
+        clear();
         return ask_input_l("Provide new date in format 'YYYY-MM-DD'.");
     }
 
     public String addTimeMenu(){
+        clear();
         System.out.println("""
             Select an option:
 
@@ -83,13 +103,13 @@ public class View{
 
     //menu when 'Edit/add houses' is selected
     public String houseMenu(){
+        clear();
         System.out.println("""
             Select an option:
 
             1 - Add new house
             2 - Eliminate existing house
             3 - Edit existing house
-            4 - View existing houses
             
             0 - Back
             """);
@@ -98,6 +118,7 @@ public class View{
 
     //menu edit a house
     public String menu_EH(){
+        clear();
         System.out.println("""
             Select an option:
 
@@ -111,6 +132,7 @@ public class View{
     }
 
     public String menu_C(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -118,8 +140,8 @@ public class View{
             2 - Create an address
             3 - Add a supplier
             4 - Add a division
-            9 - Cancel
             
+            9 - Cancel
             0 - Create
 
             Disclaimer:
@@ -129,6 +151,7 @@ public class View{
     }
 
     public String menu_Edit(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -143,19 +166,34 @@ public class View{
         return (input.nextLine());
     }
 
+    public String manage_divisions(){
+        clear();
+        System.out.println("""
+            Select an option:
+            
+            1 - Edit divisions
+            2 - View divisions
+            
+            0 - Back
+            """);
+        return (input.nextLine());
+    }
+
     public String menu_EditDivision(){
+        clear();
         System.out.println("""
             Select an option:
             
             1 - Edit division's name
             2 - Edit division's devices
             
-            0 - Save changes
+            0 - Back
             """);
         return (input.nextLine());
     }
 
     public String menu_EditDevice(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -171,6 +209,7 @@ public class View{
     }
 
     public String menu_EditValues(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -185,6 +224,7 @@ public class View{
     }
 
     public String menu_EditAddress(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -199,6 +239,7 @@ public class View{
     }
 
     public String menu_EditClient(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -211,6 +252,7 @@ public class View{
     }
 
     public String menu_chooseSupplier(){
+        clear();
         System.out.println("""
             Select an option:
             
@@ -285,6 +327,7 @@ public class View{
     }
 
     public void viewHouses(Simulator simulator){
+        clear();
         int j = 0,i = 0;
         House houses[] = new House[simulator.getHouses().size()];
         simulator.getHouses().toArray(houses);
@@ -316,6 +359,7 @@ public class View{
 		}
     }
     public int pageHouses(Simulator simulator) throws Empty_Simulation{
+        clear();
         if (simulator.getHouses().size() > 0){
             viewHouses(simulator);
             return ask_input_i("Please choose a Address");
@@ -323,6 +367,7 @@ public class View{
     }
 
     public void viewSuppliers(Simulator simulator){
+        clear();
         int j = 0,i = 0;
         Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
         simulator.getSuppliers().toArray(suppliers);
@@ -350,6 +395,7 @@ public class View{
 		}
     }
     public int pageSuppliers(Simulator simulator) throws Empty_Simulation{
+        clear();
         if (simulator.getSuppliers().size() > 0){
             viewSuppliers(simulator);
             return ask_input_i("Please choose a Supplier");
@@ -357,6 +403,7 @@ public class View{
     }
 
     public void viewDivisions(House house){
+        clear();
         int j = 0,i = 0;
         Divisions division[] = new Divisions[house.getDivisions().size()];
         house.getDivisions().toArray(division);
@@ -385,6 +432,7 @@ public class View{
     }
 
     public int pageDivision(House house) throws Empty_House{
+        clear();
         if (house.getDivisions().size() > 0){
             viewDivisions(house);
             return ask_input_i("Please choose a division");
@@ -392,6 +440,7 @@ public class View{
     }
 
     public void viewDevices(Divisions division){
+        clear();
         int j = 0,i = 0;
         SmartDevice device[] = new SmartDevice[division.getDevices().size()];
         division.getDevices().toArray(device);
@@ -418,11 +467,13 @@ public class View{
 		}
     }
     public int pageDevices(Divisions division){
+        clear();
         viewDevices(division);
         return ask_input_i("Please choose a SmartDevice");
     }
 
     public void invoice(Invoice invoice,House house,double final_usage){
+        clear();
         System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
@@ -448,19 +499,31 @@ public class View{
     // ask user for a int:
     public int ask_input_i(String s){
         System.out.println(s);
-        return Integer.parseInt(input.nextLine());
+        int out = 0;
+        try{
+            out = Integer.parseInt(input.nextLine());
+        }catch(NumberFormatException e){};
+        return out;
     }
 
     // ask user for a float:
     public float ask_input_f(String s){
         System.out.println(s);
-        return Float.parseFloat(input.nextLine());
+        float out = 0;
+        try{
+            out = Float.parseFloat(input.nextLine());
+        }catch(NumberFormatException e){};
+        return out;
     }
 
     // ask user for a double
     public double ask_input_d(String s){
         System.out.println(s);
-        return Double.parseDouble(input.nextLine());
+        double out = 0;
+        try{
+            out = Double.parseDouble(input.nextLine());
+        }catch(NumberFormatException e){};
+        return out;
     }
 
     // ask user for a LocalDateTime
@@ -472,6 +535,20 @@ public class View{
         LocalDateTime date = LocalDateTime.parse(newS, f);
 
         return date;
+    }
+
+    public String view_menu() {
+        clear();
+        loadingMenu();
+        System.out.println("""
+            Select an option:
+
+            1 - List Houses
+            2 - List Suppliers
+            
+            0 - Back
+            """);
+        return (input.nextLine());
     }
 
     //STATIC DEFINITIONS

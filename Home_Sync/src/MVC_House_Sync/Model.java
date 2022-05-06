@@ -29,7 +29,6 @@ public class Model implements Serializable{
         this.simulator.addHouse(h);
     }
 
-    //public void newDate(){}//avançar tempo
 
     public void turnDivision(House home, String division, boolean state) throws Division_Non_Existent, Empty_Division, Empty_House{
         try{
