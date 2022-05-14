@@ -212,7 +212,7 @@ public class Controler {
                     }
                     break;
                 case "2":
-                    view.viewDivisions(h);                                    
+                    view.viewDivisions(h.getDivisions());                                    
                     break;
                 case "0":
                     flag = false;
@@ -237,7 +237,7 @@ public class Controler {
                     view.viewHouses(this.model.getSimulator().getHouses());
                     break;
                 case "2":
-                    view.viewSuppliers(this.model.getSimulator());
+                    view.viewSuppliers(this.model.getSimulator().getSuppliers());
                     break;
                 case "0":
                     flag = false;
@@ -392,10 +392,8 @@ public class Controler {
                 case "2":
                     // Choose existing suplier
                     try { 
-                        int choice2 = view.pageSuppliers(this.model.getSimulator());
-                        Suppliers suppliers[] = new Suppliers[this.model.getSimulator().getSuppliers().size()];
-                        this.model.getSimulator().getSuppliers().toArray(suppliers);
-                        s = suppliers[choice2].clone();
+                        s = view.pageSuppliers(this.model.getSimulator().getSuppliers());
+
 
                     } catch(Empty_Simulation e){
                         View.showException(e);
@@ -447,10 +445,11 @@ public class Controler {
                     break;
                 case "5":
                     try {
-                        view.pageDivision(house);
+                        view.pageDivision(house.getDivisions(),house.getHouse_id());
                     } catch (Empty_House e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        View.showException(e);
+                        view.print_s("The House is Empty");
+                        Wait.wait(5000);
                     }
                     break;
                 case "0":
@@ -689,16 +688,22 @@ public class Controler {
    // Edit Suppliers
    public void editSuppliers(Simulator simulator) throws Empty_Simulation {
     View.clear();
-    int choice = view.pageSuppliers(simulator);
-    Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
-    simulator.getSuppliers().toArray(suppliers);
+    Suppliers supplier = null;
+    try {
+    supplier = view.pageSuppliers(simulator.getSuppliers());
+        
+    } catch (Exception e) {
+        View.showException(e);
+        supplier = createSuppliers();
+        this.model.getSimulator().addSupplier(supplier);
+    }
 
-    Suppliers supplier = suppliers[choice].clone();
+    
     editSuppliersMenu(supplier);
 
     if (simulator.getHouses().size() > 0){
         for (House house: simulator.getHouses()){
-            if (house.getSupplier().equals(suppliers[choice])) house.setSupplier(supplier);
+            if (house.getSupplier().equals(supplier)) house.setSupplier(supplier);
         }
     }
     else throw new Empty_Simulation("Empty simulator");
@@ -709,28 +714,44 @@ public class Controler {
     // edit Divisions
     public House editDivision(House house) throws Empty_House {
         View.clear();
-        int choice = view.pageDivision(house);
-        Divisions divisions[] = new Divisions[house.getDivisions().size()];
-        this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
+        Divisions division = null;
+        try {
+            division = view.pageDivision(house.getDivisions(),house.getHouse_id());
+        } catch (Empty_House e) {
+            throw e;
+//////
+        }
         View.clear();
-        String choice2 = view.menu_EditDivision();
-        switch(choice2) {
-            case "1":
-                String division_name = view.ask_input_s("Enter the new name for the division:");
-                divisions[choice].setDivision_name(division_name);
-                view.menu_EditDivision();
-                break;
-            case "2":
-                int choice3 = view.pageDevices(divisions[choice]);
-                SmartDevice devices[] = new SmartDevice[this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().size()];
-                this.model.getSimulator().getHouseFromAddress(house.getAddress()).getDivisions().toArray(divisions);
-                
-                editDevice(devices[choice3]);
-                view.menu_EditDevice();   
-                break;
-            default:
-                break;      
+        if(division!= null){
+            Divisions division_c = division.clone();
+            String choice2 = view.menu_EditDivision();
+            switch(choice2) {
+                case "1":
+                    String division_name = view.ask_input_s("Enter the new name for the division:");
+                    division.setDivision_name(division_name);
+                    break;
+                case "2":
+                    SmartDevice choice3 = null;
+                    try {
+                        choice3 = view.pageDevices(division.getDevices());
+                    } catch (Empty_Division e) {
+                        View.showException(e);
+                    }
+                    if(choice3!= null){
+                        editDevice(choice3);
+                    }
+                    break;
+                case "0":
+                        for(Divisions d : house.getDivisions()) {
+                            if(d.equals(division_c))
+                            house.getDivisions().remove(d);
+                        }
+                        break;
+                default:
+                    break;      
             }
+        } 
+        else throw new Empty_House(house.toString());
         this.unsavedChanges = false;
         return house;
     }

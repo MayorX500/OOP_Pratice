@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import Auxiliar.Pair;
+import Exceptions.Empty_Division;
 import Exceptions.Empty_House;
 import Exceptions.Empty_Simulation;
 import House.Address;
@@ -368,22 +369,22 @@ public class View{
             h_id = ask_input_i("Please choose a House address using the number.");
             for(House h : houses){
                 if(h.getHouse_id()== h_id){
-                    out = h.clone();
+                    out = h;
                 }
             }
         }else throw new Empty_Simulation("Empty Simulation.");
         return out;
     }
 
-    public void viewSuppliers(Simulator simulator){
+    public void viewSuppliers(Set<Suppliers> s){
         clear();
         int j = 0,i = 0;
-        Suppliers suppliers[] = new Suppliers[simulator.getSuppliers().size()];
-        simulator.getSuppliers().toArray(suppliers);
+        Suppliers suppliers[] = new Suppliers[s.size()];
+        s.toArray(suppliers);
 		for(;i>=0 && i<suppliers.length;){
             View.clear();
 			for(j = i;j<(i+ENTRIES) && j<suppliers.length;j++){
-                printSupplier(j + " - " + suppliers[j].getSupplier_name());
+                printSupplier(suppliers[j].getSupplier_id() + " - " + suppliers[j].getSupplier_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
 			switch (d) {
@@ -403,19 +404,28 @@ public class View{
 			}
 		}
     }
-    public int pageSuppliers(Simulator simulator) throws Empty_Simulation{
+
+    public Suppliers pageSuppliers(Set<Suppliers> suppliers) throws Empty_Simulation{
+        Suppliers out = null;
+        int s_id =-1;
         clear();
-        if (simulator.getSuppliers().size() > 0){
-            viewSuppliers(simulator);
-            return ask_input_i("Please choose a Supplier");
-        } else throw new Empty_Simulation("Empty Simulator");
+        if(suppliers.size()>0){
+            viewSuppliers(suppliers);
+            s_id = ask_input_i("Please choose a Supplier using the number.");
+            for(Suppliers s : suppliers){
+                if(s.getSupplier_id()== s_id){
+                    out = s;
+                }
+            }
+        }else throw new Empty_Simulation("Empty Simulation.");
+        return out;
     }
 
-    public void viewDivisions(House house){
+    public void viewDivisions(Set<Divisions> div){
         clear();
         int j = 0,i = 0;
-        Divisions division[] = new Divisions[house.getDivisions().size()];
-        house.getDivisions().toArray(division);
+        Divisions division[] = new Divisions[div.size()];
+        div.toArray(division);
 		for(;i>=0 && i<division.length;){
             View.clear();
             for(j = i;j<(i+ENTRIES) && j<division.length;j++){
@@ -440,22 +450,30 @@ public class View{
 		}
     }
 
-    public int pageDivision(House house) throws Empty_House{
+    public Divisions pageDivision(Set<Divisions> divisions,int id) throws Empty_House{
+        Divisions out = null;
+        String div_name = null;
         clear();
-        if (house.getDivisions().size() > 0){
-            viewDivisions(house);
-            return ask_input_i("Please choose a division");
-        } else throw new Empty_House("Empty House");
+        if(divisions.size()>0){
+            viewDivisions(divisions);
+            div_name = ask_input_s("Please choose a Division using it's name.");
+            for(Divisions div : divisions){
+                if(div.getDivision_name().equals(div_name)){
+                    out = div;
+                }
+            }
+        }else throw new Empty_House(""+id);
+        return out;
     }
 
-    public void viewDevices(Divisions division){
+    public void viewDevices(Set<SmartDevice> devices){
         clear();
         int j = 0,i = 0;
-        SmartDevice device[] = new SmartDevice[division.getDevices().size()];
-        division.getDevices().toArray(device);
+        SmartDevice device[] = new SmartDevice[devices.size()];
+        devices.toArray(device);
 		for(;i>=0 && i<device.length;){
 			for(j = i;j<(i+ENTRIES) && j<device.length;j++){
-                printDevice(device[j].getDevice_name());
+                printDevice(device[j].getDevice_id() + " - " + device[j].getDevice_name());
             }
             String d = ask_input_s("Previous(p), Next(n), Quit(q):");
 			switch (d) {
@@ -475,10 +493,20 @@ public class View{
 			}
 		}
     }
-    public int pageDevices(Divisions division){
+    public SmartDevice pageDevices(Set<SmartDevice> devices) throws Empty_Division{
+        SmartDevice out = null;
+        int dev_id = -1;
         clear();
-        viewDevices(division);
-        return ask_input_i("Please choose a SmartDevice");
+        if(devices.size()>0){
+            viewDevices(devices);
+            dev_id = ask_input_i("Please choose a Device using it's ID.");
+            for(SmartDevice dev : devices){
+                if(dev.getDevice_id() ==(dev_id)){
+                    out = dev;
+                }
+            }
+        }else throw new Empty_Division("");
+        return out;
     }
 
     public void invoice(Invoice invoice){

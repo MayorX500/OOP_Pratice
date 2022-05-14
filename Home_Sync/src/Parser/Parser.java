@@ -34,6 +34,7 @@ public class Parser {
         House lasth = null;
         Divisions lastd = null;
         String[] splitLine;
+        boolean added = false;
         for (String line : lines) {
             splitLine = line.split(":", 2);
             switch (splitLine[0]) {
@@ -45,6 +46,7 @@ public class Parser {
                     if(lasth != null && lastd != null){
                         lasth.addDivision(lastd.clone());
                         houses.add(lasth.clone());
+                        added = false;
                     }
                     String[] args = splitLine[1].split(",");
                     Client client = new Client(args[0],Integer.parseInt(args[1]));
@@ -66,11 +68,13 @@ public class Parser {
                     lasth = house;
                 }
                 case "Divisao" -> {
-                    if(lasth != null && lastd != null){
+                    if(lasth != null && lastd != null && added){
                         lasth.addDivision(lastd.clone());
+                        added = false;
                     }
                     Divisions division = new Divisions(splitLine[1], new HashSet<>());
-                    lastd = division;                    
+                    lastd = division;
+                    added = true;                    
                 }
 
                 case "SmartBulb" -> {

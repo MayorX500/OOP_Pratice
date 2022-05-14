@@ -200,6 +200,11 @@ public class Simulator implements Serializable{
         }
     }
 
+    public void addSupplier(Suppliers e){
+        this.events.add(new Events("Supplier " + e.getSupplier_id() + " was added", LocalDateTime.now()));
+        this.suppliers.add(e.clone());
+    }
+
     public void addInvoice(Invoice inv){
         this.invoices.add(inv.clone());
     }
@@ -236,7 +241,9 @@ public class Simulator implements Serializable{
         Set<Invoice> s = new HashSet<>();
         if(this.getHouses().size()>0){
             for(House h : this.getHouses()){
-                s.add(create_invoice(h, start_date, final_date));
+                Invoice v = create_invoice(h, start_date, final_date);
+                s.add(v.clone());
+                this.events.add(new Events("Invoice " + v.getId() + " was created for House "+ h.getHouse_id() + ".", LocalDateTime.now()));
             }
         }else throw new Empty_Simulation("There are no houses in this simulation");
         setInvoices(s);

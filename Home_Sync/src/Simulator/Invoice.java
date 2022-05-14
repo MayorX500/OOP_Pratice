@@ -140,6 +140,8 @@ public class Invoice implements Serializable{
                 for(Pair<Integer,Double> pair : prices){
                     final_price_all_devices += pair.getL()*pair.getR();
                 }
+                if(Double.isInfinite(final_price_all_devices))
+                final_price_all_devices = 0;
             }else throw new Empty_House(h.getAddress().toString());
         }
         catch(Empty_House empty_house){
