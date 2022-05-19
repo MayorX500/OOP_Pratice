@@ -38,7 +38,7 @@ public class Divisions implements Serializable{
 	    Set<SmartDevice> out = new HashSet<>();
 	    if(this.devices.size()>0){
 		    for(SmartDevice dev : this.devices){
-			    out.add(dev.clone());
+			    out.add(dev);
 		    }
 	    }
 	    return out;
@@ -48,7 +48,7 @@ public class Divisions implements Serializable{
  	    Set<SmartDevice> out = new HashSet<>();
 	    if(devices.size()>0){
 		    for(SmartDevice dev : devices){
-			    out.add(dev.clone());
+			    out.add(dev);
 		    }
 	    }
 	    this.devices = out;
@@ -86,7 +86,7 @@ public class Divisions implements Serializable{
                 if(e.getIs_on() != state){
                     e.setIs_on(state);
                 }
-                list.add(e.clone());
+                list.add(e);
             }
             this.devices=list;
         }
@@ -106,28 +106,45 @@ public class Divisions implements Serializable{
 
     public void addDevice(SmartDevice dev){
 	    Set<SmartDevice> new_set = new HashSet<>();
-	    new_set.add(dev.clone());
+	    new_set.add(dev);
 	    if(this.getDevices().size()>0){
 		    for(SmartDevice device : this.getDevices()){
-			    new_set.add(device.clone());
+			    new_set.add(device);
 		    }
 	    }
 	    setDevices(new_set);
     }
 
+    public void removeDevice(SmartDevice dev) throws Empty_Division,Device_Non_Existent{
+        boolean flag = true;
+	    Set<SmartDevice> new_set = new HashSet<>();
+	    if(this.getDevices().size()>0){
+		    for(SmartDevice device : this.getDevices()){
+                if(!device.equals(dev)){
+                    new_set.add(device);
+                }else flag = false;
+            }
+	    }
+        else throw new Empty_Division(this.division_name);
+        if (flag) throw new Device_Non_Existent(dev.getDevice_name());
+        setDevices(new_set);
+    }
+
     public void manageDevice(SmartDevice dev, boolean state) throws State_Not_Changed,Device_Non_Existent,Empty_Division{
+        boolean flag = true;
 	    if(this.devices.size()>0){
 		    for(SmartDevice device : this.devices){
 			    if(device.equals(dev)){
 				    if(device.getIs_on() != state){
 					    device.setIs_on(state);
+                        flag = false;
 				    }
 				    else throw new State_Not_Changed(device.getDevice_name());
-			    }
-			    else throw new Device_Non_Existent(dev.getDevice_name()); 
+			    } 
 		    }
 	    }
 	    else throw new Empty_Division(this.division_name);
+        if (flag) throw new Device_Non_Existent(dev.getDevice_name());
     }
 }
 

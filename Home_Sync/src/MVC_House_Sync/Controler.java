@@ -29,15 +29,15 @@ public class Controler {
         }
         catch (Wrong_Line e) {
             View.showException(e);
-            m = new Model();
+            try {
+                m = Parser.parse("Resources/logs.txt");
+            }
+            catch (Wrong_Line e2) {
+                View.showException(e2);
+                m = new Model();
+            }
         }
-        try {
-            m = Parser.parse("Resources/logs.txt");
-        }
-        catch (Wrong_Line e) {
-            View.showException(e);
-            m = new Model();
-        }
+
         
         this.model = m;
         this.unsavedChanges = false;
@@ -48,6 +48,38 @@ public class Controler {
 
 
 //MENUS
+
+public void firstMenu(){
+    boolean flag = true;
+    while(flag) {
+        View.clear();
+        String choice = view.baseMenu();
+        switch (choice) {
+            case "1":
+                crSimMenu_2();
+                break;
+            case "2":
+                manage_houses();
+                break;
+            case "3":
+                billing_menu();
+                break;
+            case "4":
+                view_menu();
+                break;
+            case "0":
+                if (this.unsavedChanges) {
+                    loadingMenu_controler();
+                }
+                else System.exit(0);
+                break;
+            default:
+                View.unrecognizedCommandError();
+                break;
+        }
+    }
+}
+
 
     public void createSimulation() {
         boolean exit = false;
@@ -128,39 +160,10 @@ public class Controler {
         }
         if(!sucs) view.print_s("This simulation is empty, please add some houses in the previous menu.");
         else view.invoice(bill);
-        Wait.wait(5000);
+        view.ask_input_s("Press any key to continue.");
     }
 
-    public void firstMenu(){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.baseMenu();
-            switch (choice) {
-                case "1":
-                    crSimMenu_2();
-                    break;
-                case "2":
-                    manage_houses();
-                    break;
-                case "3":
-                    billing_menu();
-                    break;
-                case "4":
-                    view_menu();
-                    break;
-                case "0":
-                    if (this.unsavedChanges) {
-                        loadingMenu_controler();
-                    }
-                    else System.exit(0);
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-    }
+
 
     private void manage_houses() {
         boolean flag = true;
@@ -256,6 +259,15 @@ public class Controler {
             String choice = view.addTimeMenu();
             switch (choice) {
                 case "1":
+                    this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusHours(1));
+                    try{
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
+                    catch(Empty_House empty_hous){View.showException(empty_hous);}
+                    catch(Empty_Division empty_div){View.showException(empty_div);}
+                    break;
+                case "2":
                     this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusDays(1));
                     try{
                         for(int i = 0; i<24;i++)
@@ -265,17 +277,17 @@ public class Controler {
                     catch(Empty_House empty_hous){View.showException(empty_hous);}
                     catch(Empty_Division empty_div){View.showException(empty_div);}
                     break;
-                case "2":
+                case "3":
                     LocalDateTime ask = view.menu_SD();
-                    LocalDateTime date =  LocalDateTime.of(ask.getYear(), ask.getMonth(), ask.getDayOfMonth(), ask.getHour(), ask.getMinute(), ask.getSecond());
-                    long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), date);
+                    long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), ask);
                     try{
                         for(int i = 0; i<diff;i++)
                         this.model.getSimulator().advanceOneHour();
                     }
                     catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
                     catch(Empty_House empty_hous){View.showException(empty_hous);}
-                    catch(Empty_Division empty_div){View.showException(empty_div);}                    this.model.getSimulator().setSimulation_date(date);
+                    catch(Empty_Division empty_div){View.showException(empty_div);}
+                    this.model.getSimulator().setSimulation_date(ask);
                     break;
                 case "0":
                     flag = false;
@@ -652,7 +664,7 @@ public class Controler {
             case 1:
                 float dimension = view.ask_input_f("Enter the dimension of the bulb:");
                 SmartDevice smartdevice1 = new SmartBulb(device_name, brand, dimension);
-                division.addDevice(smartdevice1.clone());
+                division.addDevice(smartdevice1);
                 break;
 
             case 2:
@@ -661,14 +673,14 @@ public class Controler {
                 String[] real = resol.split("x");
                 double file_size = view.ask_input_d("Enter the size of the files on the camera:");
                 SmartDevice smartdevice2 = new SmartCamera(device_name, brand, new Pair<Integer,Integer>(Integer.parseInt(real[0]),Integer.parseInt(real[1])), file_size);
-                division.addDevice(smartdevice2.clone());
+                division.addDevice(smartdevice2);
                 break;
 
             case 3:
                 int volume = view.ask_input_i("Enter the volume of the speaker:");
                 String radio_info = view.ask_input_s("Enter the online radio on:");
                 SmartDevice smartdevice3 = new SmartSpeaker(device_name, brand, volume, 15f, radio_info);
-                division.addDevice(smartdevice3.clone());
+                division.addDevice(smartdevice3);
                 break;
 
             default:
@@ -723,7 +735,7 @@ public class Controler {
         }
         View.clear();
         if(division!= null){
-            Divisions division_c = division.clone();
+            Divisions division_c = division;
             String choice2 = view.menu_EditDivision();
             switch(choice2) {
                 case "1":

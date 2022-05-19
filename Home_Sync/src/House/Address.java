@@ -14,7 +14,7 @@ public class Address implements Serializable{
         this.street = street;
         this.street_number = street_number;
         this.city = city;
-        this.post_code = post_code.clone();
+        this.post_code = post_code;
     }
 
     public Address() {
@@ -22,7 +22,7 @@ public class Address implements Serializable{
     }
 
     public Address(Address a){
-        this(a.getStreet(),a.getStreet_number(),a.getCity(),a.getPost_code().clone());
+        this(a.getStreet(),a.getStreet_number(),a.getCity(),a.getPost_code());
     }
 
     public String getStreet() {
@@ -50,11 +50,11 @@ public class Address implements Serializable{
     }
 
     public Pair<Integer,Integer> getPost_code() {
-        return this.post_code.clone();
+        return this.post_code;
     }
 
     public void setPost_code(Pair<Integer,Integer> post_code) {
-        this.post_code = post_code.clone();
+        this.post_code = post_code;
     }
 
     @Override

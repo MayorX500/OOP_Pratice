@@ -16,7 +16,7 @@ public class Auxiliar_Methods {
                     for(SmartDevice device : div.getDevices()){
                         Consumption a = (Consumption)device;
                         Pair<Integer,Double> price = new Pair<Integer,Double>(device.getTime_on(), a.getPower_usage());
-                        out.add(price.clone());
+                        out.add(price);
                     }
                 }
             }

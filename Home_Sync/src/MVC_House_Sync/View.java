@@ -1,22 +1,16 @@
 package MVC_House_Sync;
-import java.util.Scanner;
-import java.util.Set;
 
-import Auxiliar.Pair;
-import Exceptions.Empty_Division;
-import Exceptions.Empty_House;
-import Exceptions.Empty_Simulation;
-import House.Address;
-import House.Divisions;
-import House.House;
-import Simulator.Invoice;
-import Simulator.Simulator;
-import SmartDevice.SmartDevice;
-import Suppliers.Suppliers;
+import Auxiliar.*;
+import Exceptions.*;
+import House.*;
+import Simulator.*;
+import SmartDevice.*;
+import Suppliers.*;
 
 import java.time.*;
-import java.time.format.*;
 import java.time.temporal.ChronoUnit;
+import java.util.Scanner;
+import java.util.Set;
 
 public class View{
 
@@ -568,11 +562,10 @@ public class View{
     public LocalDateTime ask_input_l(String s){
         System.out.println(s);
         String newS = input.nextLine();
+        LocalDate date = LocalDate.parse(newS);
+        LocalDateTime dateTime = date.atStartOfDay();
 
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("YYYY-MM-DD");
-        LocalDateTime date = LocalDateTime.parse(newS, f);
-
-        return date;
+        return dateTime;
     }
 
     public String view_menu() {

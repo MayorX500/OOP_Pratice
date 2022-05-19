@@ -20,10 +20,10 @@ public class House implements Serializable{
     
     public House(int id,Address address, Client owner, Set<Divisions> divisions, Suppliers supplier, double daily_consumption) {
 	this.house_id = id;
-        this.address = address.clone();
-        this.owner = owner.clone();
+        this.address = address;
+        this.owner = owner;
         this.setDivisions(divisions);
-        this.supplier = supplier.clone();
+        this.supplier = supplier;
         this.daily_consumption = daily_consumption;
     }
     public House(Address address, Client owner, Set<Divisions> divisions, Suppliers supplier, double daily_consumption) {
@@ -43,21 +43,21 @@ public class House implements Serializable{
     }
 
     public Address getAddress() {
-        return this.address.clone();
+        return this.address;
     }
 
     public Client getOwner() {
-        return owner.clone();
+        return owner;
     }
 
     public Suppliers getSupplier() {
-        return this.supplier.clone();
+        return this.supplier;
     }
 
     public Set<Divisions> getDivisions(){
 		Set<Divisions> out = new HashSet<>();
         for(Divisions a : this.divisions)
-		out.add(a.clone());
+		out.add(a);
         return out;
     }
 
@@ -70,17 +70,17 @@ public class House implements Serializable{
     }
 
     public void setAddress(Address address) {
-        this.address = address.clone();
+        this.address = address;
     }
 
     public void setOwner(Client owner) {
-        this.owner = owner.clone();
+        this.owner = owner;
     }
 
     public void setDivisions(Set<Divisions> divisions) {
         Set<Divisions> out = new HashSet<>();
         for(Divisions a : divisions){
-		out.add(a.clone());
+		out.add(a);
 		try{
 			this.daily_consumption += a.getDaily_Division_Power_Usage();
 		}catch(Empty_Division e){
@@ -91,7 +91,7 @@ public class House implements Serializable{
     }
 
     public void setSupplier(Suppliers supplier) {
-        this.supplier = supplier.clone();
+        this.supplier = supplier;
     }
 
     public void setDaily_Consumption(double daily_consumption) {
@@ -146,7 +146,7 @@ public class House implements Serializable{
 
 	public void addDivision(Divisions div){
 		Set<Divisions> list = this.getDivisions();
-		list.add(div.clone());
+		list.add(div);
 		this.setDivisions(list);
 	}
 
@@ -247,6 +247,7 @@ public class House implements Serializable{
     }
 
     public void change_device_state(int dev_id, boolean state) throws Device_Non_Existent, State_Not_Changed, Empty_Division, Empty_House{
+		boolean flag = true;
 	    if(this.divisions.size()>0){
 		    for(Divisions div : this.divisions){
 			    Set<SmartDevice> devices_from_division =  div.getDevices();
@@ -265,14 +266,15 @@ public class House implements Serializable{
 						    catch(Empty_Division s3){
 							    throw s3;
 						    }
+							flag = false;
 					    }
-					    else throw new Device_Non_Existent(dev_id);
 				    }
 			    }
 			    throw new Empty_Division(div.getDivision_name());
 		    }
 	    }
 	    else throw new Empty_House("The house at "+ this.getAddress().toString() +" is empty");
+		if (flag) throw new Device_Non_Existent(dev_id);
     }
 
 }

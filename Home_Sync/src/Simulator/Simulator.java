@@ -54,7 +54,7 @@ public class Simulator implements Serializable{
     public Set<Suppliers> getSuppliers(){
         Set<Suppliers> out = new HashSet<>();
         for(Suppliers s : this.suppliers){
-            out.add(s.clone());
+            out.add(s);
         }
         return out;
     }
@@ -62,7 +62,7 @@ public class Simulator implements Serializable{
     public void setSuppliers(Set<Suppliers> suppliers) {
         Set<Suppliers> out = new HashSet<>();
         for(Suppliers s : suppliers){
-            out.add(s.clone());
+            out.add(s);
         }
         this.suppliers = out;
     }
@@ -79,7 +79,7 @@ public class Simulator implements Serializable{
         Set<House> out = new HashSet<>();
         if(this.houses.size()>0){
             for(House house : this.houses){
-                out.add(house.clone());
+                out.add(house);
             }
         }
         return out;
@@ -89,7 +89,7 @@ public class Simulator implements Serializable{
         Set<House> out = new HashSet<>();
         if(houses.size()>0){
             for(House house : houses){
-                out.add(house.clone());
+                out.add(house);
             }
         }
         
@@ -116,7 +116,7 @@ public class Simulator implements Serializable{
         Set<Events> out = new HashSet<>();
         if(this.events.size()>0){
             for(Events event : this.events){
-                out.add(event.clone());
+                out.add(event);
             }
         }
         return out;
@@ -126,7 +126,7 @@ public class Simulator implements Serializable{
         Set<Events> out = new HashSet<>();
         if(events.size()>0){
             for(Events event : events){
-                out.add(event.clone());
+                out.add(event);
             }
         }
         this.events = out;
@@ -161,7 +161,7 @@ public class Simulator implements Serializable{
         House out = new House();
         if (houses.size() > 0){
             for (House house: this.houses){
-                if (house.getAddress().equals(address)) out = house.clone();
+                if (house.getAddress().equals(address)) out = house;
             }
         } 
         else  out = null;
@@ -183,7 +183,7 @@ public class Simulator implements Serializable{
         Invoice out = new Invoice();
         if (invoices.size() > 0){
             for (Invoice invoice : this.invoices){
-                if (invoice.getAddress().equals(address)) out = invoice.clone();
+                if (invoice.getAddress().equals(address)) out = invoice;
             }
         } 
         else  out = null;
@@ -192,21 +192,21 @@ public class Simulator implements Serializable{
 
     public void addHouse(House e){
         this.events.add(new Events("House " + e.getHouse_id() + " was added", LocalDateTime.now()));
-        this.houses.add(e.clone());
+        this.houses.add(e);
         for(Suppliers sup : this.suppliers){
             if (! sup.getSupplier_name().equals(e.getSupplier().getSupplier_name())){
-                this.suppliers.add(e.getSupplier().clone());
+                this.suppliers.add(e.getSupplier());
             }
         }
     }
 
     public void addSupplier(Suppliers e){
         this.events.add(new Events("Supplier " + e.getSupplier_id() + " was added", LocalDateTime.now()));
-        this.suppliers.add(e.clone());
+        this.suppliers.add(e);
     }
 
     public void addInvoice(Invoice inv){
-        this.invoices.add(inv.clone());
+        this.invoices.add(inv);
     }
 
     public void advanceOneHour() throws Empty_Simulation, Empty_House, Empty_Division{
@@ -242,7 +242,7 @@ public class Simulator implements Serializable{
         if(this.getHouses().size()>0){
             for(House h : this.getHouses()){
                 Invoice v = create_invoice(h, start_date, final_date);
-                s.add(v.clone());
+                s.add(v);
                 this.events.add(new Events("Invoice " + v.getId() + " was created for House "+ h.getHouse_id() + ".", LocalDateTime.now()));
             }
         }else throw new Empty_Simulation("There are no houses in this simulation");
