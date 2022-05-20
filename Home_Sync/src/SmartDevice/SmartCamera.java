@@ -80,7 +80,7 @@ public class SmartCamera extends SmartDevice implements Consumption{
     }
 
     public double getPower_usage() {
-		return super.getPower_usage()*(this.getFile_size()*0.1)*(this.getResolution().getL() * this.getResolution().getR()*0.05);
+		return super.getPower_usage()*(this.getFile_size()*this.getResolution().getL()*this.getResolution().getR()*0.0001);
 	}
 
 }

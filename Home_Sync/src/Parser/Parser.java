@@ -83,7 +83,7 @@ public class Parser {
                     }
                     String[] args = splitLine[1].split(",");
                     Faker fake = new Faker();
-                    SmartDevice bulb = new SmartBulb(fake.funnyName().name(),args[0],Float.parseFloat(args[1]),Float.parseFloat(args[2]));
+                    SmartDevice bulb = new SmartBulb((fake.funnyName().name()+ " Smart Bulb"),args[0],Float.parseFloat(args[1]),Float.parseFloat(args[2]));
                     lastd.addDevice(bulb.clone());
                 
                 }
@@ -93,7 +93,7 @@ public class Parser {
                     }
                     String[] args = splitLine[1].split(",");
                     Faker fake = new Faker();
-                    SmartDevice speaker = new SmartSpeaker(fake.funnyName().name(),args[2],Integer.parseInt(args[0]),Float.parseFloat(args[3]),args[1]);
+                    SmartDevice speaker = new SmartSpeaker((fake.funnyName().name()+ " Smart Speaker"),args[2],Integer.parseInt(args[0]),Float.parseFloat(args[3]),args[1]);
                     lastd.addDevice(speaker.clone());
                 
                 }
@@ -107,7 +107,7 @@ public class Parser {
                     String[] resolution = resol.split("x");
 
                     Faker fake = new Faker();
-                    SmartDevice camera = new SmartCamera(fake.funnyName().name(),new Pair<Integer,Integer>(Integer.parseInt(resolution[0]),Integer.parseInt(resolution[1])),Double.parseDouble(args[1]),Float.parseFloat(args[2]));
+                    SmartDevice camera = new SmartCamera((fake.funnyName().name()+ " Smart Camera"),new Pair<Integer,Integer>(Integer.parseInt(resolution[0]),Integer.parseInt(resolution[1])),Double.parseDouble(args[1]),Float.parseFloat(args[2]));
                     lastd.addDevice(camera.clone());
                 
                 }

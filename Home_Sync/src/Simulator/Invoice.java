@@ -138,7 +138,7 @@ public class Invoice implements Serializable{
             Set<Pair<Integer,Double>> prices = Auxiliar_Methods.time_price(h);
             if(prices.size()>0){
                 for(Pair<Integer,Double> pair : prices){
-                    final_price_all_devices += pair.getL()*pair.getR();
+                    final_price_all_devices += (pair.getL()*0.001)*(pair.getR()*0.001);
                 }
                 if(Double.isInfinite(final_price_all_devices))
                 final_price_all_devices = 0;

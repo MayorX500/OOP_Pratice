@@ -76,7 +76,7 @@ public class SmartSpeaker extends SmartDevice implements Consumption{
     }
 
     public double getPower_usage() {
-		return super.getPower_usage()*(this.getVolume()*0.1);
+		return super.getPower_usage()*(this.getVolume()*0.001);
 	}
 
 

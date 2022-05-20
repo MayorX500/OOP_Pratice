@@ -135,7 +135,7 @@ public class SmartBulb extends SmartDevice implements Consumption{
 	}
 
 	public double getPower_usage() {
-		return super.getPower_usage()*this.getColor().getConsumption();
+		return super.getPower_usage()*(this.getColor().getConsumption()*0.01);
 	}
 
 }

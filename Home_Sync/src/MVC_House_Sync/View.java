@@ -55,6 +55,7 @@ public class View{
             1 - Create House
             2 - Manage House
             3 - Change House Supplier
+            4 - Change States
             
             0 - Back
             """);
@@ -88,8 +89,9 @@ public class View{
         System.out.println("""
             Select an option:
 
-            1 - Advance 1 day
-            2 - Advance to new date
+            1 - Advance 1 hour
+            2 - Advance 1 day
+            3 - Advance to new date
             
             0 - Back
             """);
@@ -120,7 +122,7 @@ public class View{
 
             1 - Turn ON/OFF all devices in a room
             2 - Turn ON/OFF specific device
-            3 - Swap energy provider
+            3 - Turn ON/OFF all devices in the house
             
             0 - Back
             """);
@@ -312,7 +314,8 @@ public class View{
             price = house.getHouse_daily_Price() * date.until(date2,ChronoUnit.DAYS);
         }
         catch(Empty_House e) {
-            System.out.println("The house is empty therefore doesn't have expenses." );   
+            System.out.println("The house is empty therefore doesn't have expenses." );
+            Wait.wait(5000);   
         }
         System.out.println("Price to pay - " + price);
     }
@@ -509,23 +512,39 @@ public class View{
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
         printDate(invoice.getInitial_date(), invoice.getFinal_date());
-        print_s("Consumption Estimate : "+invoice.getAproximation()/invoice.getPrice_per_watt() + "W");
-        print_s("Real Consumption : "+invoice.getFinal_price()/invoice.getPrice_per_watt() + "W");
+        System.out.println("Real Consumption : "+invoice.getFinal_price()/invoice.getPrice_per_watt() + " W");
 
-        print_s("Price Estimate : "+invoice.getAproximation() + "€");
-        print_s("Real Price : "+invoice.getPrice_to_pay() + "€");
+        System.out.println("Real Price : "+invoice.getPrice_to_pay() + " €");
 
         System.out.println("\n###################################\n\n");
     }
 
     public void print_s(String s){
         System.out.println(s);
+        Wait.wait(5000);
     }
 
     // ask user for a string:
     public String ask_input_s(String s){
         System.out.println(s);
         return input.nextLine();
+    }
+
+    public boolean ask_input_b(String string) {
+        System.out.println(string);
+        String var = input.nextLine();
+        boolean out = false;
+        switch (var) {
+            case "on","ON","On","oN":
+                out = true;
+                break;
+            case "Off","OFf","OFF","OfF","off","oFf","ofF","oFF":
+                out = false;
+                break;
+            default:
+                break;
+        }
+        return out;
     }
 
     // ask user for a int:
@@ -591,5 +610,8 @@ public class View{
     public static void clear(){ System.out.print("\033\143"); }
 
     public static void showException (Exception e) {System.out.println(e.toString());}
+
+
+
 
 }

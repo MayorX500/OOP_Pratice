@@ -1,5 +1,6 @@
 package MVC_House_Sync;
 
+import java.io.File;
 import java.io.IOException;
 import java.time. LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -11,12 +12,13 @@ import Client.*;
 import Exceptions.*;
 import House.*;
 import Parser.*;
-import Simulator.Invoice;
-import Simulator.Simulator;
+import Simulator.*;
 import SmartDevice.*;
 import Suppliers.*;
 
 public class Controler {
+    File tempFile = new File("../../Resources/logs.txt");
+    boolean exists = tempFile.exists();
     private Model model;
     private View view = new View();
     private boolean unsavedChanges; 
@@ -25,17 +27,14 @@ public class Controler {
         Model m;
         
         try {
-            m = Parser.parse("../../Resources/logs.txt");
+            if(exists){
+                m = Parser.parse("../../Resources/logs.txt");
+            }
+            else m = Parser.parse("Resources/logs.txt");
         }
         catch (Wrong_Line e) {
             View.showException(e);
-            try {
-                m = Parser.parse("Resources/logs.txt");
-            }
-            catch (Wrong_Line e2) {
-                View.showException(e2);
-                m = new Model();
-            }
+            m = new Model();
         }
 
         
@@ -146,7 +145,6 @@ public void firstMenu(){
                 View.clear();
 
                 view.print_s("Empty Simulation. Please create a house.");
-                Wait.wait(5000);
                 createHouse();
             }
 
@@ -180,6 +178,9 @@ public void firstMenu(){
                 case "3":
                     chooseSupplier();
                     break;
+                case "4":
+                    changeState();
+                    break;
                 case "0":
                     flag = false;
                     break;
@@ -191,6 +192,83 @@ public void firstMenu(){
 
     }
 
+    private void changeState() {
+        House h = null;
+        boolean flag = true;
+        try {
+            h = view.pageHouses(model.getSimulator().getHouses());
+        } catch (Empty_Simulation e) {
+            View.showException(e);
+            view.print_s("There are no houses available in the simulator, please create some.");
+        flag = false;
+        }
+        while(flag) {
+            View.clear();
+            String choice = view.menu_EH();
+            switch (choice) {
+                case "1":
+                    try {
+                        Divisions division = view.pageDivision(h.getDivisions(), h.getHouse_id());
+                        boolean state = view.ask_input_b("On/Off?");
+                        this.model.turnDivision(h, division.getDivision_name(), state);
+                    } catch (Empty_House e) {
+                        View.showException(e);
+                        view.print_s("The house does not have any divisions");
+                    } catch (Empty_Division e2) {
+                        View.showException(e2);
+                    } catch (Division_Non_Existent e3) {
+                        View.showException(e3);
+                    }
+                    break;
+                case "2":                
+                    try {
+                        Divisions division = view.pageDivision(h.getDivisions(), h.getHouse_id());
+                        boolean state = view.ask_input_b("On/Off?");
+                        SmartDevice device = view.pageDevices(division.getDevices());
+                        this.model.turnDevice(h, division.getDivision_name(), device, state);
+                    } catch (Empty_House e) {
+                        View.showException(e);
+                        
+                    }  catch (State_Not_Changed e1) {
+                        View.showException(e1);
+                    } catch (Empty_Division e2) {
+                        View.showException(e2);
+                    } catch (Device_Non_Existent e3) {
+                        View.showException(e3);
+                    }                                  
+                    break;
+                case "3":
+                    if(h.getDivisions().size()>0){
+                        boolean state = view.ask_input_b("On/Off?");
+                        for(Divisions division : h.getDivisions()){
+                            try {
+                                this.model.turnDivision(h, division.getDivision_name(), state);
+                            } catch (Empty_House e) {
+                                View.showException(e);
+                                view.print_s("The house does not have any divisions");
+                            } catch (Empty_Division e2) {
+                                View.showException(e2);
+                            } catch (Division_Non_Existent e3) {
+                                View.showException(e3);
+                            }
+                        }
+                    }
+                    else view.print_s("The house does not have any divisions");
+                    flag = false;
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+
+
+
     private void manage_divisions() {
         House h = null;
         boolean flag = true;
@@ -199,7 +277,6 @@ public void firstMenu(){
         } catch (Empty_Simulation e) {
             View.showException(e);
             view.print_s("There are no houses available in the simulator, please create some.");
-        Wait.wait(5000);
         flag = false;
         }
         while(flag) {
@@ -573,7 +650,7 @@ public void firstMenu(){
             String choice = view.menu_CS();
             switch (choice) {
                 case "1":
-                    view.menu_C();
+                    createSimulation();
                     break;
                 case "2":
                     addTimeMenu_2();
@@ -779,10 +856,10 @@ public void firstMenu(){
                 break;
             case "2":
                 if(device.getIs_on()==true) {
-                    System.out.println("The device is now off");
+                    view.print_s("The device is now off");
                     device.setIs_on(false);
                 } else {
-                    System.out.println("The device is now on");
+                    view.print_s("The device is now on");
                     device.setIs_on(true);
                 }
                 break;
