@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.*;
 
-public class House implements Serializable{
+public class House implements Serializable, Comparable<House>{
     private static final AtomicInteger count = new AtomicInteger(0); 
     private int house_id;
     private Address address;
@@ -125,6 +125,10 @@ public class House implements Serializable{
             ", daily_consumption='" + getDaily_consumption() + "'" +
             "}";
     }
+
+	public int compareTo(House h){
+		return this.getSupplier().getSupplier_name().compareTo(h.getSupplier().getSupplier_name());
+	}
 
     //Non_Basic_Methods<
 

@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.*;
 
 import Auxiliar.MyRandom;
 
-public class Suppliers implements Serializable {
+public class Suppliers implements Serializable, Comparable<Suppliers> {
 	private static final AtomicInteger count = new AtomicInteger(0);
 	private int supplier_id;
 	private String supplier_name;
@@ -40,6 +40,14 @@ public class Suppliers implements Serializable {
 
 	public Suppliers(Suppliers o){
 		this(o.getSupplier_id(),o.getSupplier_name(),o.getBase_price(),o.getTax(),o.getOut_of_range_tax());
+	}
+
+	public void setSupplier(Suppliers s) {
+		this.setSupplier_id(s.getSupplier_id());
+		this.setBase_price(s.getBase_price());
+		this.setOut_of_range_tax(s.getOut_of_range_tax());
+		this.setSupplier_name(s.getSupplier_name());
+		this.setTax(s.getTax());
 	}
 
 	public int getSupplier_id() {
@@ -89,4 +97,8 @@ public class Suppliers implements Serializable {
 	public float getSupplier_rate(){
 		return(this.base_price*(this.tax+this.out_of_range_tax));
 	}
+
+    public int compareTo(Suppliers suppliers) {
+        return this.supplier_name.compareTo(suppliers.supplier_name);
+    }
 }

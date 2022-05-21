@@ -48,73 +48,154 @@ public class Controler {
 
 //MENUS
 
-public void firstMenu(){
-    boolean flag = true;
-    while(flag) {
-        View.clear();
-        String choice = view.baseMenu();
-        switch (choice) {
-            case "1":
-                crSimMenu_2();
-                break;
-            case "2":
-                manage_houses();
-                break;
-            case "3":
-                billing_menu();
-                break;
-            case "4":
-                view_menu();
-                break;
-            case "0":
-                if (this.unsavedChanges) {
-                    loadingMenu_controler();
-                }
-                else System.exit(0);
-                break;
-            default:
-                View.unrecognizedCommandError();
-                break;
-        }
-    }
-}
-
-
-    public void createSimulation() {
-        boolean exit = false;
-        while (!exit) {
+    public void first_menu(){
+        boolean flag = true;
+        while(flag){
             View.clear();
-            String choice = view.menu_C();
-
-            switch (choice) {
+            String opt = view.first_menu();
+            switch (opt) {
                 case "1":
-                    createClient();
+                    simulation_menu();
                     break;
                 case "2":
-                    createAddress();
+                    manage_simulation();
                     break;
                 case "3":
-                    createSuppliers();
+                    billing_menu();
+                    break;
+                case "4":
+                    view_menu();
                     break;
                 case "0":
-                exit = true;
+                    if (this.unsavedChanges) {
+                        loadingMenu_controler();
+                    }
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+
+        }
+    }
+
+
+
+
+
+    private void simulation_menu() {
+        boolean flag = true;
+        while(flag) {
+            View.clear();
+            String choice = view.simulation_menu();
+            switch (choice) {
+                case "1":
+                    create_simulation();
+                    break;
+                case "2":
+                    increase_time();
+                    break;
+                case "3":
+                    import_sim();
+                    break;
+                case "4":
+                    export_sim();
+                    this.unsavedChanges = false;
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;  
+            }
+        }
+    }
+
+    private void manage_simulation() {
+        boolean flag = true;
+        while(flag) {
+            View.clear();
+            String choice = view.manage_simulation();
+            switch (choice) {
+                case "1":
+                    create_house_menu();
+                    break;
+                case "2":
+                    select_house_menu();
+                    break;
+                case "3":
+                    select_supplier_menu();
+                    break;
+                case "4":
+                    mass_on_off_menu();
+                    break;
+                case "0":
+                    flag = false;
                     break;
                 default:
                     View.unrecognizedCommandError();
                     break;
             }
         }
-
     }
 
-    public void loadingMenu_controler(){
+    private void billing_menu(){
+        boolean flag = true;
+        while(flag) {
+            View.clear();
+            String choice = view.billing_menu();
+            switch (choice) {
+                case "1":
+                    specific_billing_menu();
+                    break;
+                case "2":
+                    general_billing_menu();
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+    private void view_menu(){
+        boolean flag = true;
+        while(flag) {
+            View.clear();
+            String choice = view.view_menu();
+            switch (choice) {
+                case "1":
+                    view_houses_menu();
+                    break;
+                case "2":
+                    view_suppliers_menu();
+                    break;
+                case "3":
+                    view_invoices_menu();
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+    private void loadingMenu_controler() {
         boolean flag = true;
         while(flag) {
             View.clear();
             String saves = view.ask_input_s("There are some unsaved changes, Do you wish to save them (Yes/No):");
             switch (saves){
                 case "Yes","Y","yes","y" :
-                    exportSimulationMenu();
+                    export_sim();
                     unsavedChanges = false;
                     view.print_s("Closing SimCity.");
                     flag = false;
@@ -127,12 +208,9 @@ public void firstMenu(){
                     break;
             }
         }
-        if(!flag){
-            System.exit(0);
-        }
     }
 
-    public void billing_menu(){
+    private void specific_billing_menu() {
         House h = null;
         View.clear();
         Invoice bill = new Invoice();
@@ -143,11 +221,11 @@ public void firstMenu(){
             } catch (Empty_Simulation e1) {
                 View.showException(e1);
                 View.clear();
-
+            
                 view.print_s("Empty Simulation. Please create a house.");
-                createHouse();
+                Wait.wait(5000);
             }
-
+        
             try{
                 bill = Invoice.generateInvoice(h, this.model.getSimulator().getStarting_simulation_date(), this.model.getSimulator().getSimulation_date());
                 this.model.getSimulator().addInvoice(bill);
@@ -161,25 +239,87 @@ public void firstMenu(){
         view.ask_input_s("Press any key to continue.");
     }
 
+    private void create_simulation(){
+        boolean flag = true;
+        while (flag) {
+            View.clear();
+            String choice = view.create_simulation();
 
+            switch (choice) {
+                case "1":
+                    create_house_menu();
+                    break;
+                case "2":
+                    create_supplier_menu();
+                    break;
+                case "0":
+                flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
 
-    private void manage_houses() {
+    private void increase_time(){
         boolean flag = true;
         while(flag) {
             View.clear();
-            String choice = view.manage_houses();
+            String choice = view.addTimeMenu();
             switch (choice) {
                 case "1":
-                    addHouseMenu_2();
+                    this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusHours(1));
+                    try{
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){
+                        View.showException(empty_sim);
+                    }
+                    catch(Empty_House empty_hous){
+                        View.showException(empty_hous);
+                    }
+                    catch(Empty_Division empty_div){
+                        View.showException(empty_div);
+                    }
+                    Wait.wait(5000);
                     break;
                 case "2":
-                    manage_divisions();
+                    this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusDays(1));
+                    try{
+                        for(int i = 0; i<24;i++)
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){
+                        View.showException(empty_sim);
+                    }
+                    catch(Empty_House empty_hous){
+                        View.showException(empty_hous);
+                    }
+                    catch(Empty_Division empty_div){
+                        View.showException(empty_div);
+                    }
+                    Wait.wait(5000);
+
                     break;
                 case "3":
-                    chooseSupplier();
-                    break;
-                case "4":
-                    changeState();
+                    LocalDateTime ask = view.menu_SD();
+                    long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), ask);
+                    try{
+                        for(int i = 0; i<diff;i++)
+                        this.model.getSimulator().advanceOneHour();
+                    }
+                    catch(Empty_Simulation empty_sim){
+                        View.showException(empty_sim);
+                    }
+                    catch(Empty_House empty_hous){
+                        View.showException(empty_hous);
+                    }
+                    catch(Empty_Division empty_div){
+                        View.showException(empty_div);
+                    }
+                    Wait.wait(5000);
+                    this.model.getSimulator().setSimulation_date(ask);
                     break;
                 case "0":
                     flag = false;
@@ -189,10 +329,160 @@ public void firstMenu(){
                     break;
             }
         }
-
     }
 
-    private void changeState() {
+    //EXPORT
+    private void export_sim() {
+        View.clear();
+        try {
+            FileHandler.exportModelToFile(this.model, view.ask_input_s("Name of the file:"));
+            this.unsavedChanges = false;
+        }
+        catch (IOException e) {
+            View.showException(e);
+        }
+    }
+
+    //IMPORT
+    private void import_sim() {
+        View.clear();
+        String file = view.ask_input_s("Name of the file:");
+        
+        try {
+            this.model = FileHandler.importModelFromFile(file);
+        }
+        catch (IOException | ClassNotFoundException e) {
+            View.showException(e);
+        }
+    }
+
+    private void create_house_menu(){
+        
+        House h = null;
+        Address address = null;
+        Client owner = null;
+        Suppliers supplier = null;
+        Set<Divisions> divisions = new HashSet<>();
+
+        boolean flag = true;
+        while(flag){
+            if(address == null){
+                address = address_menu();
+            }
+            if(owner == null){
+                owner = client_menu();
+            }
+            if(supplier == null){
+                supplier = supplier_menu();
+            }
+            if(address!=null && owner!=null && supplier!= null){
+                flag = false;
+            }
+        }
+        flag = true;
+        while (flag) {
+            View.clear();
+            String choice = view.create_house_menu();
+            switch (choice) {
+                case "1":
+                    int ndivs = view.ask_input_i("How many divisions do you wish to add?");
+                    while(ndivs>0){
+                        divisions.add(create_divison());
+                    }                    
+                    break;
+                case "9":
+                    h = new House(address, owner, divisions, supplier, 0);
+                    this.model.addHouse(h);
+                    this.unsavedChanges = true;
+                    flag = false;
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+    private void select_house_menu(){
+        boolean flag = true;
+        while (flag) {
+            View.clear();
+            String choice = view.select_house_menu();
+
+            switch (choice) {
+                case "1":
+                    edit_house_data();
+                    break;
+                case "2":
+                    edit_house_divisions();
+                    break;
+                case "3":
+                    edit_house_supplier();
+                    break;
+                case "0":
+                flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+    private void select_supplier_menu(){
+        boolean flag = true;
+        Suppliers s = null;
+        Suppliers temp = null;
+        
+        try {
+            s = view.pageSuppliers(this.model.getSimulator().getSuppliers());
+        } catch (Empty_Simulation e) {
+            flag = false;
+        }
+        if(s != null){
+            temp = s.clone();
+        }
+
+        while(flag){
+            View.clear();
+            String choice = view.menu_EditValues();
+            switch(choice){
+                case "1":
+                    String supplier_name = view.ask_input_s("Enter the name of the supplier:");
+                    temp.setSupplier_name(supplier_name);
+                    break;
+                case "2":
+                    float base_price = view.ask_input_f("Enter the base price");
+                    temp.setBase_price(base_price);
+                    break;
+                case "3":
+                    int tax_int = view.ask_input_i("Enter the tax percentage:");
+                    float tax = tax_int / 100;
+                    temp.setTax(tax);
+                    break;
+                case "4":
+                    int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
+                    float out_of_range_tax = out_of_range_tax_int / 100;
+                    temp.setOut_of_range_tax(out_of_range_tax);
+                    break;
+                case "9":
+                    s.setSupplier(temp);
+                    flag = false;
+                    break;
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
+    private void mass_on_off_menu(){
         House h = null;
         boolean flag = true;
         try {
@@ -209,7 +499,7 @@ public void firstMenu(){
                 case "1":
                     try {
                         Divisions division = view.pageDivision(h.getDivisions(), h.getHouse_id());
-                        boolean state = view.ask_input_b("On/Off?");
+                        boolean state = view.ask_input_on_off("On/Off?");
                         this.model.turnDivision(h, division.getDivision_name(), state);
                     } catch (Empty_House e) {
                         View.showException(e);
@@ -223,7 +513,7 @@ public void firstMenu(){
                 case "2":                
                     try {
                         Divisions division = view.pageDivision(h.getDivisions(), h.getHouse_id());
-                        boolean state = view.ask_input_b("On/Off?");
+                        boolean state = view.ask_input_on_off("On/Off?");
                         SmartDevice device = view.pageDevices(division.getDevices());
                         this.model.turnDevice(h, division.getDivision_name(), device, state);
                     } catch (Empty_House e) {
@@ -239,7 +529,7 @@ public void firstMenu(){
                     break;
                 case "3":
                     if(h.getDivisions().size()>0){
-                        boolean state = view.ask_input_b("On/Off?");
+                        boolean state = view.ask_input_on_off("On/Off?");
                         for(Divisions division : h.getDivisions()){
                             try {
                                 this.model.turnDivision(h, division.getDivision_name(), state);
@@ -266,430 +556,143 @@ public void firstMenu(){
         }
     }
 
-
-
-
-    private void manage_divisions() {
-        House h = null;
-        boolean flag = true;
-        try {
-            h = view.pageHouses(model.getSimulator().getHouses());
-        } catch (Empty_Simulation e) {
-            View.showException(e);
-            view.print_s("There are no houses available in the simulator, please create some.");
-        flag = false;
+    private void general_billing_menu(){
+        boolean b = view.ask_input_y_n("Do you wish to generate invoices for every house? (yes/no)");
+        if(b){
+            try {
+                this.model.getSimulator().generate_invoices(this.model.getSimulator().getStarting_simulation_date(), this.model.getSimulator().getSimulation_date());
+            } catch (Empty_Simulation e) {
+                this.model.getSimulator().setInvoices(new HashSet<>());
+                
+            }
         }
+
+    }
+
+    private void view_houses_menu(){
+
+    }
+
+    private void view_suppliers_menu(){
+
+    }
+
+    private void view_invoices_menu(){
+
+    }
+
+    private void edit_house_data(){
+
+    }
+
+    private void edit_house_divisions(){
+
+    }
+    
+    private void edit_house_supplier(){
+
+    }
+
+    private Address address_menu(){
+        Address address = null;
+        boolean flag = true;
         while(flag) {
             View.clear();
-            String choice = view.manage_divisions();
+            String choice = view.ask_create_or_exitent();
             switch (choice) {
                 case "1":
-                    try {
-                        editDivision(h);
-                    } catch (Empty_House e) {
-                        View.showException(e);
-                        view.print_s("The house does not have any divisions");;
-                    }
+                    address = create_address_menu();
                     break;
                 case "2":
-                    view.viewDivisions(h.getDivisions());                                    
-                    break;
-                case "0":
-                    flag = false;
+                    address = view.pageAddress(this.model.getSimulator().getHouses());
                     break;
                 default:
                     View.unrecognizedCommandError();
                     break;
             }
         }
+        return address;
     }
 
-
-
-
-    private void view_menu() {
+    private Client client_menu(){
+        Client client = null;
         boolean flag = true;
         while(flag) {
             View.clear();
-            String choice = view.view_menu();
+            String choice = view.ask_create_or_exitent();
             switch (choice) {
                 case "1":
-                    view.viewHouses(this.model.getSimulator().getHouses());
+                    client = create_client_menu();
                     break;
                 case "2":
-                    view.viewSuppliers(this.model.getSimulator().getSuppliers());
-                    break;
-                case "0":
-                    flag = false;
+                    client = view.pageClients(this.model.getSimulator().getHouses());
                     break;
                 default:
                     View.unrecognizedCommandError();
                     break;
             }
         }
+        return client;
     }
 
-    public void addTimeMenu_2(){
+    private Suppliers supplier_menu(){
+        Suppliers supplier = null;
         boolean flag = true;
         while(flag) {
             View.clear();
-            String choice = view.addTimeMenu();
+            String choice = view.ask_create_or_exitent();
             switch (choice) {
                 case "1":
-                    this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusHours(1));
-                    try{
-                        this.model.getSimulator().advanceOneHour();
-                    }
-                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
-                    catch(Empty_House empty_hous){View.showException(empty_hous);}
-                    catch(Empty_Division empty_div){View.showException(empty_div);}
+                    supplier = create_supplier_menu();
                     break;
                 case "2":
-                    this.model.getSimulator().setSimulation_date(this.model.getSimulator().getSimulation_date().plusDays(1));
-                    try{
-                        for(int i = 0; i<24;i++)
-                        this.model.getSimulator().advanceOneHour();
-                    }
-                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
-                    catch(Empty_House empty_hous){View.showException(empty_hous);}
-                    catch(Empty_Division empty_div){View.showException(empty_div);}
-                    break;
-                case "3":
-                    LocalDateTime ask = view.menu_SD();
-                    long diff = ChronoUnit.HOURS.between(this.model.getSimulator().getSimulation_date(), ask);
-                    try{
-                        for(int i = 0; i<diff;i++)
-                        this.model.getSimulator().advanceOneHour();
-                    }
-                    catch(Empty_Simulation empty_sim){View.showException(empty_sim);}
-                    catch(Empty_House empty_hous){View.showException(empty_hous);}
-                    catch(Empty_Division empty_div){View.showException(empty_div);}
-                    this.model.getSimulator().setSimulation_date(ask);
-                    break;
-                case "0":
-                    flag = false;
+                    supplier = view.pageSuppliers(this.model.getSimulator().getSuppliers());
                     break;
                 default:
                     View.unrecognizedCommandError();
                     break;
             }
         }
+        return supplier;
     }
 
-    public void addHouseMenu_2(){
-        House h = null;
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.houseMenu();
-            switch (choice) {
-                case "1":
-                    createHouse();
-                    break;
-                case "2":
-                    try {
-                        h = view.pageHouses(this.model.getSimulator().getHouses());
-                    } catch (Empty_Simulation e1) {
-                        View.showException(e1);
-                        view.print_s("The simulation is empty, nothing to delete.");
-                        Wait.wait(5000);
-                        firstMenu();
-                    }
-                    this.model.getSimulator().eliminateHouses(this.model.getSimulator().getHouses(), h.getAddress());
-                    view.houseMenu();
-                    break;
-                case "3":
-                    try {
-                        h = view.pageHouses(this.model.getSimulator().getHouses());
-                    } catch (Empty_Simulation e1) {
-                        View.showException(e1);
-                        view.print_s("The simulation is empty, please create a house.");
-                        Wait.wait(5000);
-                        createHouse();
-                    }
-                    if(this.model.getSimulator().getHouses().size()>0){
-                        House houses2[] = new House[this.model.getSimulator().getHouses().size()];
-                        this.model.getSimulator().getHouses().toArray(houses2);
-                        editHouseMenu(h);
-                    }else{
-                        view.print_s("The simulation is empty");
-                    Wait.wait(5000);
-                    }
-                    break;
-                case "0":
-                flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-    }
-
-    public void createHouse(){
-        boolean flag = true;
-        Client c = new Client();
-        Address a = new Address();
-        Suppliers s = new Suppliers();
-        Set<Divisions> divs = new HashSet<>();
-        while(flag) {
-            View.clear();
-            String choice = view.menu_C();
-            switch (choice) {
-                case "1":
-                    //Create client
-                    c = createClient();
-                    break;
-                case "2":
-                    //Create address
-                    a = createAddress();
-                    break;
-                case "3":
-                    //Create supplier
-                    s = chooseSupplier();
-                    break;
-                case "4":
-                    //Create supplier
-                    divs.add(createDivision());
-                    break;
-                case "9":
-                    flag = false;
-                    break;
-                case "0":
-                    model.addHouse(new House(a, c, divs , s, 0));
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-    }
-
-    public Suppliers chooseSupplier(){
-        boolean flag = true;
-        Suppliers s = new Suppliers();
-        while(flag) {
-            View.clear();
-            String choice = view.menu_chooseSupplier();
-
-            switch (choice) {
-                case "1":
-                    //Create Suplier
-                    s = createSuppliers();
-                    break;
-                case "2":
-                    // Choose existing suplier
-                    try { 
-                        s = view.pageSuppliers(this.model.getSimulator().getSuppliers());
-
-
-                    } catch(Empty_Simulation e){
-                        View.showException(e);
-                        view.print_s("Please create a new Supplier");
-                        s = createSuppliers();
-                    }
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-        return s;
-    }
-
-    public void editHouseMenu(House house){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.menu_Edit();
-            switch (choice) {
-                case "1":
-                    //Edit client
-                    editClientMenu(house.getOwner());
-                    break;
-                case "2":
-                    //Edit address
-                    editAddressMenu(house.getAddress());
-                    break;
-                case "3":
-                    //Edit supplier
-                    try {
-                        editSuppliers(this.model.getSimulator());
-                    } catch (Empty_Simulation e) {
-
-                        e.printStackTrace();
-                    }
-                    break;
-                case "4":
-                    try {
-                        editDivision(house);
-                    } catch (Empty_House e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    break;
-                case "5":
-                    try {
-                        view.pageDivision(house.getDivisions(),house.getHouse_id());
-                    } catch (Empty_House e) {
-                        View.showException(e);
-                        view.print_s("The House is Empty");
-                        Wait.wait(5000);
-                    }
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-    }
-
-    public void editSuppliersMenu(Suppliers supplier){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.menu_EditValues();
-            switch(choice){
-                case "1":
-                    String supplier_name = view.ask_input_s("Enter the name of the supplier:");
-                    supplier.setSupplier_name(supplier_name);
-                    break;
-                case "2":
-                    float base_price = view.ask_input_f("Enter the base price");
-                    supplier.setBase_price(base_price);
-                    break;
-                case "3":
-                    int tax_int = view.ask_input_i("Enter the tax percentage:");
-                    float tax = tax_int / 100;
-                    supplier.setTax(tax);
-                    break;
-                case "4":
-                    int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
-                    float out_of_range_tax = out_of_range_tax_int / 100;
-                    supplier.setOut_of_range_tax(out_of_range_tax);
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;
-            }
-        }
-    }
-
-    public void editAddressMenu(Address address){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.menu_EditAddress();
-            switch(choice){
-                case "1":
-                    String city = view.ask_input_s("Enter the name of the city:");
-                    address.setCity(city);
-                    break;
-                case "2":
-                    String street = view.ask_input_s("Enter the name of the street:");
-                    address.setStreet(street);
-                    break;
-                case "3":
-                    int street_number = view.ask_input_i("Enter the number of the street:");
-                    address.setStreet_number(street_number);
-                    break;
-                case "4":
-                    int l = view.ask_input_i("Enter the first four numbers of the post-code:");
-                    int r = view.ask_input_i("Enter the last three numbers of the post-code:");
-                    Pair<Integer,Integer> post_code = new Pair<>(l,r);
-                    address.setPost_code(post_code);
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;                  
-            }
-        }
-    }
-
-    public void editClientMenu(Client client){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.menu_EditClient();
-            switch(choice){
-                case "1":
-                    String name = view.ask_input_s("Enter the name of the new Client:");
-                    client.setClient_name(name);
-                    break;
-                case "2":
-                    int nif = view.ask_input_i("Enter the NIF of the new Client:");
-                    client.setClient_NIF(nif);
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;                  
-            }
-        }
-    }
-
-    public void crSimMenu_2(){
-        boolean flag = true;
-        while(flag) {
-            View.clear();
-            String choice = view.menu_CS();
-            switch (choice) {
-                case "1":
-                    createSimulation();
-                    break;
-                case "2":
-                    addTimeMenu_2();
-                    break;
-                case "3":
-                    importSimulatMenu();
-                    break;
-                case "4":
-                    exportSimulationMenu();
-                    this.unsavedChanges = false;
-                    break;
-                case "0":
-                    flag = false;
-                    break;
-                default:
-                    View.unrecognizedCommandError();
-                    break;  
-            }
-        }
-    }
-
-
-
-//CREATE
-
-
-
-    //Create client
-    public Client createClient() {
+    private Divisions create_divison(){
         View.clear();
-        String name = view.ask_input_s("Enter the name of the new Client:");
-        int nif = view.ask_input_i("Enter the NIF of the new Client:");
+        String division_name = view.ask_input_s("Enter the name of the division:");
+        Divisions division = new Divisions(division_name, new HashSet<>());
+        boolean flag = false;
+        View.clear();
+        String ask = view.ask_input_s("Do you wish to add a device to "+ name);
+        switch (ask) {
+            case "Yes","Y","yes","y":
+                flag = true;
+                break;
+            default:
+                break;
+        while(flag){}
+            SmartDevice dev = create_device();
+            if(dev==null)
+                flag = false;
+            else division.addDevice(dev);
+        }
+        this.unsavedChanges = false;
+        return division;
+    }
+
+    private Suppliers create_supplier_menu(){
+        View.clear();
+        String supplier_name = view.ask_input_s("Enter the name of the supplier:");
+        float base_price = view.ask_input_f("Enter the base price");
+        int tax_int = view.ask_input_i("Enter the tax percentage:");
+        float tax = tax_int / 100;
+        int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
+        float out_of_range_tax = out_of_range_tax_int / 100;
         this.unsavedChanges = false;
 
-        return new Client(name, nif);
+        return new Suppliers(supplier_name, base_price, tax, out_of_range_tax);
     }
 
-    // create Address
-    public Address createAddress() {
+    private Address create_address_menu(){
         View.clear();
         String city = view.ask_input_s("Enter the name of the city:");
         String street = view.ask_input_s("Enter the name of the street:");
@@ -702,212 +705,46 @@ public void firstMenu(){
         return new Address(street, street_number, city, post_code);
     }
 
-    // create Suppliers
-    public Suppliers createSuppliers() {
+    private Client create_client_menu(){
         View.clear();
-        String supplier_name = view.ask_input_s("Enter the name of the supplier:");
-        float base_price = view.ask_input_f("Enter the base price");
-        int tax_int = view.ask_input_i("Enter the tax percentage:");
-        float tax = tax_int / 100;
-        int out_of_range_tax_int = view.ask_input_i("Enter the out of range tax percentage:");
-        float out_of_range_tax = out_of_range_tax_int / 100;
+        String name = view.ask_input_s("Enter the name of the new Client:");
+        int nif = view.ask_input_i("Enter the NIF of the new Client:");
         this.unsavedChanges = false;
 
-        return new Suppliers(supplier_name, base_price, tax, out_of_range_tax);
-    }
-    // create House
-    public House createHouse(Client owner, Address address, Suppliers supplier) {
-        this.unsavedChanges = false;
-        return new House(address, owner, new HashSet<>(), supplier, 0);
+        return new Client(name, nif);
     }
 
-    // create Divisions
-    public Divisions createDivision() {
+    private SmartDevice create_device(){
         View.clear();
-        String division_name = view.ask_input_s("Enter the name of the division:");
-        Divisions division = new Divisions(division_name, new HashSet<>());
-        this.unsavedChanges = false;
-        return division;
-    }
-    // create SmartDevices
-    public Divisions createDevice(Divisions division) {
-        View.clear();
-        int select = view.ask_input_i(
-                "Choose the type of smart device:\n\t1 - SmartBulb\n\t2 - SmartCamera\n\t3 - SmartSpeaker");
+        SmartDevice dev = null;
+        String select = view.ask_input_s(
+                "Choose the type of smart device:\n\t1 - SmartBulb\n\t2 - SmartCamera\n\t3 - SmartSpeaker\n\t4 - Cancel");
         String device_name = view.ask_input_s("Enter the name of the new device:");
         String brand = view.ask_input_s("Enter the name of the device's brand:");
 
         switch (select) {
-            case 1:
+            case "1":
                 float dimension = view.ask_input_f("Enter the dimension of the bulb:");
-                SmartDevice smartdevice1 = new SmartBulb(device_name, brand, dimension);
-                division.addDevice(smartdevice1);
+                dev = new SmartBulb(device_name + " - SmartBulb", brand, dimension);
                 break;
-
-            case 2:
+            case "2":
                 String resolution = view.ask_input_s("Enter the resolution of the camera in the following format (1234x1234):");
                 String resol = resolution.replaceAll("\\(", "").replaceAll("\\)","");
                 String[] real = resol.split("x");
                 double file_size = view.ask_input_d("Enter the size of the files on the camera:");
-                SmartDevice smartdevice2 = new SmartCamera(device_name, brand, new Pair<Integer,Integer>(Integer.parseInt(real[0]),Integer.parseInt(real[1])), file_size);
-                division.addDevice(smartdevice2);
+                dev = new SmartCamera(device_name + " - SmartCamera", brand, new Pair<Integer,Integer>(Integer.parseInt(real[0]),Integer.parseInt(real[1])), file_size);
                 break;
-
-            case 3:
+            case "3":
                 int volume = view.ask_input_i("Enter the volume of the speaker:");
                 String radio_info = view.ask_input_s("Enter the online radio on:");
-                SmartDevice smartdevice3 = new SmartSpeaker(device_name, brand, volume, 15f, radio_info);
-                division.addDevice(smartdevice3);
+                dev = new SmartSpeaker(device_name + " - SmartSpeaker", brand, volume, 15f, radio_info);
                 break;
-
             default:
             View.unrecognizedCommandError();
                 break;
         }
-        this.unsavedChanges = false;
-        return division;
+        return dev;
     }
 
 
-
-//EDIT
-
-
-
-   // Edit Suppliers
-   public void editSuppliers(Simulator simulator) throws Empty_Simulation {
-    View.clear();
-    Suppliers supplier = null;
-    try {
-    supplier = view.pageSuppliers(simulator.getSuppliers());
-        
-    } catch (Exception e) {
-        View.showException(e);
-        supplier = createSuppliers();
-        this.model.getSimulator().addSupplier(supplier);
-    }
-
-    
-    editSuppliersMenu(supplier);
-
-    if (simulator.getHouses().size() > 0){
-        for (House house: simulator.getHouses()){
-            if (house.getSupplier().equals(supplier)) house.setSupplier(supplier);
-        }
-    }
-    else throw new Empty_Simulation("Empty simulator");
-    this.unsavedChanges = false;
-
-    }
-
-    // edit Divisions
-    public House editDivision(House house) throws Empty_House {
-        View.clear();
-        Divisions division = null;
-        try {
-            division = view.pageDivision(house.getDivisions(),house.getHouse_id());
-        } catch (Empty_House e) {
-            throw e;
-//////
-        }
-        View.clear();
-        if(division!= null){
-            Divisions division_c = division;
-            String choice2 = view.menu_EditDivision();
-            switch(choice2) {
-                case "1":
-                    String division_name = view.ask_input_s("Enter the new name for the division:");
-                    division.setDivision_name(division_name);
-                    break;
-                case "2":
-                    SmartDevice choice3 = null;
-                    try {
-                        choice3 = view.pageDevices(division.getDevices());
-                    } catch (Empty_Division e) {
-                        View.showException(e);
-                    }
-                    if(choice3!= null){
-                        editDevice(choice3);
-                    }
-                    break;
-                case "0":
-                        for(Divisions d : house.getDivisions()) {
-                            if(d.equals(division_c))
-                            house.getDivisions().remove(d);
-                        }
-                        break;
-                default:
-                    break;      
-            }
-        } 
-        else throw new Empty_House(house.toString());
-        this.unsavedChanges = false;
-        return house;
-    }
-
-    // Edit Device
-    private void editDevice(SmartDevice device) {
-        View.clear();
-        String choice = view.menu_EditDevice();
-        switch(choice){
-            case "1":
-                String device_name = view.ask_input_s("Enter the new name of the device:");
-                device.setDevice_name(device_name);
-                break;
-            case "2":
-                if(device.getIs_on()==true) {
-                    view.print_s("The device is now off");
-                    device.setIs_on(false);
-                } else {
-                    view.print_s("The device is now on");
-                    device.setIs_on(true);
-                }
-                break;
-            case "3":
-                String brand = view.ask_input_s("Enter the new brand of the device:");
-                device.setBrand(brand);
-                break;
-            case "4":
-                double power_usage = view.ask_input_d("Enter the new power usage of the device:");
-                device.setPower_usage(power_usage);
-                break;
-            case "5":
-                double base_cost = view.ask_input_d("Enter the new base cost of the device:");
-                device.setBase_cost(base_cost);
-                break;
-            case "0":
-                break;
-            default:
-                View.unrecognizedCommandError();
-                break;
-        }
-        this.unsavedChanges = false;
-
-    }
-    
-
-    //EXPORT
-    public void exportSimulationMenu() {
-        View.clear();
-        try {
-            FileHandler.exportModelToFile(this.model, view.ask_input_s("Name of the file:"));
-            this.unsavedChanges = false;
-        }
-        catch (IOException e) {
-            View.showException(e);
-        }
-    }
-
-    //IMPORT
-    public void importSimulatMenu() {
-        View.clear();
-        String file = view.ask_input_s("Name of the file:");
-        
-        try {
-            this.model = FileHandler.importModelFromFile(file);
-        }
-        catch (IOException | ClassNotFoundException e) {
-            View.showException(e);
-        }
-    }
 }

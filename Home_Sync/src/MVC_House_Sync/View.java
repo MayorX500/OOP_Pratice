@@ -630,7 +630,7 @@ public class View{
         return input.nextLine();
     }
 
-    public boolean ask_input_b(String string) {
+    public boolean ask_input_on_off(String string) {
         System.out.println(string);
         String var = input.nextLine();
         boolean out = false;
@@ -640,6 +640,23 @@ public class View{
                 break;
             case "Off","OFf","OFF","OfF","off","oFf","ofF","oFF":
                 out = false;
+                break;
+            default:
+                break;
+        }
+        return out;
+    }
+
+    public boolean ask_input_y_n(String string) {
+        System.out.println(string);
+        String var = input.nextLine();
+        boolean out = false;
+        switch (var) {
+            case "no","nO","No","NO":
+                out = false;
+                break;
+            case "yes","yeS","yEs","yES","Yes","YeS","YEs","YES":
+                out = true;
                 break;
             default:
                 break;
