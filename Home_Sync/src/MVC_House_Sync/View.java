@@ -1,6 +1,7 @@
 package MVC_House_Sync;
 
 import Auxiliar.*;
+import Client.Client;
 import Exceptions.*;
 import House.*;
 import Simulator.*;
@@ -278,12 +279,21 @@ public class View{
         printDivision(a.getDevice_name());
     }
 
+    public void printClient(Client a){
+        printClient(a.getClient_id(), a.getClient_name(), a.getClient_NIF());
+    }
+
+
     public void printAddress(String street, int street_number, String city, Pair<Integer,Integer> post_code){
         System.out.println(street + " " + street_number + "\n" + city + " " + post_code.getL() + "-" + post_code.getR() + "\n");
     }
 
     public void printSupplier(String supplier_name){
         System.out.println(supplier_name + "\n");
+    }
+
+    public void printClient(int id,String client_name, int nif){
+        System.out.println(id + " - " + client_name + "\n" + "NIF: " + nif + "\n");
     }
 
     public void printDivision(String division_name){
@@ -418,6 +428,96 @@ public class View{
         return out;
     }
 
+    public void viewAddress(Set<House> h){
+        clear();
+        int j = 0,i = 0;
+        House houses[] = new House[h.size()];
+        h.toArray(houses);
+		for(;i>=0 && i<houses.length;){
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<houses.length;j++){
+                printAddress(houses[j].getHouse_id() + " - " + houses[j].getAddress().getStreet(),
+                                        houses[j].getAddress().getStreet_number(),
+                                        houses[j].getAddress().getCity(),
+                                        houses[j].getAddress().getPost_code()
+                                        );
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+    }
+    public House pageAddress(Set<House> h) throws Empty_Simulation{
+        House out = null;
+        int h_id =-1;
+        clear();
+        if(h.size()>0){
+            viewAddress(h);
+            h_id = ask_input_i("Please choose a House address using the number.");
+            for(House house : h){
+                if(house.getHouse_id()== h_id){
+                    out = house;
+                }
+            }
+        }else throw new Empty_Simulation("Empty Simulation.");
+        return out;
+    }
+    public void viewClient(Set<House> h){
+        clear();
+        int j = 0,i = 0;
+        House houses[] = new House[h.size()];
+        h.toArray(houses);
+		for(;i>=0 && i<houses.length;){
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<houses.length;j++)
+                printClient(houses[j].getOwner());
+        }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+		    }
+	}
+    
+    public House pageClient(Set<House> h) throws Empty_Simulation{
+        House out = null;
+        int c_id =-1;
+        clear();
+        if(h.size()>0){
+            viewClient(h);
+            c_id = ask_input_i("Please choose a Client using the number.");
+            for(House house : h){
+                if(house.getOwner().getClient_id()== c_id){
+                    out = house;
+                }
+            }
+        }else throw new Empty_Simulation("Empty Simulation.");
+        return out;
+    }
     public void viewDivisions(Set<Divisions> div){
         clear();
         int j = 0,i = 0;
