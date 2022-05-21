@@ -249,4 +249,21 @@ public class Simulator implements Serializable{
         setInvoices(s);
         return s;
     }
+
+    public Invoice getMostExpensiveInvoice(){
+        double max = 0;
+        Invoice i = new Invoice();
+        if(this.getInvoices().size()>0){
+            for(Invoice invoice : this.getInvoices()){
+                max = Math.max(invoice.getPrice_to_pay(), max);
+                if(max == invoice.getPrice_to_pay()){
+                    i = (Invoice)invoice.clone();
+                }
+            }
+        }
+
+        return i;
+    }
 }
+
+
