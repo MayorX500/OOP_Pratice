@@ -138,14 +138,14 @@ public class Invoice implements Serializable{
             Set<Pair<Integer,Double>> prices = Auxiliar_Methods.time_price(h);
             if(prices.size()>0){
                 for(Pair<Integer,Double> pair : prices){
-                    final_price_all_devices += (pair.getL()*0.1)*(pair.getR()*0.00001);
+                    final_price_all_devices += (pair.getL()*0.1)*(pair.getR());
                 }
                 if(Double.isInfinite(final_price_all_devices))
                 final_price_all_devices = 0;
             }else throw new Empty_House(h.getAddress().toString());
         }
         catch(Empty_House empty_house){
-        throw empty_house;    
+        throw empty_house;     
         }
 
         return new Invoice(h.getDaily_consumption(),

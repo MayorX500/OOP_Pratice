@@ -253,7 +253,8 @@ public class Simulator implements Serializable{
         return s;
     }
 
-    public Invoice getMostExpensiveInvoice(){
+    public Invoice getMostExpensiveInvoice(LocalDateTime start_date,LocalDateTime final_date) throws Empty_Simulation{
+        generate_invoices(start_date, final_date);
         double max = 0;
         Invoice i = new Invoice();
         if(this.getInvoices().size()>0){
@@ -296,7 +297,7 @@ public class Simulator implements Serializable{
         Set<Invoice> out = new HashSet<>();
         if(houses.size() > 0){
             for (House h : houses){
-                if (h.getSupplier().equals(supplier)) {
+                if (h.getSupplier().getSupplier_name().equals(supplier.getSupplier_name())) {
                     Invoice inv = new Invoice();
                     try {
                         inv = Invoice.generateInvoice(h, start_date, final_date);

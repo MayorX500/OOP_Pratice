@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time. LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import Auxiliar.*;
@@ -133,6 +135,11 @@ public void firstMenu(){
     }
 
     public void billing_menu(){
+        try {
+            this.model.getSimulator().generate_invoices(this.model.getSimulator().getStarting_simulation_date(), this.model.getSimulator().getSimulation_date());
+        } catch (Empty_Simulation e2) {
+            View.showException(e2);
+        }
         House h = null;
         View.clear();
         Invoice bill = new Invoice();
@@ -158,7 +165,7 @@ public void firstMenu(){
         }
         if(!sucs) view.print_s("This simulation is empty, please add some houses in the previous menu.");
         else view.invoice(bill);
-        view.ask_input_s("Press any key to continue.");
+        view.ask_input_s("Press RETURN key to continue.");
     }
 
 
@@ -319,6 +326,9 @@ public void firstMenu(){
                 case "2":
                     view.viewSuppliers(this.model.getSimulator().getSuppliers());
                     break;
+                case "3":
+                    invoice_menu();
+                    break;
                 case "0":
                     flag = false;
                     break;
@@ -328,6 +338,95 @@ public void firstMenu(){
             }
         }
     }
+
+    private void invoice_menu() {
+        boolean flag = true;
+        while(flag) {
+            View.clear();
+            String choice = view.menu_Billing();
+            switch (choice) {
+                case "1":
+                    try {
+                        view.invoice(this.model.getSimulator().getMostExpensiveInvoice(this.model.getSimulator().getStarting_simulation_date(),this.model.getSimulator().getSimulation_date()));
+                        view.ask_input_s("Press any key to continue.");
+                    } catch (Empty_Simulation e1) {
+                        View.showException(e1);
+                        Wait.wait(5000);
+                    }
+                    break;
+                
+                case "2":
+                    try {
+                        View.clear();
+                        view.printSupplier(this.model.getSimulator().getRichSupplier());
+                        view.ask_input_s("Press any key to continue.");
+                    } catch (Empty_Simulation e) {
+                        View.showException(e);
+                        Wait.wait(5000);
+                    }
+                    break;
+
+                case "3":
+                    Suppliers s;
+                    try {
+                        View.clear();
+                        s = view.pageSuppliers(this.model.getSimulator().getSuppliers());
+                        view.viewInvoices(this.model.getSimulator().invoicesFromSupplier(s, this.model.getSimulator().getStarting_simulation_date(),this.model.getSimulator().getSimulation_date()));
+                        view.ask_input_s("Press any key to continue.");
+                    } catch (Empty_Simulation e) {
+                        View.showException(e);
+                    }
+                    break;
+
+                case "4":
+                    try {
+                        View.clear();
+                        int i = view.ask_input_i("How many do you wish to see?");
+                        int pos = 1;
+                        HashMap<String,Double> in = this.model.getSimulator().topTenConsumers();
+                        View.clear();
+                        for(Map.Entry<String,Double> ent : in.entrySet()){
+                            if(i>0){
+                                view.print_s_no_delay(pos + "\nClient - " +ent.getKey()+"\n\tConsumption - " + ent.getValue());
+                                i--;
+                                pos++;
+                            }
+                            else break;
+                        }
+                        view.ask_input_s("Press any key to continue.");
+                        
+                    } catch (Empty_Simulation e) {
+                        View.showException(e);
+                        Wait.wait(5000);
+                    }
+                    break;
+                case "9":
+                    boolean inflag = true;
+                    Set<Invoice> in = this.model.getSimulator().getInvoices();
+                    if(in.size()>=0){
+                        try {
+                            this.model.getSimulator().generate_invoices(this.model.getSimulator().getStarting_simulation_date(),this.model.getSimulator().getSimulation_date());
+                        } catch (Empty_Simulation e) {
+                            View.showException(e);
+                            inflag= false;
+                            this.unsavedChanges=true;
+                        }
+                        if(inflag){
+                           view.viewInvoices(this.model.getSimulator().getInvoices());
+                        }
+                    }
+                    break;
+
+                case "0":
+                    flag = false;
+                    break;
+                default:
+                    View.unrecognizedCommandError();
+                    break;
+            }
+        }
+    }
+
 
     public void addTimeMenu_2(){
         boolean flag = true;

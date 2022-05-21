@@ -9,6 +9,7 @@ import SmartDevice.*;
 import Suppliers.*;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 import java.util.Set;
@@ -121,9 +122,12 @@ public class View{
         System.out.println("""
             Select an option:
 
-            1 - Specific billing
-            2 - General billing
+            1 - Most Expensive House
+            2 - Supplier With Most Contracts
+            3 - Invoices Per Specific Supplier
+            4 - Top X Houses
             
+            9 - View All Invoices
             0 - Back
             """);
         return (input.nextLine());
@@ -423,6 +427,54 @@ public class View{
         return out;
     }
 
+    public void viewInvoices(Set<Invoice> inv){
+        clear();
+        int j = 0,i = 0;
+        Invoice invoice[] = new Invoice[inv.size()];
+        inv.toArray(invoice);
+		for(;i>=0 && i<invoice.length;){
+            View.clear();
+			for(j = i;j<(i+ENTRIES) && j<invoice.length;j++){
+                printAddress(invoice[j].getId() + " - \n Price - " + String.format("%.02f", invoice[j].getPrice_to_pay()) + " €\n" + invoice[j].getAddress().getStreet(),
+                                        invoice[j].getAddress().getStreet_number(),
+                                        invoice[j].getAddress().getCity(),
+                                        invoice[j].getAddress().getPost_code()
+                                        );
+            }
+            String d = ask_input_s("Previous(p), Next(n), Quit(q):");
+			switch (d) {
+				case "p":
+					i-=ENTRIES;
+					break;
+			
+				case "n":
+					i+=ENTRIES;
+					break;
+			
+				case "q":
+					i+=Integer.MAX_VALUE;
+					break;
+				default:
+					break;
+			}
+		}
+    }
+    public Invoice pageInvoices(Set<Invoice> invoices) throws Empty_Simulation{
+        Invoice out = null;
+        int h_id =-1;
+        clear();
+        if(invoices.size()>0){
+            viewInvoices(invoices);
+            h_id = ask_input_i("Please choose a Invoice using the number.");
+            for(Invoice h : invoices){
+                if(h.getId()== h_id){
+                    out = h;
+                }
+            }
+        }else throw new Empty_Simulation("Empty Simulation.");
+        return out;
+    }
+
     public void viewSuppliers(Set<Suppliers> s){
         clear();
         int j = 0,i = 0;
@@ -647,14 +699,22 @@ public class View{
     }
 
     public void invoice(Invoice invoice){
+        LocalDateTime init = invoice.getInitial_date();
+        LocalDateTime end = invoice.getFinal_date();
+
+        DateTimeFormatter formatter =  DateTimeFormatter.ofPattern(" yyyy-MM-dd HH:mm:ss");
+
+        String init_s = init.format(formatter);
+        String end_s = end.format(formatter);
         clear();
         System.out.println("###################################\nInvoice " + invoice.getId() + "\n");
         printAddress(invoice.getAddress().getStreet(),invoice.getAddress().getStreet_number(), invoice.getAddress().getCity(),
                      invoice.getAddress().getPost_code());
-        printDate(invoice.getInitial_date(), invoice.getFinal_date());
-        System.out.println("Real Consumption : "+invoice.getFinal_price()/invoice.getPrice_per_watt() + " W");
+        System.out.println("Invoice from" + init_s + " to " + end_s + ".");
 
-        System.out.println("Real Price : "+invoice.getPrice_to_pay() + " €");
+        System.out.println("Consumption : "+ String.format("%.02f", invoice.getFinal_price()) + " W");
+
+        System.out.println("Price : "+ String.format("%.02f", invoice.getPrice_to_pay()) + " €");
 
         System.out.println("\n###################################\n\n");
     }
@@ -662,6 +722,11 @@ public class View{
     public void print_s(String s){
         System.out.println(s);
         Wait.wait(5000);
+    }
+
+    public void print_s_no_delay(String s){
+        System.out.println(s);
+
     }
 
     // ask user for a string:
