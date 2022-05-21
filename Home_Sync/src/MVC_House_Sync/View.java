@@ -70,9 +70,9 @@ public class View{
             Select an option:
             
             1 - Create new simulation
-            2 - Manage current simulation
-            3 - Load Simulation
-            4 - Save Simulation
+            2 - Increase time
+            3 - Import simulation
+            4 - Export simulation
             
             0 - Back
             """);
@@ -106,9 +106,23 @@ public class View{
         System.out.println("""
             Select an option:
 
-            1 - Add new house
-            2 - Eliminate existing house
-            3 - Edit existing house
+            1 - Create new house
+            2 - Edit existing house
+            3 - Edit existing supplier
+            4 - Manage Devices
+            
+            0 - Back
+            """);
+        return (input.nextLine());
+    }
+
+    public String menu_Billing(){
+        clear();
+        System.out.println("""
+            Select an option:
+
+            1 - Specific billing
+            2 - General billing
             
             0 - Back
             """);
@@ -129,6 +143,8 @@ public class View{
             """);
         return (input.nextLine());
     }
+
+
 
     public String menu_C(){
         clear();
@@ -154,13 +170,11 @@ public class View{
         System.out.println("""
             Select an option:
             
-            1 - Edit client
-            2 - Edit address
-            3 - Edit supplier
-            4 - Edit division
-            5 - View divisions
+            1 - Edit House Data
+            2 - Edit Divisions
+            3 - Edit Supplier
             
-            0 - Save changes
+            0 - Quit
             """);
         return (input.nextLine());
     }
@@ -259,6 +273,32 @@ public class View{
             2 - Choose existing Supplier
             
             0 - Save changes
+            """);
+        return (input.nextLine());
+    }
+
+    public String menu_create_simulation(){
+        clear();
+        System.out.println("""
+            Select an option:
+            
+            1 - Create House
+            2 - Create Supplier
+            
+            0 - Quit
+            """);
+        return (input.nextLine());
+    }
+
+    public String menu_divisions(){
+        clear();
+        System.out.println("""
+            Select an option:
+            
+            1 - Create division
+            
+            9 - Save changes
+            0 - Quit
             """);
         return (input.nextLine());
     }
@@ -712,6 +752,7 @@ public class View{
 
             1 - List Houses
             2 - List Suppliers
+            3 - List Invoices
             
             0 - Back
             """);
