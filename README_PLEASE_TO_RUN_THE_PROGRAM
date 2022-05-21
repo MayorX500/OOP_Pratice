@@ -1,0 +1,10 @@
+Para correr o programa como nós utilizamos Librarias externas é preciso usar um commando especifico, Na pasta SRC existe um executavel em SHELL que consegue compilar correr o projeto sem problemas em todas as máquinas em que foi testado.
+
+Aconselha-se o uso do Java17 para cima devido a Switch-cases com várias opções.
+
+
+CORRER PROGRAMA
+
+na DIRETORIA SRC_
+
+	sh ./House_Sync
