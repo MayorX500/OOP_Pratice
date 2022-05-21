@@ -2,9 +2,11 @@ package Simulator;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.function.Supplier;
 
 import Exceptions.*;
 import House.*;
@@ -254,7 +256,7 @@ public class Simulator implements Serializable{
         double max = 0;
         Invoice i = new Invoice();
         if(this.getInvoices().size()>0){
-            for(Invoice invoice : this.getInvoices()){
+            for(Invoice invoice : invoices){
                 max = Math.max(invoice.getPrice_to_pay(), max);
                 if(max == invoice.getPrice_to_pay()){
                     i = (Invoice)invoice.clone();
@@ -263,6 +265,54 @@ public class Simulator implements Serializable{
         }
 
         return i;
+    }
+    public Suppliers getRichSupplier() throws Empty_Simulation{
+        if(houses.size()>0){
+            House h[] = new House[houses.size()];
+            this.getHouses().toArray(h);
+            Arrays.sort(h[].getSuppliers());//ordenar por supplier
+
+            int max_count = 1;
+            Suppliers res = h[0].getSupplier();
+            int curr_count = 1;
+     
+            for (int i = 1; i < h.length; i++) {
+                if (h[i].getSupplier().equals(h[i - 1].getSupplier()))
+                    curr_count++;
+                else
+                    curr_count = 1;
+     
+                if (curr_count > max_count) {
+                    max_count = curr_count;
+                    res = h[i - 1].getSupplier();
+                }
+            }
+        return res;
+        } else throw new Empty_Simulation("Empty Simulation");
+    }
+
+    public void invoicesFromSupplier (Suppliers supplier) throws Empty_Simulation{
+        if(houses.size() > 0){
+            for (House h : houses){
+                if (h.getSupplier().equals(supplier)) {
+                    //create invoice from house 
+                }
+            }
+        } else throw new Empty_Simulation("Empty Simulation");
+    }
+
+    public void topTenConsumers() throws Empty_Simulation{
+        if(houses.size() > 0){
+            for (House h : houses){
+                Map<String, double>  arr = new ArrayList<>();
+                arr.add(h.owner, h.getDaily_consumption());   
+            }
+            Arrays.sort(arr.Value());
+            for (int i=1; i<11; i++){
+                System.out.println(i + " - " + arr[i-1].getKey() + "\n");
+            }
+
+        }else throw new Empty_Simulation("Empty Simulation");
     }
 }
 
